@@ -22,7 +22,7 @@ export const getURL = () => {
     (process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
     process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
     process.env.NODE_ENV === 'production')
-      ? 'https://kpfunds.vercel.app'
+      ? 'https://kpevents.vercel.app'
       : 'http://localhost:3000';
 
   // Make sure to include a trailing `/`.
