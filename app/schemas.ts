@@ -164,6 +164,23 @@ export const EventBookingFormSchema = EventBookingCreateSchema.extend({
   amount: z.coerce.number(),
   payment_mode: z.enum(['cash', 'online']),
   status: z.enum(['pending', 'confirmed']),
+  otherPaidTo: z.string().optional(),
+  otherBuilding: z.enum(BUILDINGS).optional(),
+  otherFlat: z.coerce.number().optional(),
+}).check((ctx) => {
+  if (
+    !getFlatsForBuilding(ctx.value.booking_building).includes(
+      ctx.value.booking_flat
+    )
+  ) {
+    ctx.issues.push({
+      code: 'custom',
+      message: 'Invalid Flat Number',
+      input: ctx.value.booking_flat,
+      path: ['booking_flat'],
+      continue: true, // make this issue continuable (default: false)
+    });
+  }
 });
 
 export const PaymentSchema = createZodObject<TPayment>({
@@ -173,10 +190,19 @@ export const PaymentSchema = createZodObject<TPayment>({
   amount: z.coerce.number(),
   created_at: z.string(),
   logged_by: z.uuid(),
+  paid_by: z.string(),
 });
 
 export const PaymentCreateSchema = PaymentSchema.omit({
   id: true,
   created_at: true,
   logged_by: true,
+});
+
+export const PaymentFormSchema = PaymentCreateSchema.extend({
+  committee: z.enum(COMMITTEES),
+  amount: z.coerce.number(),
+  otherPaidTo: z.string().optional(),
+  otherBuilding: z.enum(BUILDINGS).optional(),
+  otherFlat: z.coerce.number().optional(),
 });

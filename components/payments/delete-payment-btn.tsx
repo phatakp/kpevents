@@ -1,27 +1,23 @@
 'use client';
 
-import type { TCommittee } from '@/app/types';
 import { Button } from '@/components/ui/button';
-import { addMember } from '@/server/actions/committee.actions';
-import { useQueryClient } from '@tanstack/react-query';
+import { deletePayment } from '@/server/actions/booking.actions';
+import { Trash2 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 type Props = {
-  committee: TCommittee;
-  userId: string;
+  id: number;
 };
 
-export function JoinCommitteeBtn({ committee, userId }: Props) {
+export function DeletePaymentBtn({ id }: Props) {
   const router = useRouter();
-  const queryClient = useQueryClient();
 
-  const { execute, isPending } = useAction(addMember, {
+  const { execute, isPending } = useAction(deletePayment, {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['members'] });
-      toast.success('Membership Request Sent');
-      router.push('/');
+      toast.success('Payment deleted successfully');
+      router.refresh();
     },
     onError: ({ error }) =>
       toast.error(
@@ -33,20 +29,18 @@ export function JoinCommitteeBtn({ committee, userId }: Props) {
   });
 
   function handleClick() {
-    execute({
-      committee,
-      member_id: userId,
-    });
+    execute({ id });
   }
 
   return (
     <Button
-      className="rounded-full"
+      className="p-0"
       isLoading={isPending}
       onClick={handleClick}
-      size={'sm'}
+      size={'icon'}
+      variant={'ghost'}
     >
-      Become a Member
+      <Trash2 className="size-4 text-destructive" />
     </Button>
   );
 }

@@ -1,6 +1,6 @@
-import type { TBuilding, TCommittee, TEventType } from '@/app/types';
+import type { TCommittee } from '@/app/types';
 import { amountFormatter } from '@/lib/utils';
-import { getAllCollectionsbyBuilding } from '@/server/actions/booking.actions';
+import { getAllPayments } from '@/server/actions/booking.actions';
 import { isCommitteeMember } from '@/server/actions/committee.actions';
 import { IndianRupee, Plus } from 'lucide-react';
 import { Modal } from '../layouts/modal';
@@ -14,30 +14,27 @@ import {
   CardTitle,
 } from '../ui/card';
 import { columns } from './columns';
+import { CreatePaymentForm } from './create-payment-form';
 import { DataTable } from './data-table';
-import { EventBookingForm } from './event-booking-form';
 
 type Props = {
-  building: TBuilding;
-  type: TEventType;
   committee: TCommittee;
 };
 
-export async function Collections({ building, type, committee }: Props) {
+export async function Payments({ committee }: Props) {
   const { data: isMember } = await isCommitteeMember({ committee });
-  const { data: collections } = await getAllCollectionsbyBuilding({
-    building,
-    slug: `${type}-${new Date().getFullYear()}`,
+  const { data: payments } = await getAllPayments({
+    committee,
   });
 
-  const total = collections?.reduce((acc, b) => acc + b.amount, 0) ?? 0;
+  const total = payments?.reduce((acc, b) => acc + b.amount, 0) ?? 0;
 
   return (
     <div className="w-full *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-secondary/20 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="max-w-sm sm:max-w-md md:max-w-full ">
         <CardHeader>
-          <CardDescription>
-            Total Collection for {building} building
+          <CardDescription className="capitalize">
+            Total Payments from {committee} committee
           </CardDescription>
           <CardTitle>
             <div className="flex items-center">
@@ -50,12 +47,12 @@ export async function Collections({ building, type, committee }: Props) {
           <CardAction>
             {isMember && (
               <Modal
-                content={<EventBookingForm committee={committee} type={type} />}
-                title="Add New Entry"
+                content={<CreatePaymentForm committee={committee} />}
+                title="Add New Payment"
               >
                 <Button className="rounded-md" size={'sm'}>
                   <Plus />
-                  <span className="hidden sm:flex">New Entry</span>
+                  <span className="hidden sm:flex">New Payment</span>
                 </Button>
               </Modal>
             )}
@@ -63,7 +60,7 @@ export async function Collections({ building, type, committee }: Props) {
         </CardHeader>
 
         <CardContent className="p-0">
-          <DataTable columns={columns} data={collections ?? []} />
+          <DataTable columns={columns} data={payments ?? []} />
         </CardContent>
       </Card>
     </div>

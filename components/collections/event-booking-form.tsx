@@ -29,11 +29,12 @@ export function EventBookingForm({ type, committee }: Props) {
       getAllCommitteeMembers({ committee }).then((res) => res.data),
   });
 
-  const memberOptions =
+  const memberOptions = (
     members?.map((m) => ({
       label: `${m.user.name} (${m.user.building}${m.user.flat})`,
       value: `${m.user.name} (${m.user.building}${m.user.flat})`,
-    })) ?? [];
+    })) ?? []
+  ).concat([{ label: 'Other', value: 'Other' }]);
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
     useHookFormAction(addEventBooking, customResolver(EventBookingFormSchema), {
@@ -50,6 +51,9 @@ export function EventBookingForm({ type, committee }: Props) {
           receiver: `${profile?.name} (${profile?.building}${profile?.flat})`,
           status: 'confirmed',
           payment_mode: 'online',
+          otherPaidTo: '',
+          otherBuilding: 'A',
+          otherFlat: 0,
         },
       },
 
@@ -70,6 +74,8 @@ export function EventBookingForm({ type, committee }: Props) {
         },
       },
     });
+
+  const receiver = form.watch('receiver');
 
   return (
     <Form {...form}>
@@ -101,6 +107,27 @@ export function EventBookingForm({ type, committee }: Props) {
           options={memberOptions}
           register={form.register('receiver')}
         />
+
+        {receiver === 'Other' && (
+          <>
+            <TextInput
+              label="Receiver"
+              register={form.register('otherPaidTo')}
+            />
+            <div className="flex gap-4">
+              <SelectInput
+                label="Receiver Building"
+                options={buildingOptions}
+                register={form.register('otherBuilding')}
+              />
+              <TextInput
+                label="Receiver Flat"
+                register={form.register('otherFlat')}
+                type="number"
+              />
+            </div>
+          </>
+        )}
 
         <div className="flex gap-4">
           <SelectInput

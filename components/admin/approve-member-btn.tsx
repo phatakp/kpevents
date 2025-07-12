@@ -1,6 +1,7 @@
 'use client';
 
 import { approveMember } from '@/server/actions/committee.actions';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -13,8 +14,11 @@ type Props = {
 
 export function ApproveMemberBtn({ committeeName, userId }: Props) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { execute, isPending } = useAction(approveMember, {
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
       toast.success('Member approved');
       router.refresh();
     },

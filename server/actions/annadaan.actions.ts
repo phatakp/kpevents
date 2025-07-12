@@ -62,6 +62,13 @@ export const upsertAnnadaanItem = adminProcedure
 export const createBookings = publicProcedure
   .inputSchema(BookingFormSchema)
   .action(async ({ parsedInput, ctx: { supabase } }) => {
+    console.log(parsedInput);
+
+    const { otherPaidTo, otherBuilding, otherFlat, receiver } = parsedInput;
+    let receiverName = receiver;
+    if (receiver === 'Other' && otherPaidTo && otherBuilding && otherFlat) {
+      receiverName = `${otherPaidTo} (${otherBuilding}${otherFlat})`;
+    }
     const promises = parsedInput.bookings.map(async (b) => {
       const { data } = await supabase.rpc('create_annadaan_booking', {
         itemname: b.itemName,
@@ -70,7 +77,7 @@ export const createBookings = publicProcedure
         building: parsedInput.building,
         flat: parsedInput.flat,
         qty: b.bookQty,
-        receivr: parsedInput.receiver,
+        receivr: receiverName,
         amt: b.bookQty * b.price,
       });
       return data;

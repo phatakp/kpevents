@@ -64,6 +64,9 @@ export function AnnadaanList({ year, isEventActive }: Props) {
           building: 'A',
           flat: 0,
           year,
+          otherPaidTo: '',
+          otherBuilding: 'A',
+          otherFlat: 0,
           bookings: [
             {
               itemName: '',

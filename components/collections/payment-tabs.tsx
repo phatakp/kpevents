@@ -1,5 +1,6 @@
 import type { TCommittee, TEventType } from '@/app/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Payments } from '../payments/payments';
 import { BuildingTabs } from './building-tabs';
 
 type Props = {
@@ -20,7 +21,9 @@ export function PaymentTabs({ type, committee }: Props) {
           <BuildingTabs committee={committee} type={type} />
         </div>
       </TabsContent>
-      <TabsContent value="payments">No entries yet.</TabsContent>
+      <TabsContent value="payments">
+        <Payments committee={committee} />
+      </TabsContent>
     </Tabs>
   );
 }

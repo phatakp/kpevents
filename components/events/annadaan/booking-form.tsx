@@ -38,13 +38,7 @@ export function AnnadaanBookingForm() {
   const { profile } = useAuthContext();
   const { watch, register, setValue, formState } =
     useFormContext<z.infer<typeof BookingFormSchema>>();
-  const [books, otherPaidTo, otherBuilding, otherFlat, receiver] = watch([
-    'bookings',
-    'otherPaidTo',
-    'otherBuilding',
-    'otherFlat',
-    'receiver',
-  ]);
+  const [books, receiver] = watch(['bookings', 'receiver']);
 
   const { data: members } = useQuery({
     queryKey: ['members'],
@@ -63,12 +57,6 @@ export function AnnadaanBookingForm() {
     }
   }, [profile, setValue]);
 
-  useEffect(() => {
-    if (receiver === 'Other' && otherPaidTo) {
-      setValue('receiver', `${otherPaidTo} (${otherBuilding}${otherFlat})`);
-    }
-  }, [receiver, otherPaidTo, otherBuilding, otherFlat, setValue]);
-
   const memberOptions = (
     members
       ?.filter((m) => !!m?.user?.name)
@@ -80,10 +68,6 @@ export function AnnadaanBookingForm() {
 
   if (!books?.at(-1)?.bookQty) return;
   const totalBooked = books.reduce((acc, b) => acc + b.price * b.bookQty, 0);
-
-  function onPaidToChanged(val: string) {
-    if (val !== 'Other') setValue('receiver', val);
-  }
 
   return (
     <Card className="bg-background">

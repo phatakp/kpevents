@@ -217,6 +217,7 @@ export type Database = {
           desc: string
           id: number
           logged_by: string | null
+          paid_by: string | null
         }
         Insert: {
           amount: number
@@ -225,6 +226,7 @@ export type Database = {
           desc: string
           id?: number
           logged_by?: string | null
+          paid_by?: string | null
         }
         Update: {
           amount?: number
@@ -233,6 +235,7 @@ export type Database = {
           desc?: string
           id?: number
           logged_by?: string | null
+          paid_by?: string | null
         }
         Relationships: [
           {
