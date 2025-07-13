@@ -1,14 +1,12 @@
 'use client';
 
 import type { TEventBooking } from '@/app/types';
-import { Modal } from '@/components/layouts/modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { amountFormatter, cn } from '@/lib/utils';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ChevronsUpDown, IndianRupee, Pen } from 'lucide-react';
-import { DeleteBookingBtn } from './delete-booking-btn';
+import { ChevronsUpDown, IndianRupee } from 'lucide-react';
 
 export const columns: ColumnDef<TEventBooking>[] = [
   {
@@ -110,6 +108,36 @@ export const columns: ColumnDef<TEventBooking>[] = [
     ),
   },
   {
+    accessorKey: 'booking_qty',
+    header: ({ column, table }) => {
+      const currentSorting = table.getState().sorting;
+      const isColumnSorted = currentSorting.some(
+        (sort) => sort.id === 'booking_qty'
+      );
+      return (
+        <div className="flex items-center justify-end">
+          <Button
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            variant="ghost"
+          >
+            Mahaprasad Count
+            <ChevronsUpDown
+              className={cn(
+                'size-4 text-muted-foreground',
+                isColumnSorted && 'text-foreground'
+              )}
+            />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="flex items-center justify-end pr-3 text-right font-medium">
+        {row.getValue('booking_qty')}
+      </div>
+    ),
+  },
+  {
     accessorKey: 'payment_mode',
     header: () => <div className="text-center">Mode</div>,
     cell: ({ row }) => (
@@ -150,28 +178,5 @@ export const columns: ColumnDef<TEventBooking>[] = [
     cell: ({ row }) => (
       <div className="pl-3 capitalize">{row.getValue('receiver')}</div>
     ),
-  },
-  {
-    id: 'action',
-    cell: ({ row }) => {
-      const booking = row.original;
-      return (
-        <div
-          className={cn(
-            'flex items-center gap-2',
-            !row.getIsSelected() && 'hidden'
-          )}
-        >
-          <Modal content={'Edit'} title="Edit Collection Entry">
-            <Button className="p-0" size={'icon'} variant={'ghost'}>
-              <Pen className="size-4 text-muted-foreground" />
-            </Button>
-          </Modal>
-          <DeleteBookingBtn id={booking.id} />
-        </div>
-      );
-    },
-    enableSorting: false,
-    enableHiding: false,
   },
 ];

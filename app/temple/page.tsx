@@ -28,11 +28,17 @@ export default async function TemplePage() {
       <div className="flex flex-col gap-4">
         <h1 className="font-bold text-4xl">Society Temple</h1>
         <Suspense fallback={<TabsLoader />}>
-          <PaymentTabs committee="temple" type="temple" />
+          <PaymentTabs
+            committee="temple"
+            isMember={!!member?.is_active}
+            type="temple"
+          />
         </Suspense>
-        <Suspense fallback={<ReceiverLoader />}>
-          <ReceiverTotals committee="temple" />
-        </Suspense>
+        {member?.is_active && (
+          <Suspense fallback={<ReceiverLoader />}>
+            <ReceiverTotals committee="temple" />
+          </Suspense>
+        )}
       </div>
     </Background>
   );

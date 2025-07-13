@@ -6,9 +6,10 @@ import { BuildingTabs } from './building-tabs';
 type Props = {
   type: TEventType;
   committee: TCommittee;
+  isMember?: boolean;
 };
 
-export function PaymentTabs({ type, committee }: Props) {
+export function PaymentTabs({ type, committee, isMember }: Props) {
   return (
     <Tabs className="w-[400px] sm:w-full" defaultValue="collections">
       <TabsList>
@@ -16,13 +17,21 @@ export function PaymentTabs({ type, committee }: Props) {
         <TabsTrigger value="payments">Payments</TabsTrigger>
       </TabsList>
       <TabsContent value="collections">
-        <div className="mt-4 grid gap-2">
-          Choose the building
-          <BuildingTabs committee={committee} type={type} />
-        </div>
+        {isMember ? (
+          <div className="mt-4 grid gap-2">
+            Choose the building
+            <BuildingTabs committee={committee} type={type} />
+          </div>
+        ) : (
+          <div className="mt-4">Only members can view collections.</div>
+        )}
       </TabsContent>
       <TabsContent value="payments">
-        <Payments committee={committee} />
+        {isMember ? (
+          <Payments committee={committee} />
+        ) : (
+          <div className="mt-4">Only members can view payments.</div>
+        )}
       </TabsContent>
     </Tabs>
   );

@@ -1,13 +1,12 @@
 'use client';
 
 import type { TPayment } from '@/app/types';
-import { Modal } from '@/components/layouts/modal';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { amountFormatter, cn } from '@/lib/utils';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ChevronsUpDown, IndianRupee, Pen } from 'lucide-react';
-import { DeletePaymentBtn } from './delete-payment-btn';
+import { format } from 'date-fns';
+import { ChevronsUpDown, IndianRupee } from 'lucide-react';
 
 export const columns: ColumnDef<TPayment>[] = [
   {
@@ -109,26 +108,29 @@ export const columns: ColumnDef<TPayment>[] = [
     ),
   },
   {
-    id: 'action',
-    cell: ({ row }) => {
-      const payment = row.original;
+    accessorKey: 'date',
+    header: ({ column, table }) => {
+      const currentSorting = table.getState().sorting;
+      const isColumnSorted = currentSorting.some((sort) => sort.id === 'date');
       return (
-        <div
-          className={cn(
-            'flex items-center gap-2',
-            !row.getIsSelected() && 'hidden'
-          )}
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
         >
-          <Modal content={'Edit'} title="Edit Collection Entry">
-            <Button className="p-0" size={'icon'} variant={'ghost'}>
-              <Pen className="size-4 text-muted-foreground" />
-            </Button>
-          </Modal>
-          <DeletePaymentBtn id={payment.id} />
-        </div>
+          Date
+          <ChevronsUpDown
+            className={cn(
+              'size-4 text-muted-foreground',
+              isColumnSorted && 'text-foreground'
+            )}
+          />
+        </Button>
       );
     },
-    enableSorting: false,
-    enableHiding: false,
+    cell: ({ row }) => (
+      <div className="pl-3 ">
+        {format(new Date(row.getValue('date')), 'PPP')}
+      </div>
+    ),
   },
 ];

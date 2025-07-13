@@ -214,6 +214,7 @@ export type Database = {
           amount: number
           committee: Database["public"]["Enums"]["committee_enum"]
           created_at: string
+          date: string
           desc: string
           id: number
           logged_by: string | null
@@ -223,6 +224,7 @@ export type Database = {
           amount: number
           committee: Database["public"]["Enums"]["committee_enum"]
           created_at?: string
+          date?: string
           desc: string
           id?: number
           logged_by?: string | null
@@ -232,6 +234,7 @@ export type Database = {
           amount?: number
           committee?: Database["public"]["Enums"]["committee_enum"]
           created_at?: string
+          date?: string
           desc?: string
           id?: number
           logged_by?: string | null

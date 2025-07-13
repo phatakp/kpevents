@@ -6,6 +6,7 @@ import { Trash2 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useModal } from '../layouts/modal';
 
 type Props = {
   id: number;
@@ -13,6 +14,7 @@ type Props = {
 
 export function DeleteBookingBtn({ id }: Props) {
   const router = useRouter();
+  const { modalId, closeModal } = useModal();
 
   const { execute, isPending } = useAction(deleteBooking, {
     onSuccess: () => {
@@ -30,17 +32,17 @@ export function DeleteBookingBtn({ id }: Props) {
 
   function handleClick() {
     execute({ id });
+    closeModal(modalId);
   }
 
   return (
     <Button
-      className="p-0"
+      className="my-4 w-full"
       isLoading={isPending}
       onClick={handleClick}
-      size={'icon'}
-      variant={'ghost'}
+      variant={'destructive'}
     >
-      <Trash2 className="size-4 text-destructive" />
+      <Trash2 className="size-4 text-destructive" /> Delete Entry
     </Button>
   );
 }

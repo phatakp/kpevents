@@ -34,12 +34,11 @@ export const getAllEventsByType = publicProcedure
 export const getEventBySlug = publicProcedure
   .inputSchema(z.object({ slug: z.string() }))
   .action(async ({ parsedInput: { slug }, ctx: { supabase } }) => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('events')
       .select('*')
       .eq('slug', slug)
       .single();
-    if (error) throw new ActionError(error.message);
     return data;
   });
 

@@ -18,7 +18,7 @@ type Props = {
 
 export async function ReceiverTotals({ committee }: Props) {
   const { data } = await getCollectionsbyReceiver({ committee });
-  const collections = data?.sort((a, b) => b.total - a.total);
+  const collections = data?.sort((a, b) => b.remaining - a.remaining);
   return (
     <div className="w-full *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-secondary/20 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="max-w-sm sm:max-w-md md:max-w-full ">
@@ -33,7 +33,9 @@ export async function ReceiverTotals({ committee }: Props) {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Name</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="text-right">Received</TableHead>
+                <TableHead className="text-right">Paid</TableHead>
+                <TableHead className="text-right">Remaining</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -43,7 +45,13 @@ export async function ReceiverTotals({ committee }: Props) {
                     {c.receiver}
                   </TableCell>
                   <TableCell className="text-right">
-                    {amountFormatter(c.total)}
+                    {amountFormatter(c.received)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {amountFormatter(c.paid)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {amountFormatter(c.remaining)}
                   </TableCell>
                 </TableRow>
               ))}

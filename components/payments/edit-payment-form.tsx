@@ -1,16 +1,15 @@
 'use client';
 
-import { PaymentFormSchema } from '@/app/schemas';
-import type { TCommittee } from '@/app/types';
+import { PaymentUpdateFormSchema } from '@/app/schemas';
+import type { TBuilding, TPayment } from '@/app/types';
 import { BUILDINGS } from '@/lib/constants';
 import { cn, customResolver } from '@/lib/utils';
-import { addPayment } from '@/server/actions/booking.actions';
+import { updatePayment } from '@/server/actions/booking.actions';
 import { getAllCommitteeMembers } from '@/server/actions/committee.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useAuthContext } from '../auth/auth-provider';
 import { DateInput } from '../inputs/date-input';
 import { SelectInput } from '../inputs/select-input';
 import { TextInput } from '../inputs/text-input';
@@ -18,19 +17,21 @@ import { useModal } from '../layouts/modal';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Form } from '../ui/form';
+import { DeletePaymentBtn } from './delete-payment-btn';
 
 type Props = {
-  committee: TCommittee;
+  payment: TPayment;
 };
 
-export function CreatePaymentForm({ committee }: Props) {
+export function EditPaymentForm({ payment }: Props) {
   const router = useRouter();
   const { modalId, closeModal } = useModal();
-  const { profile } = useAuthContext();
   const { data: members } = useQuery({
-    queryKey: ['members', committee],
+    queryKey: ['members', payment.committee],
     queryFn: () =>
-      getAllCommitteeMembers({ committee }).then((res) => res.data),
+      getAllCommitteeMembers({ committee: payment.committee }).then(
+        (res) => res.data
+      ),
   });
 
   const memberOptions = (
@@ -40,25 +41,43 @@ export function CreatePaymentForm({ committee }: Props) {
     })) ?? []
   ).concat([{ label: 'Other', value: 'Other' }]);
 
+  const psplit = payment.paid_by?.split(' (');
+  if (psplit?.length === 2) {
+    const building = psplit[1].charAt(0) as TBuilding;
+    const flat = Number(psplit[1].slice(1, -1));
+    if (
+      !(
+        members?.map((m) => m.user.building).includes(building) &&
+        members?.map((m) => m.user.flat).includes(flat)
+      )
+    ) {
+      memberOptions.push({
+        label: payment.paid_by as string,
+        value: payment.paid_by as string,
+      });
+    }
+  }
+
   const { form, handleSubmitWithAction, resetFormAndAction } =
-    useHookFormAction(addPayment, customResolver(PaymentFormSchema), {
+    useHookFormAction(updatePayment, customResolver(PaymentUpdateFormSchema), {
       formProps: {
         mode: 'onChange',
         defaultValues: {
-          committee,
-          amount: 0,
-          desc: '',
-          paid_by: `${profile?.name} (${profile?.building}${profile?.flat})`,
+          id: payment.id,
+          committee: payment.committee,
+          amount: payment.amount,
+          desc: payment.desc,
+          paid_by: payment.paid_by,
           otherPaidTo: '',
           otherBuilding: 'A',
           otherFlat: 0,
-          date: new Date().toISOString().split('T')[0], // Default to today
+          date: payment.date,
         },
       },
 
       actionProps: {
         onSuccess: () => {
-          toast.success('Payment created successfully');
+          toast.success('Payment updated successfully');
           resetFormAndAction();
           closeModal(modalId);
           router.refresh();
@@ -82,7 +101,9 @@ export function CreatePaymentForm({ committee }: Props) {
         className={cn('flex flex-col gap-6')}
         onSubmit={handleSubmitWithAction}
       >
-        <Badge className="capitalize">Paying from {committee} balance</Badge>
+        <Badge className="capitalize">
+          Paying from {payment.committee} balance
+        </Badge>
         <DateInput label={'Date'} register={form.register('date')} />
         <TextInput label="Description" register={form.register('desc')} />
 
@@ -127,6 +148,7 @@ export function CreatePaymentForm({ committee }: Props) {
           Submit
         </Button>
       </form>
+      <DeletePaymentBtn id={payment.id} />
     </Form>
   );
 }

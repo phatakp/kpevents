@@ -12,6 +12,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+import type { TEventBooking } from '@/app/types';
 import { Input } from '@/components/ui/input';
 import {
   Table,
@@ -23,7 +24,9 @@ import {
 } from '@/components/ui/table';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { Modal } from '../layouts/modal';
 import { Button } from '../ui/button';
+import { BookingUpdateForm } from './booking-update-form';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -100,19 +103,29 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  data-state={row.getIsSelected() && 'selected'}
+                <Modal
+                  content={
+                    <BookingUpdateForm
+                      booking={row.original as TEventBooking}
+                    />
+                  }
                   key={row.id}
+                  title="Edit details"
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                  <TableRow
+                    data-state={row.getIsSelected() && 'selected'}
+                    key={row.id}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </Modal>
               ))
             ) : (
               <TableRow>

@@ -36,29 +36,18 @@ export function MobileNav() {
         </DrawerTrigger>
         <DrawerContent className="absolute inset-0">
           <DrawerHeader>
-            <DrawerTitle>KP Funds</DrawerTitle>
+            <DrawerTitle>KP Events</DrawerTitle>
           </DrawerHeader>
           <div className="grid w-full place-items-center gap-12 py-12">
             <Link
               className={cn(
                 'mx-auto font-bold text-4xl',
-                path.includes('ganpati') && 'text-primary'
+                path.includes('events') && 'text-primary'
               )}
-              href={`/events/ganpati/${new Date().getFullYear()}`}
+              href={'/events'}
               onClick={() => setOpen(false)}
             >
-              Ganpati
-            </Link>
-
-            <Link
-              className={cn(
-                'mx-auto font-bold text-4xl',
-                path.includes('annadaan') && 'text-primary'
-              )}
-              href={`/events/annadaan/${new Date().getFullYear()}`}
-              onClick={() => setOpen(false)}
-            >
-              Annadaan
+              Events
             </Link>
 
             <Link

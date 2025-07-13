@@ -1,7 +1,12 @@
 'use server';
 
 import { ActionError } from '@/app/errors';
-import { EventBookingFormSchema, PaymentFormSchema } from '@/app/schemas';
+import {
+  EventBookingFormSchema,
+  EventBookingUpdateFormSchema,
+  PaymentFormSchema,
+  PaymentUpdateFormSchema,
+} from '@/app/schemas';
 import { BUILDINGS, COMMITTEES } from '@/lib/constants';
 import {
   adminProcedure,
@@ -30,7 +35,7 @@ export const getAllPayments = profileProcedure
       .from('payments')
       .select('*')
       .eq('committee', committee)
-      .order('created_at', { ascending: false });
+      .order('date', { ascending: false });
 
     return data;
   });
@@ -41,7 +46,8 @@ export const getCollectionsbyReceiver = profileProcedure
     const { data: collections } = await supabase
       .from('event_bookings')
       .select('total:amount.sum(),receiver')
-      .eq('committee', committee);
+      .eq('committee', committee)
+      .eq('status', 'confirmed');
     const { data: payments } = await supabase
       .from('payments')
       .select('total:amount.sum(),receiver:paid_by')
@@ -50,8 +56,18 @@ export const getCollectionsbyReceiver = profileProcedure
     return collections?.map((c) => {
       const idx = payments?.findIndex((p) => p.receiver === c.receiver) ?? -1;
       return idx === -1
-        ? c
-        : { ...c, total: c.total - (payments?.[idx]?.total ?? 0) };
+        ? {
+            receiver: c.receiver,
+            received: c.total,
+            paid: 0,
+            remaining: c.total,
+          }
+        : {
+            receiver: c.receiver,
+            received: c.total,
+            paid: payments?.[idx]?.total ?? 0,
+            remaining: c.total - (payments?.[idx]?.total ?? 0),
+          };
     });
   });
 
@@ -60,13 +76,13 @@ export const getTotalCollectionsBySlug = publicProcedure
   .action(async ({ parsedInput, ctx: { supabase } }) => {
     const { data } = await supabase
       .from('event_bookings')
-      .select('total:amount.sum()')
+      .select('total:amount.sum(),totalQty:booking_qty.sum()')
       .eq('committee', parsedInput.committee)
       .eq('event_slug', parsedInput.slug)
       .eq('status', 'confirmed')
       .single();
 
-    return data?.total ?? 0;
+    return data;
   });
 
 export const getTotalCollections = publicProcedure
@@ -125,6 +141,39 @@ export const addEventBooking = profileProcedure
     return data;
   });
 
+export const updateEventBooking = profileProcedure
+  .inputSchema(EventBookingUpdateFormSchema)
+  .action(async ({ parsedInput, ctx: { supabase, profile } }) => {
+    const {
+      id,
+      receiver,
+      event_slug,
+      otherPaidTo,
+      otherBuilding,
+      otherFlat,
+      ...values
+    } = parsedInput;
+    let receiverName = receiver;
+    if (receiver === 'Other' && otherPaidTo && otherBuilding && otherFlat) {
+      receiverName = `${otherPaidTo} (${otherBuilding}${otherFlat})`;
+    }
+    const committee = event_slug.startsWith('temple') ? 'temple' : 'cultural';
+    const { data, error } = await supabase
+      .from('event_bookings')
+      .update({
+        ...values,
+        last_action: profile.id,
+        committee,
+        event_slug,
+        receiver: receiverName,
+      })
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw new ActionError(error.message);
+    return data;
+  });
+
 export const addPayment = profileProcedure
   .inputSchema(PaymentFormSchema)
   .action(async ({ parsedInput, ctx: { supabase, profile } }) => {
@@ -137,6 +186,25 @@ export const addPayment = profileProcedure
     const { data, error } = await supabase
       .from('payments')
       .insert({ ...values, logged_by: profile.id, paid_by: receiverName })
+      .select()
+      .single();
+    if (error) throw new ActionError(error.message);
+    return data;
+  });
+
+export const updatePayment = profileProcedure
+  .inputSchema(PaymentUpdateFormSchema)
+  .action(async ({ parsedInput, ctx: { supabase, profile } }) => {
+    const { id, otherBuilding, otherFlat, otherPaidTo, paid_by, ...values } =
+      parsedInput;
+    let receiverName = paid_by;
+    if (paid_by === 'Other' && otherPaidTo && otherBuilding && otherFlat) {
+      receiverName = `${otherPaidTo} (${otherBuilding}${otherFlat})`;
+    }
+    const { data, error } = await supabase
+      .from('payments')
+      .update({ ...values, logged_by: profile.id, paid_by: receiverName })
+      .eq('id', id)
       .select()
       .single();
     if (error) throw new ActionError(error.message);

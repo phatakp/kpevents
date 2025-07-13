@@ -32,6 +32,9 @@ export async function Collections({ building, type, committee }: Props) {
 
   const total = collections?.reduce((acc, b) => acc + b.amount, 0) ?? 0;
 
+  const totalCount =
+    collections?.reduce((acc, b) => acc + b.booking_qty, 0) ?? 0;
+
   return (
     <div className="w-full *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-secondary/20 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="max-w-sm sm:max-w-md md:max-w-full ">
@@ -45,6 +48,11 @@ export async function Collections({ building, type, committee }: Props) {
               <span className="font-semibold text-2xl">
                 {amountFormatter(total)}
               </span>
+              {type === 'ganpati' && (
+                <span className="ml-2 text-muted-foreground text-sm">
+                  (Mahaprasad Count:{totalCount})
+                </span>
+              )}
             </div>
           </CardTitle>
           <CardAction>

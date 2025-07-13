@@ -31,7 +31,7 @@ export function SelectEventYear({ events, type, year }: Props) {
     },
   });
 
-  const [typ, yr] = form.watch(['type', 'year']);
+  const typ = form.watch('type');
 
   if (!events?.length)
     return <Badge className="capitalize">No Events created yet!</Badge>;
@@ -56,7 +56,7 @@ export function SelectEventYear({ events, type, year }: Props) {
   };
 
   const handleTypeChange = (val: string) => {
-    if (yr) router.push(`/events/${val}/${yr}`);
+    router.push(`/events/${val}/${new Date().getFullYear()}`);
   };
 
   return (

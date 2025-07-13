@@ -12,6 +12,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+import type { TPayment } from '@/app/types';
 import { Input } from '@/components/ui/input';
 import {
   Table,
@@ -24,7 +25,9 @@ import {
 import { amountFormatter } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, IndianRupee } from 'lucide-react';
 import { useState } from 'react';
+import { Modal } from '../layouts/modal';
 import { Button } from '../ui/button';
+import { EditPaymentForm } from './edit-payment-form';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -108,19 +111,27 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  data-state={row.getIsSelected() && 'selected'}
+                <Modal
+                  content={
+                    <EditPaymentForm payment={row.original as TPayment} />
+                  }
                   key={row.id}
+                  title="Edit details"
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                  <TableRow
+                    data-state={row.getIsSelected() && 'selected'}
+                    key={row.id}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </Modal>
               ))
             ) : (
               <TableRow>

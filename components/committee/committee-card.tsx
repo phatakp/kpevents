@@ -6,13 +6,17 @@ import {
   getCommitteeBalance,
   getCommitteeMember,
 } from '@/server/actions/committee.actions';
+import { getAllEventsByCommittee } from '@/server/actions/event.actions';
 import { IndianRupee } from 'lucide-react';
+import Link from 'next/link';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import {
   Card,
   CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '../ui/card';
@@ -27,6 +31,7 @@ export async function CommitteeCard({ name }: Props) {
   const { data: balance } = await getCommitteeBalance({ committee: name });
   const { data: members } = await getAllCommitteeMembers({ committee: name });
   const { data } = await isLoggedInProfile();
+  const { data: events } = await getAllEventsByCommittee({ committee: name });
   if (data?.profile?.id) {
     const { data: mem } = await getCommitteeMember({
       committee: name,
@@ -60,14 +65,47 @@ export async function CommitteeCard({ name }: Props) {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap items-center gap-4">
-            {members?.map((m) => (
-              <Badge key={m.member_id}>
-                {m.user.name} ({m.user.building}/{m.user.flat})
-              </Badge>
-            ))}
+          <div className="flex flex-col">
+            <span className="font-semibold text-muted-foreground">
+              Committee Members
+            </span>
+            <div className="mt-4 grid items-center gap-1">
+              {members?.map((m) => (
+                <li className="text-sm capitalize" key={m.member_id}>
+                  {m.user.name} ({m.user.building}/{m.user.flat})
+                </li>
+              ))}
+            </div>
           </div>
         </CardContent>
+        {member?.is_active && (
+          <CardFooter>
+            <div className="flex w-full flex-col">
+              <span className="font-semibold text-muted-foreground">
+                Events Planned
+              </span>
+              <div className="flex flex-col">
+                {events?.map((e) =>
+                  e.is_active ? (
+                    <li
+                      className="flex items-center justify-between"
+                      key={e.slug}
+                    >
+                      <Button asChild className="p-0" variant={'link'}>
+                        <Link
+                          className="text-sm capitalize"
+                          href={`/events/${e.type}/${e.year}`}
+                        >
+                          {e.type}-{e.year}
+                        </Link>
+                      </Button>
+                    </li>
+                  ) : null
+                )}
+              </div>
+            </div>
+          </CardFooter>
+        )}
       </Card>
     </div>
   );

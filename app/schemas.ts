@@ -181,6 +181,22 @@ export const EventBookingFormSchema = EventBookingCreateSchema.extend({
       continue: true, // make this issue continuable (default: false)
     });
   }
+
+  if (
+    ctx.value.receiver === 'Other' &&
+    !(ctx.value.otherPaidTo && ctx.value.otherBuilding && ctx.value.otherFlat)
+  ) {
+    ctx.issues.push({
+      code: 'custom',
+      message: 'Receiver details required',
+      input: ctx.value.receiver,
+      path: ['receiver'],
+      continue: true, // make this issue continuable (default: false)
+    });
+  }
+});
+export const EventBookingUpdateFormSchema = EventBookingFormSchema.extend({
+  id: z.number(),
 });
 
 export const PaymentSchema = createZodObject<TPayment>({
@@ -191,6 +207,7 @@ export const PaymentSchema = createZodObject<TPayment>({
   created_at: z.string(),
   logged_by: z.uuid(),
   paid_by: z.string(),
+  date: z.string(),
 });
 
 export const PaymentCreateSchema = PaymentSchema.omit({
@@ -205,4 +222,8 @@ export const PaymentFormSchema = PaymentCreateSchema.extend({
   otherPaidTo: z.string().optional(),
   otherBuilding: z.enum(BUILDINGS).optional(),
   otherFlat: z.coerce.number().optional(),
+});
+
+export const PaymentUpdateFormSchema = PaymentFormSchema.extend({
+  id: z.number(),
 });
