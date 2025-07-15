@@ -72,12 +72,11 @@ export const getCollectionsbyReceiver = profileProcedure
   });
 
 export const getTotalCollectionsBySlug = publicProcedure
-  .inputSchema(z.object({ committee: z.enum(COMMITTEES), slug: z.string() }))
+  .inputSchema(z.object({ slug: z.string() }))
   .action(async ({ parsedInput, ctx: { supabase } }) => {
     const { data } = await supabase
       .from('event_bookings')
       .select('total:amount.sum(),totalQty:booking_qty.sum()')
-      .eq('committee', parsedInput.committee)
       .eq('event_slug', parsedInput.slug)
       .eq('status', 'confirmed')
       .single();

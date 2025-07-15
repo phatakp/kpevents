@@ -12,10 +12,5 @@ export const PER_FLOOR_FLATS = 4;
 export const COMMITTEES = ['cultural', 'temple'] as const;
 export const PAY_MODES = ['cash', 'online'] as const;
 export const PAY_STATUS = ['pending', 'confirmed'] as const;
-export const EVENT_TYPES = [
-  'annadaan',
-  'pheta',
-  'cultural-programs',
-  'temple',
-  'ganpati',
-] as const;
+export const EVENT_TYPES = ['annadaan', 'temple', 'ganpati'] as const;
+export const FORM_EVENTS = ['indepence-day', 'republic-day', 'diwali'] as const;

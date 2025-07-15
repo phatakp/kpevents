@@ -22,9 +22,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, IndianRupee } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '../layouts/modal';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { BookingUpdateForm } from './booking-update-form';
 
@@ -54,31 +55,49 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const bookingNameFilterValue =
+    (table.getColumn('booking_name')?.getFilterValue() as string) ?? '';
+  const receiverFilterValue =
+    (table.getColumn('receiver')?.getFilterValue() as string) ?? '';
+  const totalForSelected = table
+    .getRowModel()
+    .rows.reduce((acc, b) => acc + (b.original as TEventBooking).amount, 0);
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-end px-4">
+      <div className="flex flex-col items-end px-4">
         <Input
           className="max-w-sm"
           onChange={(event) =>
             table.getColumn('booking_name')?.setFilterValue(event.target.value)
           }
           placeholder="Filter by Donor"
-          value={
-            (table.getColumn('booking_name')?.getFilterValue() as string) ?? ''
-          }
+          value={bookingNameFilterValue}
         />
+        {bookingNameFilterValue && (
+          <Badge>
+            Total For Selected:{' '}
+            <IndianRupee className="size-3.5 text-primary-foreground" />
+            {totalForSelected}
+          </Badge>
+        )}
       </div>
-      <div className="flex items-center justify-end px-4">
+      <div className="flex flex-col items-end px-4">
         <Input
           className="max-w-sm"
           onChange={(event) =>
             table.getColumn('receiver')?.setFilterValue(event.target.value)
           }
           placeholder="Filter by Receiver"
-          value={
-            (table.getColumn('receiver')?.getFilterValue() as string) ?? ''
-          }
+          value={receiverFilterValue}
         />
+        {receiverFilterValue && (
+          <Badge>
+            Total For Selected:{' '}
+            <IndianRupee className="size-3.5 text-primary-foreground" />
+            {totalForSelected}
+          </Badge>
+        )}
       </div>
       <div className="border">
         <Table>

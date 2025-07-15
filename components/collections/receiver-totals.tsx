@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { amountFormatter } from '@/lib/utils';
+import { amountFormatter, cn } from '@/lib/utils';
 import { getCollectionsbyReceiver } from '@/server/actions/booking.actions';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
@@ -19,8 +19,9 @@ type Props = {
 export async function ReceiverTotals({ committee }: Props) {
   const { data } = await getCollectionsbyReceiver({ committee });
   const collections = data?.sort((a, b) => b.remaining - a.remaining);
+
   return (
-    <div className="w-full *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-secondary/20 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
+    <div className="my-4 w-full *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-secondary/20 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="max-w-sm sm:max-w-md md:max-w-full ">
         <CardHeader>
           <CardTitle>Total Collections by Individual</CardTitle>
@@ -40,7 +41,10 @@ export async function ReceiverTotals({ committee }: Props) {
             </TableHeader>
             <TableBody>
               {collections?.map((c) => (
-                <TableRow key={c.receiver}>
+                <TableRow
+                  className={cn(c.receiver === 'Unknown' && 'text-destructive')}
+                  key={c.receiver}
+                >
                   <TableCell className="font-medium capitalize">
                     {c.receiver}
                   </TableCell>

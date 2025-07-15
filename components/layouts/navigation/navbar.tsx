@@ -15,7 +15,10 @@ export function Navbar() {
         </Link>
         <div className="hidden items-center justify-end lg:flex">
           <NavLink href={'/'} title="Home" />
-          <NavLink href={'/events'} title="Events" />
+          <NavLink
+            href={`/events/ganpati/${new Date().getFullYear()}`}
+            title="Events"
+          />
           <NavLink href={'/temple'} title="Temple" />
           <NavLink href={'/admin'} title="Admin" />
 

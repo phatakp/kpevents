@@ -28,11 +28,6 @@ export function MobileNav() {
       <Drawer direction="top" onOpenChange={setOpen} open={open}>
         <DrawerTrigger>
           <MenuIcon className="size-4" />
-          {/* {isLoading ? (
-            <Skeleton className="size-4" />
-          ) : (
-            <MenuIcon className="size-4" />
-          )} */}
         </DrawerTrigger>
         <DrawerContent className="absolute inset-0">
           <DrawerHeader>
@@ -44,7 +39,7 @@ export function MobileNav() {
                 'mx-auto font-bold text-4xl',
                 path.includes('events') && 'text-primary'
               )}
-              href={'/events'}
+              href={`/events/ganpati/${new Date().getFullYear()}`}
               onClick={() => setOpen(false)}
             >
               Events

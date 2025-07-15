@@ -32,6 +32,7 @@ export default async function TemplePage() {
             committee="temple"
             isMember={!!member?.is_active}
             type="temple"
+            year={new Date().getFullYear()}
           />
         </Suspense>
         {member?.is_active && (

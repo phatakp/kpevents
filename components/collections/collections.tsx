@@ -70,9 +70,11 @@ export async function Collections({ building, type, committee }: Props) {
           </CardAction>
         </CardHeader>
 
-        <CardContent className="p-0">
-          <DataTable columns={columns} data={collections ?? []} />
-        </CardContent>
+        {collections && collections.length > 0 && (
+          <CardContent className="p-0">
+            <DataTable columns={columns} data={collections} />
+          </CardContent>
+        )}
       </Card>
     </div>
   );
