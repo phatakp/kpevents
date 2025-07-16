@@ -11,12 +11,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { cn, customResolver } from '@/lib/utils';
+import { allEventByCommitteeOptions } from '@/query-options/events';
 import { paymentKeys } from '@/query-options/payments';
 import { addPayment } from '@/server/actions/booking.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { SelectInput } from '../inputs/select-input';
 
 type Props = {
   committee: TCommittee;
@@ -27,6 +30,9 @@ export function CreatePaymentForm({ committee }: Props) {
   const router = useRouter();
   const { modalId, closeModal } = useModal();
   const { profile } = useAuthContext();
+  const { data: events, isLoading } = useQuery(
+    allEventByCommitteeOptions(committee)
+  );
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
     useHookFormAction(addPayment, customResolver(PaymentFormSchema), {
@@ -40,6 +46,7 @@ export function CreatePaymentForm({ committee }: Props) {
           otherPaidTo: '',
           otherBuilding: 'A',
           otherFlat: 0,
+          event_slug: '',
           date: new Date(), // Default to today
         },
       },
@@ -65,6 +72,9 @@ export function CreatePaymentForm({ committee }: Props) {
       },
     });
 
+  if (isLoading) return <Loader className="mx-auto animate-spin" />;
+  const eventOptions = events?.map((e) => ({ label: e.slug, value: e.slug }));
+
   return (
     <Form {...form}>
       <form
@@ -72,6 +82,11 @@ export function CreatePaymentForm({ committee }: Props) {
         onSubmit={handleSubmitWithAction}
       >
         <Badge className="capitalize">Paying from {committee} balance</Badge>
+        <SelectInput
+          label={'For Event'}
+          options={eventOptions ?? []}
+          register={form.register('event_slug')}
+        />
         <DateInput label={'Date'} register={form.register('date')} />
         <TextInput label="Description" register={form.register('desc')} />
 

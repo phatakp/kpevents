@@ -46,12 +46,7 @@ export async function EventTabs({ type, year }: Props) {
           )}
           <SelectEventYear events={events} type={'ganpati'} year={year} />
 
-          <PaymentTabs
-            committee="cultural"
-            isMember={isMember}
-            type={'ganpati'}
-            year={year}
-          />
+          <PaymentTabs committee="cultural" type={'ganpati'} year={year} />
         </div>
         {isMember && type === 'ganpati' && (
           <Suspense fallback={<ReceiverLoader />}>

@@ -16,7 +16,7 @@ import {
 import { getISTDate } from '@/lib/utils';
 import { z } from 'zod/v4';
 
-export const getAllCollectionsbyBuilding = profileProcedure
+export const getAllCollectionsbyBuilding = publicProcedure
   .inputSchema(z.object({ building: z.enum(BUILDINGS), slug: z.string() }))
   .action(async ({ parsedInput: { building, slug }, ctx: { supabase } }) => {
     const { data } = await supabase
@@ -108,6 +108,18 @@ export const getTotalPayments = publicProcedure
       .single();
 
     return data?.total ?? 0;
+  });
+
+export const getTotalPaymentsBySlug = publicProcedure
+  .inputSchema(z.object({ slug: z.string() }))
+  .action(async ({ parsedInput, ctx: { supabase } }) => {
+    const { data } = await supabase
+      .from('payments')
+      .select('total:amount.sum()')
+      .eq('event_slug', parsedInput.slug)
+      .single();
+
+    return data;
   });
 
 export const addEventBooking = profileProcedure
@@ -245,3 +257,10 @@ export const deletePayment = adminProcedure
     const { error } = await supabase.from('payments').delete().eq('id', id);
     if (error) throw new ActionError(error.message);
   });
+
+export const getAllTempleRequirements = publicProcedure.action(
+  async ({ ctx: { supabase } }) => {
+    const { data } = await supabase.from('temple_requirements').select('*');
+    return data;
+  }
+);

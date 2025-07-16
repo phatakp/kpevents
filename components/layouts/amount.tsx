@@ -1,13 +1,15 @@
-import { amountFormatter } from '@/lib/utils';
+import { amountFormatter, cn } from '@/lib/utils';
 import { IndianRupee } from 'lucide-react';
 
-type Props = { amount: number };
+type Props = { amount: number; className?: string; containerClass?: string };
 
-export function Amount({ amount }: Props) {
+export function Amount({ amount, className, containerClass }: Props) {
   return (
-    <div className="flex items-center">
+    <div className={cn('flex items-center justify-end', containerClass)}>
       <IndianRupee className="size-4 text-muted-foreground" />
-      <span className="font-semibold text-2xl">{amountFormatter(amount)}</span>
+      <span className={cn('font-semibold text-2xl tabular-nums', className)}>
+        {amountFormatter(amount)}
+      </span>
     </div>
   );
 }

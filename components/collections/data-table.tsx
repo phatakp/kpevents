@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/table';
 import { isMemberOptions } from '@/query-options/committee';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, ChevronRight, IndianRupee } from 'lucide-react';
+import { ChevronLeft, ChevronRight, IndianRupee, Loader } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '../layouts/modal';
 import { Badge } from '../ui/badge';
@@ -58,9 +58,15 @@ export function DataTable<TData, TValue>({
   });
 
   const row = table.getRowModel().rows.at(0);
-  const { data: isMember } = useQuery(
+  const { data: isMember, isLoading } = useQuery(
     isMemberOptions((row?.original as TEventBooking).committee)
   );
+
+  if (isLoading) return <Loader className="mx-auto animate-spin" />;
+  if (!isMember)
+    return (
+      <Badge className="mx-4">Only members can view collection details</Badge>
+    );
 
   const bookingNameFilterValue =
     (table.getColumn('booking_name')?.getFilterValue() as string) ?? '';

@@ -20,7 +20,8 @@ export const getAllEventsByCommittee = publicProcedure
     const { data } = await supabase
       .from('events')
       .select('*')
-      .eq('committee', committee);
+      .eq('committee', committee)
+      .eq('is_active', true);
     return data;
   });
 

@@ -216,6 +216,7 @@ export type Database = {
           created_at: string
           date: string
           desc: string
+          event_slug: string | null
           id: number
           logged_by: string | null
           paid_by: string | null
@@ -226,6 +227,7 @@ export type Database = {
           created_at?: string
           date?: string
           desc: string
+          event_slug?: string | null
           id?: number
           logged_by?: string | null
           paid_by?: string | null
@@ -236,11 +238,19 @@ export type Database = {
           created_at?: string
           date?: string
           desc?: string
+          event_slug?: string | null
           id?: number
           logged_by?: string | null
           paid_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "payments_event_slug_fkey"
+            columns: ["event_slug"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["slug"]
+          },
           {
             foreignKeyName: "payments_logged_by_fkey"
             columns: ["logged_by"]
@@ -277,6 +287,24 @@ export type Database = {
           id?: string
           is_admin?: boolean
           name?: string
+        }
+        Relationships: []
+      }
+      temple_requirements: {
+        Row: {
+          amount: number
+          item_name: string
+          quantity: number | null
+        }
+        Insert: {
+          amount: number
+          item_name: string
+          quantity?: number | null
+        }
+        Update: {
+          amount?: number
+          item_name?: string
+          quantity?: number | null
         }
         Relationships: []
       }

@@ -10,12 +10,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { cn, customResolver } from '@/lib/utils';
+import { allEventByCommitteeOptions } from '@/query-options/events';
 import { paymentKeys } from '@/query-options/payments';
 import { updatePayment } from '@/server/actions/booking.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { SelectInput } from '../inputs/select-input';
 import { DeletePaymentBtn } from './delete-payment-btn';
 
 type Props = {
@@ -27,6 +30,9 @@ export function EditPaymentForm({ payment, isMember }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { modalId, closeModal } = useModal();
+  const { data: events, isLoading } = useQuery(
+    allEventByCommitteeOptions(payment.committee)
+  );
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
     useHookFormAction(updatePayment, customResolver(PaymentUpdateFormSchema), {
@@ -38,6 +44,7 @@ export function EditPaymentForm({ payment, isMember }: Props) {
           amount: payment.amount,
           desc: payment.desc,
           paid_by: payment.paid_by,
+          event_slug: payment.event_slug,
           otherPaidTo: '',
           otherBuilding: 'A',
           otherFlat: 0,
@@ -64,6 +71,8 @@ export function EditPaymentForm({ payment, isMember }: Props) {
       },
     });
 
+  if (isLoading) return <Loader className="mx-auto animate-spin" />;
+  const eventOptions = events?.map((e) => ({ label: e.slug, value: e.slug }));
   const paidBy = form.watch('paid_by');
 
   return (
@@ -77,6 +86,11 @@ export function EditPaymentForm({ payment, isMember }: Props) {
             ? `Paying from ${payment.committee} balance`
             : 'You are not authorized to edit details'}
         </Badge>
+        <SelectInput
+          label={'For Event'}
+          options={eventOptions ?? []}
+          register={form.register('event_slug')}
+        />
         <DateInput
           disabled={!isMember}
           label={'Date'}

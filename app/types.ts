@@ -20,6 +20,8 @@ export type TEventBooking =
 export type TEvent = Database['public']['Tables']['events']['Row'];
 export type TUserProfile = Database['public']['Tables']['profiles']['Row'];
 export type TPayment = Database['public']['Tables']['payments']['Row'];
+export type TRequirement =
+  Database['public']['Tables']['temple_requirements']['Row'];
 
 //Custom
 export type TItemWithBookings = TAnnadaanItem & {

@@ -208,6 +208,7 @@ export const PaymentSchema = createZodObject<TPayment>({
   logged_by: z.uuid(),
   paid_by: z.string(),
   date: z.string(),
+  event_slug: z.string(),
 });
 
 export const PaymentCreateSchema = PaymentSchema.omit({

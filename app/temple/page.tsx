@@ -3,10 +3,14 @@ import { ReceiverTotals } from '@/components/collections/receiver-totals';
 import Background from '@/components/layouts/background';
 import { ReceiverLoader } from '@/components/layouts/receiver-loader';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getQueryClient } from '@/lib/react-query/get-query-client';
+import { allTempleReqOptions } from '@/query-options/temple';
 import { isCommitteeMember } from '@/server/actions/committee.actions';
 import { Suspense } from 'react';
 
 export default async function TemplePage() {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(allTempleReqOptions());
   const { data: isMember } = await isCommitteeMember({
     committee: 'temple',
   });
@@ -18,7 +22,6 @@ export default async function TemplePage() {
         <Suspense fallback={<TabsLoader />}>
           <PaymentTabs
             committee="temple"
-            isMember={!!isMember}
             type="temple"
             year={new Date().getFullYear()}
           />

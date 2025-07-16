@@ -30,7 +30,7 @@ export function PaymentsCard({ committee, isMember }: Props) {
             Total Payments from {committee} committee
           </CardDescription>
           <CardTitle>
-            <Amount amount={total} />
+            <Amount amount={total} containerClass="justify-start" />
           </CardTitle>
           <CardAction>
             <NewPaymentBtn committee={committee} isMember={isMember} />
