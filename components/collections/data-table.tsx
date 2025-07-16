@@ -22,6 +22,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { isMemberOptions } from '@/query-options/committee';
+import { useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight, IndianRupee } from 'lucide-react';
 import { useState } from 'react';
 import { Modal } from '../layouts/modal';
@@ -54,6 +56,11 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+
+  const row = table.getRowModel().rows.at(0);
+  const { data: isMember } = useQuery(
+    isMemberOptions((row?.original as TEventBooking).committee)
+  );
 
   const bookingNameFilterValue =
     (table.getColumn('booking_name')?.getFilterValue() as string) ?? '';
@@ -126,6 +133,7 @@ export function DataTable<TData, TValue>({
                   content={
                     <BookingUpdateForm
                       booking={row.original as TEventBooking}
+                      isMember={!!isMember}
                     />
                   }
                   key={row.id}

@@ -96,7 +96,10 @@ export async function CommitteeCard({ name }: Props) {
                           className="text-sm capitalize"
                           href={`/events/${e.type}/${e.year}`}
                         >
-                          {e.type}-{e.year}
+                          {e.type}-{e.year}{' '}
+                          <span className="text-muted-foreground underline">
+                            (Visit Now)
+                          </span>
                         </Link>
                       </Button>
                     </li>

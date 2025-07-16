@@ -13,6 +13,9 @@ import {
 } from '@tanstack/react-table';
 
 import type { TPayment } from '@/app/types';
+import { Modal } from '@/components/layouts/modal';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Table,
@@ -22,11 +25,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { amountFormatter } from '@/lib/utils';
+import { isMemberOptions } from '@/query-options/committee';
+import { useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight, IndianRupee } from 'lucide-react';
 import { useState } from 'react';
-import { Modal } from '../layouts/modal';
-import { Button } from '../ui/button';
 import { EditPaymentForm } from './edit-payment-form';
 
 interface DataTableProps<TData, TValue> {
@@ -54,40 +56,56 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+  const row = table.getRowModel().rows.at(0);
+  const { data: isMember } = useQuery(
+    isMemberOptions((row?.original as TPayment).committee)
+  );
+
+  const descFilterValue =
+    (table.getColumn('desc')?.getFilterValue() as string) ?? '';
+  const senderFilterValue =
+    (table.getColumn('paid_by')?.getFilterValue() as string) ?? '';
+  const totalForSelected = table
+    .getRowModel()
+    .rows.reduce((acc, b) => acc + (b.original as TPayment).amount, 0);
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-end px-4">
+      <div className="flex flex-col items-end px-4">
         <Input
           className="max-w-sm"
           onChange={(event) =>
             table.getColumn('desc')?.setFilterValue(event.target.value)
           }
           placeholder="Filter by Description"
-          value={(table.getColumn('desc')?.getFilterValue() as string) ?? ''}
+          value={descFilterValue}
         />
+        {descFilterValue && (
+          <Badge>
+            Total For Selected:{' '}
+            <IndianRupee className="size-3.5 text-primary-foreground" />
+            {totalForSelected}
+          </Badge>
+        )}
       </div>
-      <div className="flex items-center justify-end px-4">
+      <div className="flex flex-col items-end px-4">
         <Input
           className="max-w-sm"
           onChange={(event) =>
             table.getColumn('paid_by')?.setFilterValue(event.target.value)
           }
           placeholder="Filter by Sender"
-          value={(table.getColumn('paid_by')?.getFilterValue() as string) ?? ''}
+          value={senderFilterValue}
         />
+        {senderFilterValue && (
+          <Badge>
+            Total For Selected:{' '}
+            <IndianRupee className="size-3.5 text-primary-foreground" />
+            {totalForSelected}
+          </Badge>
+        )}
       </div>
-      <div className="flex items-center justify-end px-4">
-        <span className="text-muted-foreground text-sm">Total Selected:</span>
-        <div className="flex items-center">
-          <IndianRupee className="size-4 text-muted-foreground" />
-          {amountFormatter(
-            table
-              .getSelectedRowModel()
-              .rows.reduce((acc, row) => acc + (row.original as any).amount, 0)
-          )}
-        </div>
-      </div>
+
       <div className="border">
         <Table>
           <TableHeader>
@@ -113,12 +131,16 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <Modal
                   content={
-                    <EditPaymentForm payment={row.original as TPayment} />
+                    <EditPaymentForm
+                      isMember={!!isMember}
+                      payment={row.original as TPayment}
+                    />
                   }
                   key={row.id}
                   title="Edit details"
                 >
                   <TableRow
+                    className="cursor-pointer"
                     data-state={row.getIsSelected() && 'selected'}
                     key={row.id}
                   >

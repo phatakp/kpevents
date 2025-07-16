@@ -16,13 +16,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { ReceiverInput } from '../inputs/receiver-input';
+import { Badge } from '../ui/badge';
 import { DeleteBookingBtn } from './delete-booking-btn';
 
 type Props = {
   booking: TEventBooking;
+  isMember?: boolean;
 };
 
-export function BookingUpdateForm({ booking }: Props) {
+export function BookingUpdateForm({ booking, isMember }: Props) {
   const queryClient = useQueryClient();
   const { modalId, closeModal } = useModal();
   const router = useRouter();
@@ -71,6 +73,7 @@ export function BookingUpdateForm({ booking }: Props) {
         },
       }
     );
+  const receiver = form.watch('receiver');
 
   return (
     <Form {...form}>
@@ -78,20 +81,28 @@ export function BookingUpdateForm({ booking }: Props) {
         className={cn('flex flex-col gap-6')}
         onSubmit={handleSubmitWithAction}
       >
-        <TextInput label="Name" register={form.register('booking_name')} />
+        {!isMember && <Badge>You are not authorized to edit details</Badge>}
+        <TextInput
+          disabled={!isMember}
+          label="Name"
+          register={form.register('booking_name')}
+        />
         <div className="flex gap-4">
           <SelectInput
+            disabled={!isMember}
             label="Building"
             options={buildingOptions}
             register={form.register('booking_building')}
           />
           <TextInput
+            disabled={!isMember}
             label="Flat"
             register={form.register('booking_flat')}
             type="number"
           />
         </div>
         <TextInput
+          disabled={!isMember}
           label="Amount"
           register={form.register('amount')}
           type="number"
@@ -99,6 +110,7 @@ export function BookingUpdateForm({ booking }: Props) {
 
         {booking.event_slug.includes('ganpati') && (
           <TextInput
+            disabled={!isMember}
             label="Mahaprasad count"
             register={form.register('booking_qty')}
             type="number"
@@ -106,17 +118,20 @@ export function BookingUpdateForm({ booking }: Props) {
         )}
 
         <ReceiverInput
-          bookingReceiver={booking.receiver}
+          bookingReceiver={receiver as string}
           committee={booking.committee}
+          disabled={!isMember}
         />
 
         <div className="flex gap-4">
           <SelectInput
+            disabled={!isMember}
             label="Mode"
             options={modeOptions}
             register={form.register('payment_mode')}
           />
           <SelectInput
+            disabled={!isMember}
             label="Status"
             options={statusOptions}
             register={form.register('status')}
@@ -125,13 +140,14 @@ export function BookingUpdateForm({ booking }: Props) {
 
         <Button
           className="w-full"
+          disabled={!isMember}
           isLoading={form.formState.isSubmitting}
           type="submit"
         >
           Submit
         </Button>
       </form>
-      <DeleteBookingBtn id={booking.id} />
+      <DeleteBookingBtn disabled={!isMember} id={booking.id} />
     </Form>
   );
 }

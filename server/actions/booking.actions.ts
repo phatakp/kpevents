@@ -13,6 +13,7 @@ import {
   profileProcedure,
   publicProcedure,
 } from '@/lib/safe-action';
+import { getISTDate } from '@/lib/utils';
 import { z } from 'zod/v4';
 
 export const getAllCollectionsbyBuilding = profileProcedure
@@ -28,7 +29,7 @@ export const getAllCollectionsbyBuilding = profileProcedure
     return data;
   });
 
-export const getAllPayments = profileProcedure
+export const getAllPayments = publicProcedure
   .inputSchema(z.object({ committee: z.enum(COMMITTEES) }))
   .action(async ({ parsedInput: { committee }, ctx: { supabase } }) => {
     const { data } = await supabase
@@ -176,7 +177,7 @@ export const updateEventBooking = profileProcedure
 export const addPayment = profileProcedure
   .inputSchema(PaymentFormSchema)
   .action(async ({ parsedInput, ctx: { supabase, profile } }) => {
-    const { otherBuilding, otherFlat, otherPaidTo, paid_by, ...values } =
+    const { otherBuilding, otherFlat, otherPaidTo, paid_by, date, ...values } =
       parsedInput;
     let receiverName = paid_by;
     if (paid_by === 'Other' && otherPaidTo && otherBuilding && otherFlat) {
@@ -184,7 +185,12 @@ export const addPayment = profileProcedure
     }
     const { data, error } = await supabase
       .from('payments')
-      .insert({ ...values, logged_by: profile.id, paid_by: receiverName })
+      .insert({
+        ...values,
+        logged_by: profile.id,
+        paid_by: receiverName,
+        date: getISTDate(date),
+      })
       .select()
       .single();
     if (error) throw new ActionError(error.message);
@@ -194,15 +200,28 @@ export const addPayment = profileProcedure
 export const updatePayment = profileProcedure
   .inputSchema(PaymentUpdateFormSchema)
   .action(async ({ parsedInput, ctx: { supabase, profile } }) => {
-    const { id, otherBuilding, otherFlat, otherPaidTo, paid_by, ...values } =
-      parsedInput;
+    const {
+      id,
+      otherBuilding,
+      otherFlat,
+      otherPaidTo,
+      paid_by,
+      date,
+      ...values
+    } = parsedInput;
+
     let receiverName = paid_by;
     if (paid_by === 'Other' && otherPaidTo && otherBuilding && otherFlat) {
       receiverName = `${otherPaidTo} (${otherBuilding}${otherFlat})`;
     }
     const { data, error } = await supabase
       .from('payments')
-      .update({ ...values, logged_by: profile.id, paid_by: receiverName })
+      .update({
+        ...values,
+        logged_by: profile.id,
+        paid_by: receiverName,
+        date: getISTDate(date),
+      })
       .eq('id', id)
       .select()
       .single();

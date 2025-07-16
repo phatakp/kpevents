@@ -42,11 +42,10 @@ export const createZodObject = <T>(obj: TypeToZod<T>) => {
   return z.object(obj);
 };
 
-export function getISTDate(date: string) {
-  return new Date(
-    new Date(date).getTime() +
-      (330 + new Date(date).getTimezoneOffset()) * 60_000
-  );
+export function getISTDate(date: Date) {
+  return new Date(date.getTime() + (330 + date.getTimezoneOffset()) * 60_000)
+    .toISOString()
+    .split('T')[0];
 }
 
 export function slugify(str: string) {

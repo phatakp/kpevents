@@ -1,6 +1,6 @@
 'use client';
 
-import type { EventBookingFormSchema } from '@/app/schemas';
+import type { PaymentFormSchema } from '@/app/schemas';
 import type { TBuilding, TCommittee } from '@/app/types';
 import { BUILDINGS } from '@/lib/constants';
 import { committeeMemberOptions } from '@/query-options/committee';
@@ -12,13 +12,13 @@ import { TextInput } from './text-input';
 
 type Props = {
   committee: TCommittee;
-  bookingReceiver?: string;
+  otherSender?: string;
   disabled?: boolean;
 };
 
-export function ReceiverInput({ committee, bookingReceiver, disabled }: Props) {
+export function PaidByInput({ committee, otherSender, disabled }: Props) {
   const { register, watch } =
-    useFormContext<z.infer<typeof EventBookingFormSchema>>();
+    useFormContext<z.infer<typeof PaymentFormSchema>>();
   const { data: members } = useQuery(committeeMemberOptions(committee));
 
   const memberOptions = (
@@ -26,10 +26,10 @@ export function ReceiverInput({ committee, bookingReceiver, disabled }: Props) {
       label: `${m.user.name} (${m.user.building}${m.user.flat})`,
       value: `${m.user.name} (${m.user.building}${m.user.flat})`,
     })) ?? []
-  ).concat([{ label: 'Other', value: 'Other' }]);
+  )?.concat([{ label: 'Other', value: 'Other' }]);
 
-  if (bookingReceiver) {
-    const psplit = bookingReceiver.split(' (');
+  if (otherSender) {
+    const psplit = otherSender.split(' (');
     if (psplit?.length === 2) {
       const building = psplit[1].charAt(0) as TBuilding;
       const flat = Number(psplit[1].slice(1, -1));
@@ -39,36 +39,37 @@ export function ReceiverInput({ committee, bookingReceiver, disabled }: Props) {
           members?.map((m) => m.user.flat).includes(flat)
         )
       ) {
-        memberOptions.push({
-          label: bookingReceiver as string,
-          value: bookingReceiver as string,
+        memberOptions?.push({
+          label: otherSender as string,
+          value: otherSender as string,
         });
       }
     }
   }
 
-  const receiver = watch('receiver');
+  const paidBy = watch('paid_by');
 
   return (
     <>
       <SelectInput
         disabled={disabled}
-        label="Received By"
+        label="Paid By"
         options={memberOptions}
-        register={register('receiver')}
+        register={register('paid_by')}
       />
 
-      {receiver === 'Other' && (
+      {paidBy === 'Other' && (
         <>
-          <TextInput label="Receiver" register={register('otherPaidTo')} />
+          <TextInput label="Other Sender" register={register('otherPaidTo')} />
+
           <div className="flex gap-4">
             <SelectInput
-              label="Receiver Building"
+              label="Sender Building"
               options={buildingOptions}
               register={register('otherBuilding')}
             />
             <TextInput
-              label="Receiver Flat"
+              label="Sender Flat"
               register={register('otherFlat')}
               type="number"
             />

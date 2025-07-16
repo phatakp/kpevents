@@ -12,9 +12,10 @@ import { useModal } from '../layouts/modal';
 
 type Props = {
   id: number;
+  disabled?: boolean;
 };
 
-export function DeleteBookingBtn({ id }: Props) {
+export function DeleteBookingBtn({ id, disabled }: Props) {
   const queryClient = useQueryClient();
   const { modalId, closeModal } = useModal();
   const router = useRouter();
@@ -42,6 +43,7 @@ export function DeleteBookingBtn({ id }: Props) {
   return (
     <Button
       className="my-4 w-full"
+      disabled={disabled}
       isLoading={isPending}
       onClick={handleClick}
       variant={'destructive'}

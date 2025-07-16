@@ -1,41 +1,29 @@
 import { PaymentTabs } from '@/components/collections/payment-tabs';
 import { ReceiverTotals } from '@/components/collections/receiver-totals';
 import Background from '@/components/layouts/background';
-import { DefaultPage } from '@/components/layouts/default-page';
-import { NotAuthenticated } from '@/components/layouts/not-authenticated';
-import { NotMember } from '@/components/layouts/not-member';
 import { ReceiverLoader } from '@/components/layouts/receiver-loader';
 import { Skeleton } from '@/components/ui/skeleton';
-import { isLoggedInProfile } from '@/server/actions/auth.actions';
-import { getCommitteeMember } from '@/server/actions/committee.actions';
+import { isCommitteeMember } from '@/server/actions/committee.actions';
 import { Suspense } from 'react';
 
 export default async function TemplePage() {
-  const { data } = await isLoggedInProfile();
-  if (!data?.profile?.id) return <NotAuthenticated />;
-
-  const { data: member } = await getCommitteeMember({
+  const { data: isMember } = await isCommitteeMember({
     committee: 'temple',
-    member_id: data.profile.id,
   });
-  if (!member) return <NotMember userId={data.profile.id} />;
-
-  if (!member.is_active)
-    return <DefaultPage message="Your membership request is pending" />;
 
   return (
-    <Background>
+    <Background className="items-start justify-start">
       <div className="flex flex-col gap-4">
         <h1 className="font-bold text-4xl">Society Temple</h1>
         <Suspense fallback={<TabsLoader />}>
           <PaymentTabs
             committee="temple"
-            isMember={!!member?.is_active}
+            isMember={!!isMember}
             type="temple"
             year={new Date().getFullYear()}
           />
         </Suspense>
-        {member?.is_active && (
+        {isMember && (
           <Suspense fallback={<ReceiverLoader />}>
             <ReceiverTotals committee="temple" />
           </Suspense>

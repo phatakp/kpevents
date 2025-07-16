@@ -1,13 +1,13 @@
 'use client';
 
 import type { TCommittee } from '@/app/types';
+import { Button } from '@/components/ui/button';
+import { committeeKeys } from '@/query-options/committee';
 import { approveMember } from '@/server/actions/committee.actions';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { committeeMemberOptions } from '../../query-options/committee';
-import { Button } from '../ui/button';
 
 type Props = {
   committeeName: TCommittee;
@@ -20,7 +20,7 @@ export function ApproveMemberBtn({ committeeName, userId }: Props) {
 
   const { execute, isPending } = useAction(approveMember, {
     onSuccess: () => {
-      queryClient.invalidateQueries(committeeMemberOptions(committeeName));
+      queryClient.invalidateQueries({ queryKey: committeeKeys.all });
       toast.success('Member approved');
       router.refresh();
     },

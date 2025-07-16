@@ -2,6 +2,7 @@ import type { TCommittee, TEventType } from '@/app/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TotalCollections } from '../events/total-collections';
 import { Payments } from '../payments/payments';
+import { Badge } from '../ui/badge';
 import { BuildingTabs } from './building-tabs';
 
 type Props = {
@@ -26,15 +27,13 @@ export function PaymentTabs({ type, year, committee, isMember }: Props) {
             <BuildingTabs committee={committee} type={type} />
           </div>
         ) : (
-          <div className="mt-4">Only members can view collections.</div>
+          <Badge className="mt-4 ">
+            Only members can view collection details.
+          </Badge>
         )}
       </TabsContent>
       <TabsContent value="payments">
-        {isMember ? (
-          <Payments committee={committee} />
-        ) : (
-          <div className="mt-4">Only members can view payments.</div>
-        )}
+        <Payments committee={committee} />
       </TabsContent>
     </Tabs>
   );

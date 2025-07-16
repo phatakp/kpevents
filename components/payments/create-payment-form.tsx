@@ -2,43 +2,31 @@
 
 import { PaymentFormSchema } from '@/app/schemas';
 import type { TCommittee } from '@/app/types';
-import { BUILDINGS } from '@/lib/constants';
+import { useAuthContext } from '@/components/auth/auth-provider';
+import { DateInput } from '@/components/inputs/date-input';
+import { PaidByInput } from '@/components/inputs/paid-by-input';
+import { TextInput } from '@/components/inputs/text-input';
+import { useModal } from '@/components/layouts/modal';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
 import { cn, customResolver } from '@/lib/utils';
+import { paymentKeys } from '@/query-options/payments';
 import { addPayment } from '@/server/actions/booking.actions';
-import { getAllCommitteeMembers } from '@/server/actions/committee.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
-import { useQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useAuthContext } from '../auth/auth-provider';
-import { DateInput } from '../inputs/date-input';
-import { SelectInput } from '../inputs/select-input';
-import { TextInput } from '../inputs/text-input';
-import { useModal } from '../layouts/modal';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Form } from '../ui/form';
 
 type Props = {
   committee: TCommittee;
 };
 
 export function CreatePaymentForm({ committee }: Props) {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { modalId, closeModal } = useModal();
   const { profile } = useAuthContext();
-  const { data: members } = useQuery({
-    queryKey: ['members', committee],
-    queryFn: () =>
-      getAllCommitteeMembers({ committee }).then((res) => res.data),
-  });
-
-  const memberOptions = (
-    members?.map((m) => ({
-      label: `${m.user.name} (${m.user.building}${m.user.flat})`,
-      value: `${m.user.name} (${m.user.building}${m.user.flat})`,
-    })) ?? []
-  ).concat([{ label: 'Other', value: 'Other' }]);
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
     useHookFormAction(addPayment, customResolver(PaymentFormSchema), {
@@ -52,12 +40,15 @@ export function CreatePaymentForm({ committee }: Props) {
           otherPaidTo: '',
           otherBuilding: 'A',
           otherFlat: 0,
-          date: new Date().toISOString().split('T')[0], // Default to today
+          date: new Date(), // Default to today
         },
       },
 
       actionProps: {
         onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: paymentKeys.all,
+          });
           toast.success('Payment created successfully');
           resetFormAndAction();
           closeModal(modalId);
@@ -73,8 +64,6 @@ export function CreatePaymentForm({ committee }: Props) {
         },
       },
     });
-
-  const paidBy = form.watch('paid_by');
 
   return (
     <Form {...form}>
@@ -92,32 +81,7 @@ export function CreatePaymentForm({ committee }: Props) {
           type="number"
         />
 
-        <SelectInput
-          label="Paid By"
-          options={memberOptions}
-          register={form.register('paid_by')}
-        />
-
-        {paidBy === 'Other' && (
-          <>
-            <TextInput
-              label="Other Sender"
-              register={form.register('otherPaidTo')}
-            />
-            <div className="flex gap-4">
-              <SelectInput
-                label="Sender Building"
-                options={buildingOptions}
-                register={form.register('otherBuilding')}
-              />
-              <TextInput
-                label="Sender Flat"
-                register={form.register('otherFlat')}
-                type="number"
-              />
-            </div>
-          </>
-        )}
+        <PaidByInput committee={committee} />
 
         <Button
           className="w-full"
@@ -130,5 +94,3 @@ export function CreatePaymentForm({ committee }: Props) {
     </Form>
   );
 }
-
-const buildingOptions = BUILDINGS.map((b) => ({ label: b, value: b }));

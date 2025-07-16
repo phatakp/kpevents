@@ -2,12 +2,12 @@
 
 import type { TCommittee } from '@/app/types';
 import { Button } from '@/components/ui/button';
+import { committeeKeys } from '@/query-options/committee';
 import { addMember } from '@/server/actions/committee.actions';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { committeeMemberOptions } from '../../query-options/committee';
 
 type Props = {
   committee: TCommittee;
@@ -20,7 +20,7 @@ export function JoinCommitteeBtn({ committee, userId }: Props) {
 
   const { execute, isPending } = useAction(addMember, {
     onSuccess: () => {
-      queryClient.invalidateQueries(committeeMemberOptions(committee));
+      queryClient.invalidateQueries({ queryKey: committeeKeys.all });
       toast.success('Membership Request Sent');
       router.push('/');
     },

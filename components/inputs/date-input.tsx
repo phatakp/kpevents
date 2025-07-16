@@ -1,16 +1,5 @@
 'use client';
 
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { useState } from 'react';
-import type { ButtonProps } from 'react-day-picker';
-import {
-  type ControllerRenderProps,
-  type FieldPath,
-  type FieldValues,
-  type UseFormRegisterReturn,
-  useFormContext,
-} from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -28,6 +17,17 @@ import {
 } from '@/components/ui/popover';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { useState } from 'react';
+import type { ButtonProps } from 'react-day-picker';
+import {
+  type ControllerRenderProps,
+  type FieldPath,
+  type FieldValues,
+  type UseFormRegisterReturn,
+  useFormContext,
+} from 'react-hook-form';
 
 export interface DateInputProps<TFieldValues extends FieldValues>
   extends ButtonProps {
@@ -102,6 +102,7 @@ export function DateInput<TFieldValues extends FieldValues>({
             <PopoverContent align="start" className="z-[99] w-auto p-0">
               <Calendar
                 autoFocus
+                captionLayout="dropdown"
                 disabled={(date) =>
                   date > new Date() || date < new Date('1900-01-01')
                 }

@@ -222,6 +222,7 @@ export const PaymentFormSchema = PaymentCreateSchema.extend({
   otherPaidTo: z.string().optional(),
   otherBuilding: z.enum(BUILDINGS).optional(),
   otherFlat: z.coerce.number().optional(),
+  date: z.date(),
 });
 
 export const PaymentUpdateFormSchema = PaymentFormSchema.extend({
