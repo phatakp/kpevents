@@ -3,6 +3,7 @@
 import { EventBookingFormSchema } from '@/app/schemas';
 import type { TCommittee, TEventType } from '@/app/types';
 import { useAuthContext } from '@/components/auth/auth-provider';
+import { ReceiverInput } from '@/components/inputs/receiver-input';
 import { SelectInput } from '@/components/inputs/select-input';
 import { TextInput } from '@/components/inputs/text-input';
 import { useModal } from '@/components/layouts/modal';
@@ -10,10 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { BUILDINGS, PAY_MODES, PAY_STATUS } from '@/lib/constants';
 import { cn, customResolver } from '@/lib/utils';
+import { collectionsKeys } from '@/query-options/collections';
 import { addEventBooking } from '@/server/actions/booking.actions';
-import { getAllCommitteeMembers } from '@/server/actions/committee.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
-import { useQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -23,21 +24,10 @@ type Props = {
 };
 
 export function EventBookingForm({ type, committee }: Props) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const { modalId, closeModal } = useModal();
   const { profile } = useAuthContext();
-  const { data: members } = useQuery({
-    queryKey: ['members', committee],
-    queryFn: () =>
-      getAllCommitteeMembers({ committee }).then((res) => res.data),
-  });
-
-  const memberOptions = (
-    members?.map((m) => ({
-      label: `${m.user.name} (${m.user.building}${m.user.flat})`,
-      value: `${m.user.name} (${m.user.building}${m.user.flat})`,
-    })) ?? []
-  ).concat([{ label: 'Other', value: 'Other' }]);
+  const router = useRouter();
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
     useHookFormAction(addEventBooking, customResolver(EventBookingFormSchema), {
@@ -62,6 +52,7 @@ export function EventBookingForm({ type, committee }: Props) {
 
       actionProps: {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: collectionsKeys.all });
           toast.success('Entry created successfully');
           resetFormAndAction();
           closeModal(modalId);
@@ -77,8 +68,6 @@ export function EventBookingForm({ type, committee }: Props) {
         },
       },
     });
-
-  const receiver = form.watch('receiver');
 
   return (
     <Form {...form}>
@@ -113,32 +102,7 @@ export function EventBookingForm({ type, committee }: Props) {
           />
         )}
 
-        <SelectInput
-          label="Received By"
-          options={memberOptions}
-          register={form.register('receiver')}
-        />
-
-        {receiver === 'Other' && (
-          <>
-            <TextInput
-              label="Receiver"
-              register={form.register('otherPaidTo')}
-            />
-            <div className="flex gap-4">
-              <SelectInput
-                label="Receiver Building"
-                options={buildingOptions}
-                register={form.register('otherBuilding')}
-              />
-              <TextInput
-                label="Receiver Flat"
-                register={form.register('otherFlat')}
-                type="number"
-              />
-            </div>
-          </>
-        )}
+        <ReceiverInput committee={committee} />
 
         <div className="flex gap-4">
           <SelectInput

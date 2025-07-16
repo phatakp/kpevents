@@ -1,7 +1,9 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { collectionsKeys } from '@/query-options/collections';
 import { deleteBooking } from '@/server/actions/booking.actions';
+import { useQueryClient } from '@tanstack/react-query';
 import { Trash2 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
@@ -13,12 +15,15 @@ type Props = {
 };
 
 export function DeleteBookingBtn({ id }: Props) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const { modalId, closeModal } = useModal();
+  const router = useRouter();
 
   const { execute, isPending } = useAction(deleteBooking, {
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: collectionsKeys.all });
       toast.success('Entry deleted successfully');
+      closeModal(modalId);
       router.refresh();
     },
     onError: ({ error }) =>
@@ -32,7 +37,6 @@ export function DeleteBookingBtn({ id }: Props) {
 
   function handleClick() {
     execute({ id });
-    closeModal(modalId);
   }
 
   return (
@@ -42,7 +46,7 @@ export function DeleteBookingBtn({ id }: Props) {
       onClick={handleClick}
       variant={'destructive'}
     >
-      <Trash2 className="size-4 text-destructive" /> Delete Entry
+      <Trash2 className="size-4 " /> Delete Entry
     </Button>
   );
 }
