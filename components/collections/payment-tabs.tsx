@@ -1,7 +1,7 @@
 import type { TCommittee, TEventType } from '@/app/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StatsGrid } from '../events/stats-grid';
-import { TempleReqList } from '../events/temple/item-list';
+import { TempleList } from '../events/temple/temple-list';
 import { Payments } from '../payments/payments';
 import { BuildingTabs } from './building-tabs';
 
@@ -35,7 +35,7 @@ export function PaymentTabs({ type, year, committee }: Props) {
       {committee === 'temple' && (
         <TabsContent value="requirements">
           <StatsGrid type={type} year={year} />
-          <TempleReqList />
+          <TempleList isEventActive />
         </TabsContent>
       )}
     </Tabs>

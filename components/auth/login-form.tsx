@@ -9,11 +9,13 @@ import { cn } from '@/lib/utils';
 import { loginWithEmailOTP } from '@/server/actions/auth.actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export function LoginForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
     useHookFormAction(loginWithEmailOTP, zodResolver(LoginSchema), {
@@ -25,6 +27,7 @@ export function LoginForm() {
       },
       actionProps: {
         onSuccess: ({ input }) => {
+          queryClient.invalidateQueries();
           toast.success('Check email for OTP');
           resetFormAndAction();
           router.push(`/auth/verify?email=${input.email}`);

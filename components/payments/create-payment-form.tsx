@@ -2,7 +2,6 @@
 
 import { PaymentFormSchema } from '@/app/schemas';
 import type { TCommittee } from '@/app/types';
-import { useAuthContext } from '@/components/auth/auth-provider';
 import { DateInput } from '@/components/inputs/date-input';
 import { PaidByInput } from '@/components/inputs/paid-by-input';
 import { TextInput } from '@/components/inputs/text-input';
@@ -10,6 +9,7 @@ import { useModal } from '@/components/layouts/modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { useAuthContext } from '@/lib/providers/auth-provider';
 import { cn, customResolver } from '@/lib/utils';
 import { allEventByCommitteeOptions } from '@/query-options/events';
 import { paymentKeys } from '@/query-options/payments';

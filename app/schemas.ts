@@ -5,9 +5,11 @@ import type {
   TAnnadaanBooking,
   TAnnadaanItem,
   TCommitteeMember,
+  TempleBooking,
   TEvent,
   TEventBooking,
   TPayment,
+  TRequirement,
   TUserProfile,
 } from './types';
 
@@ -101,6 +103,12 @@ export const BookingPkSchema = BookingSchema.pick({
   booking_name: true,
   year: true,
 });
+export const BookingItemSchema = z.object({
+  itemName: z.string('Required'),
+  totQty: z.coerce.number('Required'),
+  bookQty: z.coerce.number('Required').min(0.01),
+  price: z.coerce.number('Required'),
+});
 
 export const BookingFormSchema = z
   .object({
@@ -112,14 +120,7 @@ export const BookingFormSchema = z
     building: z.enum(BUILDINGS, 'Required'),
     flat: z.coerce.number('Required'),
     year: z.coerce.number(),
-    bookings: z.array(
-      z.object({
-        itemName: z.string('Required'),
-        totQty: z.coerce.number('Required'),
-        bookQty: z.coerce.number('Required').min(0.01),
-        price: z.coerce.number('Required'),
-      })
-    ),
+    bookings: z.array(BookingItemSchema),
   })
   .check((ctx) => {
     if (!getFlatsForBuilding(ctx.value.building).includes(ctx.value.flat)) {
@@ -229,3 +230,56 @@ export const PaymentFormSchema = PaymentCreateSchema.extend({
 export const PaymentUpdateFormSchema = PaymentFormSchema.extend({
   id: z.number(),
 });
+
+//Temple
+export const TempleItemSchema = createZodObject<TRequirement>({
+  item_name: z.string(),
+  quantity: z.coerce.number(),
+  amount: z.coerce.number(),
+});
+
+export const TempleBookingSchema = createZodObject<TempleBooking>({
+  item_name: z.string(),
+  booking_amount: z.coerce.number(),
+  booking_building: z.enum(BUILDINGS),
+  booking_flat: z.number(),
+  booking_name: z.string(),
+  receiver: z.string(),
+  created_at: z.string(),
+  status: z.enum(['pending', 'confirmed']),
+});
+
+export const TempleBookingPkSchema = TempleBookingSchema.pick({
+  item_name: true,
+  booking_building: true,
+  booking_flat: true,
+  booking_name: true,
+});
+export const TempleBookingItemSchema = z.object({
+  itemName: z.string('Required'),
+  totAmt: z.coerce.number('Required'),
+  bookAmt: z.coerce.number('Required').min(0.01),
+});
+
+export const TempleBookingFormSchema = z
+  .object({
+    bookByName: z.string('Required').min(1, 'Required'),
+    receiver: z.string('Required').min(1, 'Required'),
+    otherPaidTo: z.string().optional(),
+    otherBuilding: z.enum(BUILDINGS).optional(),
+    otherFlat: z.coerce.number().optional(),
+    building: z.enum(BUILDINGS, 'Required'),
+    flat: z.coerce.number('Required'),
+    bookings: z.array(TempleBookingItemSchema),
+  })
+  .check((ctx) => {
+    if (!getFlatsForBuilding(ctx.value.building).includes(ctx.value.flat)) {
+      ctx.issues.push({
+        code: 'custom',
+        message: 'Invalid Flat Number',
+        input: ctx.value.flat,
+        path: ['flat'],
+        continue: true, // make this issue continuable (default: false)
+      });
+    }
+  });

@@ -1,42 +1,40 @@
 'use client';
 
-import { AnnadaanItemSchema } from '@/app/schemas';
+import { TempleItemSchema } from '@/app/schemas';
 import type { TItemWithBookings } from '@/app/types';
 import { TextInput } from '@/components/inputs/text-input';
 import { useModal } from '@/components/layouts/modal';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { customResolver } from '@/lib/utils';
-import { annadaanKeys } from '@/query-options/annadaan';
-import { upsertAnnadaanItem } from '@/server/actions/annadaan.actions';
+import { templeKeys } from '@/query-options/temple';
+import { upsertTempleItem } from '@/server/actions/booking.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 type Props = {
   item?: TItemWithBookings;
 };
 
-export function AnnadaanItemForm({ item }: Props) {
+export function TempleItemForm({ item }: Props) {
   const queryClient = useQueryClient();
   const { modalId, closeModal } = useModal();
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
-    useHookFormAction(upsertAnnadaanItem, customResolver(AnnadaanItemSchema), {
+    useHookFormAction(upsertTempleItem, customResolver(TempleItemSchema), {
       formProps: {
         mode: 'onChange',
         defaultValues: {
           item_name: item?.item_name ?? '',
-          quantity: item?.quantity ?? 0,
-          price: item?.price ?? 0,
+          quantity: item?.quantity ?? 1,
           amount: item?.amount ?? 0,
         },
       },
       actionProps: {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: annadaanKeys.all });
+          queryClient.invalidateQueries({ queryKey: templeKeys.all });
           toast.success(`Item ${item ? 'updated' : 'created'} successfully`);
           closeModal(modalId);
           resetFormAndAction();
@@ -51,13 +49,6 @@ export function AnnadaanItemForm({ item }: Props) {
         },
       },
     });
-
-  const [price, quantity] = form.watch(['price', 'quantity']);
-
-  useEffect(() => {
-    if (price && quantity)
-      form.setValue('amount', Number(price) * Number(quantity));
-  }, [price, quantity, form.setValue]);
 
   return (
     <Form {...form}>
@@ -75,8 +66,8 @@ export function AnnadaanItemForm({ item }: Props) {
             type="number"
           />
           <TextInput
-            label="Price"
-            register={form.register('price')}
+            label="Amount"
+            register={form.register('amount')}
             showClear={false}
             type="number"
           />

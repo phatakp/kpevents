@@ -4,9 +4,10 @@ import type { TEventBooking } from '@/app/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { amountFormatter, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ChevronsUpDown, IndianRupee } from 'lucide-react';
+import { ChevronsUpDown } from 'lucide-react';
+import { Amount } from '../layouts/amount';
 
 export const columns: ColumnDef<TEventBooking>[] = [
   {
@@ -46,9 +47,17 @@ export const columns: ColumnDef<TEventBooking>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="pl-3 capitalize">{row.getValue('booking_name')}</div>
-    ),
+    cell: ({ row }) => {
+      const booking = row.original;
+      return (
+        <div className="pl-3 capitalize">
+          {row.getValue('booking_name')}
+          {booking.event_slug.includes('ganpati')
+            ? ` (+${booking.booking_qty - 1})`
+            : null}
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'booking_flat',
@@ -72,9 +81,14 @@ export const columns: ColumnDef<TEventBooking>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="pl-3">{row.getValue('booking_flat')}</div>
-    ),
+    cell: ({ row }) => {
+      const booking = row.original;
+      return (
+        <div className="pl-3">
+          {booking.booking_building}-{row.getValue('booking_flat')}
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'amount',
@@ -101,42 +115,14 @@ export const columns: ColumnDef<TEventBooking>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="flex items-center justify-end pr-3 text-right font-medium">
-        <IndianRupee className="size-3.5 text-muted-foreground" />
-        {amountFormatter(row.getValue('amount'))}
-      </div>
+      <Amount
+        amount={row.getValue('amount')}
+        className="font-normal text-sm"
+        containerClass="pr-3 text-right"
+      />
     ),
   },
-  {
-    accessorKey: 'booking_qty',
-    header: ({ column, table }) => {
-      const currentSorting = table.getState().sorting;
-      const isColumnSorted = currentSorting.some(
-        (sort) => sort.id === 'booking_qty'
-      );
-      return (
-        <div className="flex items-center justify-end">
-          <Button
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-            variant="ghost"
-          >
-            Mahaprasad Count
-            <ChevronsUpDown
-              className={cn(
-                'size-4 text-muted-foreground',
-                isColumnSorted && 'text-foreground'
-              )}
-            />
-          </Button>
-        </div>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="flex items-center justify-end pr-3 text-right font-medium">
-        {row.getValue('booking_qty')}
-      </div>
-    ),
-  },
+
   {
     accessorKey: 'payment_mode',
     header: () => <div className="text-center">Mode</div>,

@@ -121,6 +121,7 @@ export function BookingUpdateForm({ booking, isMember }: Props) {
           bookingReceiver={receiver as string}
           committee={booking.committee}
           disabled={!isMember}
+          schema={EventBookingUpdateFormSchema}
         />
 
         <div className="flex gap-4">

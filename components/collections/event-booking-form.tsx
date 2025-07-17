@@ -2,7 +2,6 @@
 
 import { EventBookingFormSchema } from '@/app/schemas';
 import type { TCommittee, TEventType } from '@/app/types';
-import { useAuthContext } from '@/components/auth/auth-provider';
 import { ReceiverInput } from '@/components/inputs/receiver-input';
 import { SelectInput } from '@/components/inputs/select-input';
 import { TextInput } from '@/components/inputs/text-input';
@@ -10,6 +9,7 @@ import { useModal } from '@/components/layouts/modal';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { BUILDINGS, PAY_MODES, PAY_STATUS } from '@/lib/constants';
+import { useAuthContext } from '@/lib/providers/auth-provider';
 import { cn, customResolver } from '@/lib/utils';
 import { collectionsKeys } from '@/query-options/collections';
 import { addEventBooking } from '@/server/actions/booking.actions';
@@ -102,7 +102,7 @@ export function EventBookingForm({ type, committee }: Props) {
           />
         )}
 
-        <ReceiverInput committee={committee} />
+        <ReceiverInput committee={committee} schema={EventBookingFormSchema} />
 
         <div className="flex gap-4">
           <SelectInput

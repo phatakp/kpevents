@@ -22,11 +22,18 @@ export type TUserProfile = Database['public']['Tables']['profiles']['Row'];
 export type TPayment = Database['public']['Tables']['payments']['Row'];
 export type TRequirement =
   Database['public']['Tables']['temple_requirements']['Row'];
+export type TempleBooking =
+  Database['public']['Tables']['temple_bookings']['Row'];
 
 //Custom
 export type TItemWithBookings = TAnnadaanItem & {
   bookings: TAnnadaanBooking[];
 };
+
+export type TReqWithBookings = TRequirement & {
+  bookings: TempleBooking[];
+};
+
 export type TMemberWithProfile = TCommitteeMember & {
   user: TUserProfile;
 };

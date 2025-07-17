@@ -8,8 +8,8 @@ import { useAction } from 'next-safe-action/hooks';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Dispatch, SetStateAction } from 'react';
+import { useAuthContext } from '../../lib/providers/auth-provider';
 import { Skeleton } from '../ui/skeleton';
-import { useAuthContext } from './auth-provider';
 
 type Props = {
   setOpen?: Dispatch<SetStateAction<boolean>>;

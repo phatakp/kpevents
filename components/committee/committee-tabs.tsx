@@ -3,7 +3,7 @@ import { CommitteeCard } from './committee-card';
 
 export function CommitteeTabs() {
   return (
-    <Tabs className="w-[400px] sm:w-full" defaultValue="cultural">
+    <Tabs className="w-[400px] items-center" defaultValue="cultural">
       <TabsList>
         <TabsTrigger value="cultural">Piccadilly Cultural</TabsTrigger>
         <TabsTrigger value="temple">Piccadilly Temple</TabsTrigger>

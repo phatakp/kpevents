@@ -62,8 +62,6 @@ export const upsertAnnadaanItem = adminProcedure
 export const createBookings = publicProcedure
   .inputSchema(BookingFormSchema)
   .action(async ({ parsedInput, ctx: { supabase } }) => {
-    console.log(parsedInput);
-
     const { otherPaidTo, otherBuilding, otherFlat, receiver } = parsedInput;
     let receiverName = receiver;
     if (receiver === 'Other' && otherPaidTo && otherBuilding && otherFlat) {

@@ -290,6 +290,47 @@ export type Database = {
         }
         Relationships: []
       }
+      temple_bookings: {
+        Row: {
+          booking_amount: number
+          booking_building: Database["public"]["Enums"]["building_enum"]
+          booking_flat: number
+          booking_name: string
+          created_at: string
+          item_name: string
+          receiver: string
+          status: Database["public"]["Enums"]["payment_status_enum"]
+        }
+        Insert: {
+          booking_amount: number
+          booking_building: Database["public"]["Enums"]["building_enum"]
+          booking_flat: number
+          booking_name: string
+          created_at?: string
+          item_name: string
+          receiver: string
+          status?: Database["public"]["Enums"]["payment_status_enum"]
+        }
+        Update: {
+          booking_amount?: number
+          booking_building?: Database["public"]["Enums"]["building_enum"]
+          booking_flat?: number
+          booking_name?: string
+          created_at?: string
+          item_name?: string
+          receiver?: string
+          status?: Database["public"]["Enums"]["payment_status_enum"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "temple_bookings_item_name_fkey"
+            columns: ["item_name"]
+            isOneToOne: false
+            referencedRelation: "temple_requirements"
+            referencedColumns: ["item_name"]
+          },
+        ]
+      }
       temple_requirements: {
         Row: {
           amount: number
@@ -323,6 +364,17 @@ export type Database = {
           qty: number
           receivr: string
           amt: number
+        }
+        Returns: boolean
+      }
+      create_temple_booking: {
+        Args: {
+          itemname: string
+          bookname: string
+          building: string
+          flat: number
+          amt: number
+          receivr: string
         }
         Returns: boolean
       }

@@ -2,15 +2,20 @@
 
 import { Button } from '@/components/ui/button';
 import { loginWithGoogle } from '@/server/actions/auth.actions';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export function GoogleLogin() {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { execute, isPending } = useAction(loginWithGoogle, {
-    onSuccess: ({ data }) => router.push(data.url),
+    onSuccess: ({ data }) => {
+      queryClient.invalidateQueries();
+      router.push(data.url);
+    },
     onError: ({ error }) =>
       toast.error(
         error?.validationErrors?.formErrors?.[0] ??

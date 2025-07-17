@@ -1,5 +1,23 @@
 import type { TCommittee, TMemberWithProfile } from '@/app/types';
-import { amountFormatter } from '@/lib/utils';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { amountFormatter, cn } from '@/lib/utils';
 import { isLoggedInProfile } from '@/server/actions/auth.actions';
 import {
   getAllCommitteeMembers,
@@ -10,16 +28,7 @@ import { getAllEventsByCommittee } from '@/server/actions/event.actions';
 import { IndianRupee } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../ui/card';
+import { buttonVariants } from '../ui/button';
 import { JoinCommitteeBtn } from './join-committee-btn';
 
 type Props = {
@@ -42,7 +51,7 @@ export async function CommitteeCard({ name }: Props) {
   }
 
   return (
-    <div className="w-full *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-secondary/20 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
+    <div className="w-[350px] *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-secondary/20 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card>
         <CardHeader>
           <CardDescription>Total Balance</CardDescription>
@@ -65,48 +74,69 @@ export async function CommitteeCard({ name }: Props) {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col">
-            <span className="font-semibold text-muted-foreground">
-              Committee Members
-            </span>
-            <div className="mt-4 grid items-center gap-1">
-              {members?.map((m) => (
-                <li className="text-sm capitalize" key={m.member_id}>
-                  {m.user.name} ({m.user.building}/{m.user.flat})
-                </li>
-              ))}
-            </div>
-          </div>
+          {members && members.length > 0 && (
+            <Table>
+              <TableCaption>A list of committee members</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px] text-muted-foreground">
+                    Member Name
+                  </TableHead>
+                  <TableHead className="text-right text-muted-foreground">
+                    Flat
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {members?.map((m) => (
+                  <TableRow key={m.member_id}>
+                    <TableCell className="font-medium">{m.user.name}</TableCell>
+                    <TableCell className="text-right">
+                      {m.user.building}/{m.user.flat}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
         {member?.is_active && (
           <CardFooter>
-            <div className="flex w-full flex-col">
-              <span className="font-semibold text-muted-foreground">
-                Events Planned
-              </span>
-              <div className="flex flex-col">
-                {events?.map((e) =>
-                  e.is_active ? (
-                    <li
-                      className="flex items-center justify-between"
-                      key={e.slug}
-                    >
-                      <Button asChild className="p-0" variant={'link'}>
+            {events && events.length > 0 && (
+              <Table>
+                <TableCaption>A list of planned events</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px] text-muted-foreground">
+                      Event Name
+                    </TableHead>
+                    <TableHead className="text-right text-muted-foreground">
+                      Link
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {events.map((e) => (
+                    <TableRow key={e.slug}>
+                      <TableCell className="font-medium capitalize">
+                        {e.slug}
+                      </TableCell>
+                      <TableCell className="text-right">
                         <Link
-                          className="text-sm capitalize"
+                          className={cn(
+                            buttonVariants({ variant: 'link' }),
+                            'h-auto p-0'
+                          )}
                           href={`/events/${e.type}/${e.year}`}
                         >
-                          {e.type}-{e.year}{' '}
-                          <span className="text-muted-foreground underline">
-                            (Visit Now)
-                          </span>
+                          Visit Now
                         </Link>
-                      </Button>
-                    </li>
-                  ) : null
-                )}
-              </div>
-            </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardFooter>
         )}
       </Card>

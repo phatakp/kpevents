@@ -1,12 +1,11 @@
 'use client';
 
-import type { EventBookingFormSchema } from '@/app/schemas';
 import type { TBuilding, TCommittee } from '@/app/types';
 import { BUILDINGS } from '@/lib/constants';
 import { committeeMemberOptions } from '@/query-options/committee';
 import { useQuery } from '@tanstack/react-query';
 import { useFormContext } from 'react-hook-form';
-import type { z } from 'zod/v4';
+import type { z, ZodObject } from 'zod/v4';
 import { SelectInput } from './select-input';
 import { TextInput } from './text-input';
 
@@ -14,11 +13,16 @@ type Props = {
   committee: TCommittee;
   bookingReceiver?: string;
   disabled?: boolean;
+  schema: ZodObject;
 };
 
-export function ReceiverInput({ committee, bookingReceiver, disabled }: Props) {
-  const { register, watch } =
-    useFormContext<z.infer<typeof EventBookingFormSchema>>();
+export function ReceiverInput({
+  committee,
+  bookingReceiver,
+  disabled,
+  schema,
+}: Props) {
+  const { register, watch } = useFormContext<z.infer<typeof schema>>();
   const { data: members } = useQuery(committeeMemberOptions(committee));
 
   const memberOptions = (
@@ -60,7 +64,7 @@ export function ReceiverInput({ committee, bookingReceiver, disabled }: Props) {
 
       {receiver === 'Other' && (
         <>
-          <TextInput label="Receiver" register={register('otherPaidTo')} />
+          <TextInput label="Receiver Name" register={register('otherPaidTo')} />
           <div className="flex gap-4">
             <SelectInput
               label="Receiver Building"

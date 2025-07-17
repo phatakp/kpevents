@@ -1,11 +1,4 @@
 'use client';
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useId,
-  useState,
-} from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -17,6 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useId,
+  useState,
+} from 'react';
 
 type Props = {
   children: ReactNode;
@@ -55,7 +55,7 @@ export function Modal({
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
-          <div className="p-4">{content}</div>
+          <div className="py-4">{content}</div>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>

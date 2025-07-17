@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/complexity/noUselessFragments: <table row> */
 'use client';
-import type { TAnnadaanBooking, TBuilding } from '@/app/types';
+import type { TBuilding, TempleBooking } from '@/app/types';
+import { Amount } from '@/components/layouts/amount';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -12,24 +13,23 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useAuthContext } from '@/lib/providers/auth-provider';
-import { amountFormatter } from '@/lib/utils';
-import { annadaanKeys } from '@/query-options/annadaan';
-import { deleteBooking } from '@/server/actions/annadaan.actions';
+import { templeKeys } from '@/query-options/temple';
+import { deleteTempleBooking } from '@/server/actions/booking.actions';
 import { useQueryClient } from '@tanstack/react-query';
-import { IndianRupeeIcon, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-type Props = { bookings: TAnnadaanBooking[]; price: number; year: number };
+type Props = { bookings: TempleBooking[] };
 
-export function BookingDetails({ bookings, price, year }: Props) {
+export function TempleBookingDetails({ bookings }: Props) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { profile, isLoading } = useAuthContext();
-  const { execute } = useAction(deleteBooking, {
+  const { execute } = useAction(deleteTempleBooking, {
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: annadaanKeys.all });
+      queryClient.invalidateQueries({ queryKey: templeKeys.all });
       toast.success('Booking deleted');
       router.refresh();
     },
@@ -46,7 +46,7 @@ export function BookingDetails({ bookings, price, year }: Props) {
   if (isLoading)
     return (
       <TableRow>
-        <TableCell colSpan={5}>
+        <TableCell colSpan={4}>
           <Skeleton className="h-10 w-full" />
         </TableCell>
       </TableRow>
@@ -54,14 +54,13 @@ export function BookingDetails({ bookings, price, year }: Props) {
   return (
     <>
       <TableRow>
-        <TableCell colSpan={5}>
+        <TableCell colSpan={4}>
           <Table className="bg-secondary text-secondary-foreground">
             <TableHeader className="h-auto">
               <TableRow>
                 {profile?.is_admin && <TableHead>Act</TableHead>}
                 <TableHead className="w-[100px]">Name</TableHead>
                 <TableHead>Flat</TableHead>
-                <TableHead className="text-right">Qty</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
@@ -80,7 +79,6 @@ export function BookingDetails({ bookings, price, year }: Props) {
                             booking_building: b.booking_building as TBuilding,
                             booking_flat: b.booking_flat,
                             booking_name: b.booking_name,
-                            year: Number(year),
                           })
                         }
                         size={'icon'}
@@ -97,13 +95,7 @@ export function BookingDetails({ bookings, price, year }: Props) {
                     {b.booking_building}-{b.booking_flat}
                   </TableCell>
                   <TableCell className="py-1 text-right">
-                    {b.booking_qty}
-                  </TableCell>
-                  <TableCell className="py-1 text-right">
-                    <div className="flex items-center justify-end">
-                      <IndianRupeeIcon className="size-3 text-muted-foreground" />
-                      {amountFormatter(b.booking_qty * price)}
-                    </div>
+                    <Amount amount={b.booking_amount} className="text-sm" />
                   </TableCell>
                 </TableRow>
               ))}

@@ -1,7 +1,7 @@
 'use client';
 
-import { useAuthContext } from '@/components/auth/auth-provider';
 import { Button } from '@/components/ui/button';
+import { useAuthContext } from '@/lib/providers/auth-provider';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 

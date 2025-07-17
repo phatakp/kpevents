@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuthContext } from '@/components/auth/auth-provider';
 import { SignInOutButton } from '@/components/auth/sign-out-btn';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,6 +11,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { useAuthContext } from '@/lib/providers/auth-provider';
 import { cn } from '@/lib/utils';
 import { MenuIcon } from 'lucide-react';
 import Link from 'next/link';

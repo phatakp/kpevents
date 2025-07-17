@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table';
 import { amountFormatter, cn } from '@/lib/utils';
 import { getCollectionsbyReceiver } from '@/server/actions/booking.actions';
+import { isCommitteeMember } from '@/server/actions/committee.actions';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 type Props = {
@@ -17,6 +18,9 @@ type Props = {
 };
 
 export async function ReceiverTotals({ committee }: Props) {
+  const { data: isMember } = await isCommitteeMember({ committee });
+  if (!isMember) return;
+
   const { data } = await getCollectionsbyReceiver({ committee });
   const collections = data?.sort((a, b) => b.remaining - a.remaining);
 

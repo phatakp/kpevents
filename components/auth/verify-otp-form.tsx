@@ -14,26 +14,6 @@ import toast from 'react-hot-toast';
 export function VerifyOTPForm({ email }: { email: string }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  // const form = useForm<z.infer<typeof formSchema>>({
-  //   resolver: zodResolver(formSchema),
-  //   defaultValues: {
-  //     otp: '',
-  //   },
-  // });
-
-  // const { executeAsync } = useAction(verifyEmailOTP);
-
-  // async function onSubmit(values: z.infer<typeof formSchema>) {
-  //   try {
-  // 		await executeAsync({ email,token:values.otp });
-  // 		toast.success("Successfully Logged In");
-  //     queryClient.invalidateQueries();
-  //     router.push('/profile');
-  // 	} catch (error: unknown) {
-  // 		toast.error(error instanceof Error ? error.message : "An error occurred");
-  // 	}
-
-  //   }
 
   const { form, handleSubmitWithAction, resetFormAndAction } =
     useHookFormAction(verifyEmailOTP, customResolver(VerifyOTPSchema), {
