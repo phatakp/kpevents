@@ -3,7 +3,7 @@
 import { useModal } from '@/components/layouts/modal';
 import { Button } from '@/components/ui/button';
 import { paymentKeys } from '@/query-options/payments';
-import { deletePayment } from '@/server/actions/booking.actions';
+import { deletePayment } from '@/server/actions/payment.actions';
 import { useQueryClient } from '@tanstack/react-query';
 import { Trash2 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';

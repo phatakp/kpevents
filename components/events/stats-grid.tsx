@@ -1,9 +1,7 @@
 import type { TEventType } from '@/app/types';
 import { slugify } from '@/lib/utils';
-import {
-  getTotalCollectionsBySlug,
-  getTotalPaymentsBySlug,
-} from '@/server/actions/booking.actions';
+import { getTotalCollectionsBySlug } from '@/server/actions/booking.actions';
+import { getTotalPaymentsBySlug } from '@/server/actions/payment.actions';
 import { StatsCard } from './stats-card';
 
 type Props = { type: TEventType; year: number };

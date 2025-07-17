@@ -92,7 +92,7 @@ export async function CommitteeCard({ name }: Props) {
                   <TableRow key={m.member_id}>
                     <TableCell className="font-medium">{m.user.name}</TableCell>
                     <TableCell className="text-right">
-                      {m.user.building}/{m.user.flat}
+                      {m.user.building}-{m.user.flat}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -1,4 +1,5 @@
 'use client';
+import type { TReqWithBookings } from '@/app/types';
 import { Amount } from '@/components/layouts/amount';
 import {
   Card,
@@ -33,6 +34,8 @@ export function TempleList({ isEventActive }: Props) {
   const { data: items, isLoading } = useQuery(allTempleReqOptions());
 
   if (isLoading) return <ItemsLoader />;
+
+  const bookings = items?.sort(sortCriteria);
 
   const totalRequired = items?.reduce((acc, b) => acc + b.amount, 0) ?? 0;
   const totalBookings =
@@ -75,7 +78,7 @@ export function TempleList({ isEventActive }: Props) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {items?.map((item) => (
+              {bookings?.map((item) => (
                 <Collapsible asChild key={item.item_name}>
                   <TempleListItem isEventActive={isEventActive} item={item} />
                 </Collapsible>
@@ -86,6 +89,15 @@ export function TempleList({ isEventActive }: Props) {
       </Card>
     </div>
   );
+}
+
+function sortCriteria(a: TReqWithBookings, b: TReqWithBookings) {
+  const aAmt =
+    a.amount - a.bookings.reduce((acc, b) => acc + b.booking_amount, 0);
+  const bAmt =
+    b.amount - b.bookings.reduce((acc, b) => acc + b.booking_amount, 0);
+
+  return aAmt > bAmt ? -1 : 1;
 }
 
 function ItemsLoader() {

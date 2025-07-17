@@ -48,9 +48,9 @@ export function MobileNav() {
             <Link
               className={cn(
                 'mx-auto font-bold text-4xl',
-                path === '/temple' && 'text-primary'
+                path.includes('temple') && 'text-primary'
               )}
-              href={'/temple'}
+              href={'/temple/collections'}
               onClick={() => setOpen(false)}
             >
               Temple

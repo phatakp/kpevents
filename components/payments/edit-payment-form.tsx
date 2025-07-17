@@ -12,7 +12,7 @@ import { Form } from '@/components/ui/form';
 import { cn, customResolver } from '@/lib/utils';
 import { allEventByCommitteeOptions } from '@/query-options/events';
 import { paymentKeys } from '@/query-options/payments';
-import { updatePayment } from '@/server/actions/booking.actions';
+import { updatePayment } from '@/server/actions/payment.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';

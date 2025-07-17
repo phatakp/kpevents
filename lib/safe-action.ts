@@ -4,8 +4,6 @@ import {
   AuthorizationError,
   ProfileNotFoundError,
 } from '@/app/errors';
-import type { TUserProfile } from '@/app/types';
-import type { User } from '@supabase/supabase-js';
 import {
   createSafeActionClient,
   DEFAULT_SERVER_ERROR_MESSAGE,
@@ -28,25 +26,31 @@ export const publicProcedure = createSafeActionClient({
 });
 
 export const protectedProcedure = publicProcedure.use(async ({ next, ctx }) => {
-  const resp = await fetch('/api/profile');
-  const data: { user: User | null; profile: TUserProfile | null } =
-    await resp.json();
+  const { supabase } = ctx;
+  const { data } = await supabase.auth.getUser();
   if (!data.user) throw new AuthenticationError('Not Authenticated');
 
   // Return the next middleware with `user` value in the context
-  return next({ ctx: { ...ctx, ...data } });
+  return next({ ctx: { ...ctx, user: data.user } });
 });
 
-export const profileProcedure = protectedProcedure.use(({ next, ctx }) => {
-  const { profile } = ctx;
+export const profileProcedure = protectedProcedure.use(
+  async ({ next, ctx }) => {
+    const { supabase, user } = ctx;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
 
-  if (!profile) {
-    throw new ProfileNotFoundError('Profile Not found');
+    if (!profile) {
+      throw new ProfileNotFoundError('Profile Not found');
+    }
+
+    // Return the next middleware with `user` value in the context
+    return next({ ctx: { ...ctx, profile } });
   }
-
-  // Return the next middleware with `user` value in the context
-  return next({ ctx: { ...ctx, profile } });
-});
+);
 
 export const adminProcedure = profileProcedure.use(async ({ next, ctx }) => {
   const { profile } = ctx;

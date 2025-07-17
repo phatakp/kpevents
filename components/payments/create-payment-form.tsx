@@ -13,7 +13,7 @@ import { useAuthContext } from '@/lib/providers/auth-provider';
 import { cn, customResolver } from '@/lib/utils';
 import { allEventByCommitteeOptions } from '@/query-options/events';
 import { paymentKeys } from '@/query-options/payments';
-import { addPayment } from '@/server/actions/booking.actions';
+import { addPayment } from '@/server/actions/payment.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';

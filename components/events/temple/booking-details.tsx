@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/table';
 import { useAuthContext } from '@/lib/providers/auth-provider';
 import { templeKeys } from '@/query-options/temple';
-import { deleteTempleBooking } from '@/server/actions/booking.actions';
+import { deleteTempleBooking } from '@/server/actions/temple.actions';
 import { useQueryClient } from '@tanstack/react-query';
 import { Trash } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
@@ -55,7 +55,7 @@ export function TempleBookingDetails({ bookings }: Props) {
     <>
       <TableRow>
         <TableCell colSpan={4}>
-          <Table className="bg-secondary text-secondary-foreground">
+          <Table className="bg-muted text-muted-foreground">
             <TableHeader className="h-auto">
               <TableRow>
                 {profile?.is_admin && <TableHead>Act</TableHead>}
@@ -99,6 +99,15 @@ export function TempleBookingDetails({ bookings }: Props) {
                   </TableCell>
                 </TableRow>
               ))}
+              <>
+                <TableRow>
+                  <TableCell colSpan={3}>
+                    <div className="flex justify-center">
+                      Booking details for {bookings.at(0)?.item_name}.
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </>
             </TableBody>
           </Table>
         </TableCell>

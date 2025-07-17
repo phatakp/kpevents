@@ -74,6 +74,7 @@ export function BookingUpdateForm({ booking, isMember }: Props) {
       }
     );
   const receiver = form.watch('receiver');
+  console.log(form.formState.errors);
 
   return (
     <Form {...form}>

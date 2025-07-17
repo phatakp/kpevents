@@ -10,7 +10,7 @@ import {
 import { TableCell, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { useTempleCartStore } from '@/store/temple.cart.store';
-import { ChevronDown, Dot, ShoppingCartIcon } from 'lucide-react';
+import { ChevronDown, Dot, Minus, ShoppingCartIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { TempleBookingDetails } from './booking-details';
 
@@ -44,7 +44,7 @@ export function TempleListItem({ item, isEventActive }: Props) {
         <TableRow>
           {isEventActive && (
             <TableCell>
-              {isAvailable && (
+              {isAvailable ? (
                 <Button
                   className="rounded-sm"
                   onClick={handleClick}
@@ -57,6 +57,15 @@ export function TempleListItem({ item, isEventActive }: Props) {
                       availableAmt === item.amount && 'text-success'
                     )}
                   />
+                </Button>
+              ) : (
+                <Button
+                  className="rounded-sm"
+                  disabled
+                  size={'icon'}
+                  variant={'ghost'}
+                >
+                  <Minus className={cn('size-4 text-muted-foreground')} />
                 </Button>
               )}
             </TableCell>

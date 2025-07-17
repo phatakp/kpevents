@@ -20,7 +20,7 @@ export function Navbar() {
             href={`/events/ganpati/${new Date().getFullYear()}`}
             title="Events"
           />
-          <NavLink href={'/temple'} title="Temple" />
+          <NavLink href={'/temple/collections'} title="Temple" />
           <NavLink href={'/admin'} title="Admin" />
 
           <ThemeToggle />

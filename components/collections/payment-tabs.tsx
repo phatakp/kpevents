@@ -1,7 +1,6 @@
 import type { TCommittee, TEventType } from '@/app/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StatsGrid } from '../events/stats-grid';
-import { TempleList } from '../events/temple/temple-list';
 import { Payments } from '../payments/payments';
 import { BuildingTabs } from './building-tabs';
 
@@ -13,13 +12,10 @@ type Props = {
 
 export function PaymentTabs({ type, year, committee }: Props) {
   return (
-    <Tabs className="w-[400px] sm:w-full" defaultValue="collections">
+    <Tabs className="w-[400px] sm:w-full" defaultValue={'collections'}>
       <TabsList>
         <TabsTrigger value="collections">Collections</TabsTrigger>
         <TabsTrigger value="payments">Payments</TabsTrigger>
-        {committee === 'temple' && (
-          <TabsTrigger value="requirements">Requirements</TabsTrigger>
-        )}
       </TabsList>
       <TabsContent value="collections">
         <StatsGrid type={type} year={year} />
@@ -32,12 +28,6 @@ export function PaymentTabs({ type, year, committee }: Props) {
         <StatsGrid type={type} year={year} />
         <Payments committee={committee} />
       </TabsContent>
-      {committee === 'temple' && (
-        <TabsContent value="requirements">
-          <StatsGrid type={type} year={year} />
-          <TempleList isEventActive />
-        </TabsContent>
-      )}
     </Tabs>
   );
 }

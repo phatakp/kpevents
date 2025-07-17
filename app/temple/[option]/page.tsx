@@ -1,5 +1,5 @@
-import { PaymentTabs } from '@/components/collections/payment-tabs';
 import { ReceiverTotals } from '@/components/collections/receiver-totals';
+import { TempleTabs } from '@/components/events/temple/temple-tabs';
 import Background from '@/components/layouts/background';
 import { ReceiverLoader } from '@/components/layouts/receiver-loader';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -8,7 +8,12 @@ import { allTempleReqOptions } from '@/query-options/temple';
 import { isCommitteeMember } from '@/server/actions/committee.actions';
 import { Suspense } from 'react';
 
-export default async function TemplePage() {
+type PageProps = {
+  params: Promise<{ option: 'collections' | 'payments' | 'requirements' }>;
+};
+
+export default async function TemplePage({ params }: PageProps) {
+  const { option } = await params;
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(allTempleReqOptions());
   const { data: isMember } = await isCommitteeMember({
@@ -20,11 +25,7 @@ export default async function TemplePage() {
       <div className="flex flex-col gap-4">
         <h1 className="font-bold text-4xl">Society Temple</h1>
         <Suspense fallback={<TabsLoader />}>
-          <PaymentTabs
-            committee="temple"
-            type="temple"
-            year={new Date().getFullYear()}
-          />
+          <TempleTabs defaultOption={option} />
         </Suspense>
         {isMember && (
           <Suspense fallback={<ReceiverLoader />}>

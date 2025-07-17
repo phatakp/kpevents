@@ -21,7 +21,7 @@ import { BUILDINGS } from '@/lib/constants';
 import { useAuthContext } from '@/lib/providers/auth-provider';
 import { customResolver } from '@/lib/utils';
 import { templeKeys } from '@/query-options/temple';
-import { createTempleBookings } from '@/server/actions/booking.actions';
+import { createTempleBookings } from '@/server/actions/temple.actions';
 import { useTempleCartStore } from '@/store/temple.cart.store';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
 import { useQueryClient } from '@tanstack/react-query';

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { customResolver } from '@/lib/utils';
 import { templeKeys } from '@/query-options/temple';
-import { upsertTempleItem } from '@/server/actions/booking.actions';
+import { upsertTempleItem } from '@/server/actions/temple.actions';
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 

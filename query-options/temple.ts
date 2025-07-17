@@ -1,4 +1,4 @@
-import { getAllTempleRequirements } from '@/server/actions/booking.actions';
+import { getAllTempleRequirements } from '@/server/actions/temple.actions';
 import { queryOptions } from '@tanstack/react-query';
 
 export const templeKeys = {

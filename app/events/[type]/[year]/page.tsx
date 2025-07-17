@@ -1,13 +1,19 @@
 import type { TEventType } from '@/app/types';
-import { EventTabs } from '@/components/events/event-tabs';
 import Background from '@/components/layouts/background';
+import { Badge } from '@/components/ui/badge';
+import { slugify } from '@/lib/utils';
+import { getEventBySlug } from '@/server/actions/event.actions';
 
 type PageProps = {
   params: Promise<{ year: number; type: TEventType }>;
 };
 
-export default async function GanpatiPage({ params }: PageProps) {
+export default async function EventPage({ params }: PageProps) {
   const { year, type } = await params;
+
+  const { data: event } = await getEventBySlug({
+    slug: `${slugify(type)}-${year}`,
+  });
 
   return (
     <Background className="items-start justify-start">
@@ -15,7 +21,12 @@ export default async function GanpatiPage({ params }: PageProps) {
         <h1 className="font-bold text-4xl capitalize">
           {type} - {year}
         </h1>
-        <EventTabs type={type} year={Number(year)} />
+
+        {!event?.is_active && (
+          <Badge variant={'destructive'}>Event is not active!</Badge>
+        )}
+
+        {/* <AnnadaanList isEventActive={!!event?.is_active} year={year} /> */}
       </div>
     </Background>
   );

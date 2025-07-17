@@ -2,7 +2,7 @@ import type { TCommittee } from '@/app/types';
 import {
   getAllPayments,
   getTotalPaymentsBySlug,
-} from '@/server/actions/booking.actions';
+} from '@/server/actions/payment.actions';
 import { queryOptions } from '@tanstack/react-query';
 
 export const paymentKeys = {

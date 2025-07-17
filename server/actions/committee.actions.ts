@@ -11,7 +11,8 @@ import {
 import { z } from 'zod/v4';
 import { getTotalBookings } from './annadaan.actions';
 import { isLoggedInProfile } from './auth.actions';
-import { getTotalCollections, getTotalPayments } from './booking.actions';
+import { getTotalCollections } from './booking.actions';
+import { getTotalPayments } from './payment.actions';
 
 export const getAllCommitteeMembers = publicProcedure
   .inputSchema(z.object({ committee: z.enum(COMMITTEES) }))
