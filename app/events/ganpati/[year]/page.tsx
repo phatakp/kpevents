@@ -1,5 +1,6 @@
 import { PaymentTabs } from '@/components/collections/payment-tabs';
 import { ReceiverTotals } from '@/components/collections/receiver-totals';
+import { SelectEventYear } from '@/components/events/select-event-year';
 import Background from '@/components/layouts/background';
 import { ReceiverLoader } from '@/components/layouts/receiver-loader';
 import { Badge } from '@/components/ui/badge';
@@ -20,6 +21,8 @@ export default async function GanpatiPage({ params }: PageProps) {
     <Background className="items-start justify-start">
       <div className="flex flex-col gap-4">
         <h1 className="font-bold text-4xl capitalize">Ganpati - {year}</h1>
+
+        <SelectEventYear committee="cultural" type={'ganpati'} year={year} />
 
         {!event?.is_active && (
           <Badge variant={'destructive'}>Event is not active!</Badge>

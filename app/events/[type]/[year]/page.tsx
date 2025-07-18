@@ -1,4 +1,5 @@
 import type { TEventType } from '@/app/types';
+import { SelectEventYear } from '@/components/events/select-event-year';
 import Background from '@/components/layouts/background';
 import { Badge } from '@/components/ui/badge';
 import { slugify } from '@/lib/utils';
@@ -21,6 +22,8 @@ export default async function EventPage({ params }: PageProps) {
         <h1 className="font-bold text-4xl capitalize">
           {type} - {year}
         </h1>
+
+        <SelectEventYear committee="cultural" type={type} year={year} />
 
         {!event?.is_active && (
           <Badge variant={'destructive'}>Event is not active!</Badge>

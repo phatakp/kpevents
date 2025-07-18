@@ -1,7 +1,9 @@
 import { SignInOutButton } from '@/components/auth/sign-out-btn';
+
 import { Crown } from 'lucide-react';
 import Link from 'next/link';
 import { Cart } from './cart';
+import { EventsNavLink } from './events-nav-link';
 import { MobileNav } from './mobile-nav';
 import { NavLink } from './navlink';
 import { ThemeToggle } from './theme-toggle';
@@ -16,10 +18,9 @@ export function Navbar() {
         </Link>
         <div className="hidden items-center justify-end lg:flex">
           <NavLink href={'/'} title="Home" />
-          <NavLink
-            href={`/events/ganpati/${new Date().getFullYear()}`}
-            title="Events"
-          />
+
+          <EventsNavLink />
+
           <NavLink href={'/temple/collections'} title="Temple" />
           <NavLink href={'/admin'} title="Admin" />
 

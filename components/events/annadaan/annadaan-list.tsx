@@ -1,6 +1,7 @@
 'use client';
 import type { TItemWithBookings } from '@/app/types';
 import { Amount } from '@/components/layouts/amount';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardAction,
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Collapsible } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -21,25 +21,34 @@ import {
 } from '@/components/ui/table';
 import { useAuthContext } from '@/lib/providers/auth-provider';
 import { allAnnadaanBookingOptions } from '@/query-options/annadaan';
+import { eventBySlugOptions } from '@/query-options/events';
 import { useQuery } from '@tanstack/react-query';
 import { AnnadaanListItem } from './annadaan-list-item';
 import { NewItemBtn } from './new-item-btn';
 
-type Props = {
+export function AnnadaanList({
+  year,
+  available,
+}: {
   year: number;
-  isEventActive: boolean;
-};
-
-export function AnnadaanList({ year, isEventActive }: Props) {
+  available?: boolean;
+}) {
   const { profile } = useAuthContext();
+  const { data: event, isLoading: isEventLoading } = useQuery(
+    eventBySlugOptions(`annadaan-${year}`)
+  );
+
   const { data: items, isLoading } = useQuery(allAnnadaanBookingOptions(year));
 
-  if (isLoading) return <ItemsLoader />;
+  if (isEventLoading || isLoading) return <ItemsLoader />;
+  if (!event) return <Badge variant={'destructive'}>Event is not active</Badge>;
 
-  const totalRequired = items?.reduce((acc, b) => acc + b.amount, 0) ?? 0;
-  const bookings = items?.sort((a, b) => sortCriteria(a, b));
+  const bookings = filteredData(items ?? [], available).sort(sortCriteria);
+
+  const totalAvailable = bookings?.reduce((acc, b) => acc + b.amount, 0) ?? 0;
+
   const totalBookings =
-    items?.reduce(
+    bookings?.reduce(
       (acc, i) =>
         acc + i.bookings.reduce((bcc, b) => bcc + b.booking_qty * i.price, 0),
       0
@@ -49,9 +58,14 @@ export function AnnadaanList({ year, isEventActive }: Props) {
     <div className="*:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
       <Card className="">
         <CardHeader>
-          <CardDescription>Total Bookings Made</CardDescription>
+          <CardDescription>
+            {available ? 'Total Available' : 'Total Bookings'}
+          </CardDescription>
           <CardTitle>
-            <Amount amount={totalBookings} containerClass="justify-start" />
+            <Amount
+              amount={available ? totalAvailable : totalBookings}
+              containerClass="justify-start"
+            />
           </CardTitle>
           <CardAction>
             <NewItemBtn isAdmin={!!profile?.is_admin} />
@@ -60,43 +74,38 @@ export function AnnadaanList({ year, isEventActive }: Props) {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted">
-                <TableCell
-                  className="text-muted-foreground md:hidden"
-                  colSpan={isEventActive ? 2 : 1}
-                >
-                  Total Required: ({bookings?.length ?? 0} items)
-                </TableCell>
-                <TableCell
-                  className="hidden text-muted-foreground md:table-cell"
-                  colSpan={isEventActive ? 3 : 1}
-                >
-                  Total Required: ({bookings?.length ?? 0} items)
-                </TableCell>
-                <TableCell>
-                  <Amount amount={totalRequired} className="text-lg" />
-                </TableCell>
-              </TableRow>
               <TableRow>
-                {isEventActive && <TableHead>Add</TableHead>}
-                <TableHead className="w-[80px]">Item</TableHead>
-                {isEventActive && (
-                  <TableHead className="hidden text-right md:table-cell">
-                    Available Qty
+                {event.is_active && available && (
+                  <TableHead className="text-muted-foreground">Add</TableHead>
+                )}
+                {event.is_active && profile?.is_admin && !available && (
+                  <TableHead className="text-muted-foreground">Del</TableHead>
+                )}
+                <TableHead className="w-[80px] text-muted-foreground">
+                  Item
+                </TableHead>
+                {!available && (
+                  <TableHead className="hidden text-muted-foreground text-sm md:table-cell">
+                    Booked By
                   </TableHead>
                 )}
-                <TableHead className="text-right">Price/unit</TableHead>
+                <TableHead className="hidden text-right text-muted-foreground md:table-cell">
+                  {available ? 'Available Qty' : 'Booked Qty'}
+                </TableHead>
+                <TableHead className="text-right text-muted-foreground">
+                  {available ? 'Price/unit' : 'Amount'}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {bookings?.map((item) => (
-                <Collapsible asChild key={item.item_name}>
-                  <AnnadaanListItem
-                    isEventActive={isEventActive}
-                    item={item}
-                    year={year}
-                  />
-                </Collapsible>
+                <AnnadaanListItem
+                  available={available}
+                  isEventActive={event.is_active}
+                  item={item}
+                  key={item.item_name}
+                  year={year}
+                />
               ))}
             </TableBody>
           </Table>
@@ -104,6 +113,15 @@ export function AnnadaanList({ year, isEventActive }: Props) {
       </Card>
     </div>
   );
+}
+
+function filteredData(data: TItemWithBookings[], available?: boolean) {
+  if (available)
+    return data.filter(
+      (d) =>
+        d.quantity > d?.bookings?.reduce((acc, b) => acc + b.booking_qty, 0)
+    );
+  return data.filter((d) => !!d?.bookings?.length);
 }
 
 function sortCriteria(a: TItemWithBookings, b: TItemWithBookings) {
