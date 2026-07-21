@@ -1,0 +1,17 @@
+node_modules
+.tanstack
+.vscode
+.env.example
+.DS_Store
+dist
+dist-ssr
+*.local
+*.Identifier
+.env
+.nitro
+.tanstack
+.wrangler
+.output
+.vinxi
+__unconfig*
+todos.json

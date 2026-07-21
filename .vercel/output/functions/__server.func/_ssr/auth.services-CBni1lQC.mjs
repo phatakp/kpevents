@@ -1,0 +1,38 @@
+import { createServerFn } from "./ssr.mjs";
+import { createServerRpc } from "./createServerRpc-DPX_ndmm.mjs";
+import { auth } from "./auth-Bf5LRocI.mjs";
+import { clerkClient } from "./clerkClient-B8TK7geQ.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/auth.services-CBni1lQC.js
+var getLoggedInUser_createServerFn_handler = createServerRpc({
+	id: "8db0644de162aba8b964fb0e05fcf5d1ef52126b54ae9640c0bbc3a3136dee4a",
+	name: "getLoggedInUser",
+	filename: "src/backend/services/auth.services.ts"
+}, (opts) => getLoggedInUser.__executeServer(opts));
+var getLoggedInUser = createServerFn({ method: "GET" }).handler(getLoggedInUser_createServerFn_handler, async () => {
+	let user;
+	try {
+		const { userId, sessionId } = await auth();
+		if (userId) user = await clerkClient().users.getUser(userId);
+		if (sessionId) {
+			const token = await clerkClient().sessions.getToken(sessionId);
+			console.log(token);
+		}
+		return {
+			userId,
+			role: user?.publicMetadata?.role,
+			firstName: user?.firstName,
+			lastName: user?.lastName,
+			imageUrl: user?.imageUrl
+		};
+	} catch (_) {
+		return {
+			userId: void 0,
+			role: void 0,
+			firstName: void 0,
+			lastName: void 0,
+			imageUrl: void 0
+		};
+	}
+});
+//#endregion
+export { getLoggedInUser_createServerFn_handler };
