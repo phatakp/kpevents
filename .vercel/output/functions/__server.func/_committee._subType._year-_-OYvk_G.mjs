@@ -9,12 +9,12 @@ import { zt } from "./_libs/react-hot-toast.mjs";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "./_ssr/separator-BonH_eRT.mjs";
 import { CardLoader, itemsOptions, txnsByCommitteeOptions } from "./_ssr/card-loader-Jku4GCL4.mjs";
 import { Background } from "./_ssr/background-Cjri-gEp.mjs";
-import { Route } from "./_committee._subType._year-CTz2MVR6.mjs";
+import { Route } from "./_committee._subType._year-DfRkrjZd.mjs";
 import { SuspenseErrorBoundary } from "./_ssr/suspense-error-boundary-9oqj6wJ3.mjs";
 import { Amount, AnimatedList, AnimatedListItem, Tabs$1, TabsContent, TabsContents, TabsList, TabsTrigger } from "./_ssr/animated-list-Ay5pyGHB.mjs";
 import { SelectYear, TxnButton, useCart } from "./_ssr/txn-button-DeGl2pFs.mjs";
 import { PaginationComponent, TxnActions } from "./_ssr/pagination-Cq7G7oY8.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/_committee._subType._year-CHH69vY4.js
+//#region node_modules/.nitro/vite/services/ssr/assets/_committee._subType._year-_-OYvk_G.js
 var import_jsx_runtime = require_jsx_runtime();
 function ItemBookingContent() {
 	const { committee, subType, year } = Route.useParams();
@@ -271,9 +271,9 @@ function ItemsList() {
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardTitle, {
 					className: "title capitalize text-xl",
-					children: `Annadaan ${year} ${isBooking ? "bookings" : "items"}`
+					children: `${subType === ROUTE_SUB_TYPE.ANNADAAN ? "Annadaan" : "Temple"} ${subType === ROUTE_SUB_TYPE.ANNADAAN ? year : ""} ${isBooking ? "item bookings" : "items"}`
 				}),
-				auth.role === USER_ROLE.ADMIN && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardDescription, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectYear, { year }) }),
+				auth.role === USER_ROLE.ADMIN && subType === ROUTE_SUB_TYPE.ANNADAAN && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardDescription, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectYear, { year }) }),
 				!isBooking && cartItems.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardAction, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TxnButton, {
 					committee: committee.toUpperCase(),
 					year: config.activeYear,

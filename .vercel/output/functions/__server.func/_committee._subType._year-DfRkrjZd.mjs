@@ -3,9 +3,9 @@ import { createFileRoute, lazyRouteComponent } from "./_libs/@tanstack/react-rou
 import { SearchSchema } from "./_ssr/common.schema-CKnvY_hu.mjs";
 import { itemsOptions } from "./_ssr/card-loader-Jku4GCL4.mjs";
 import { TabsLoader } from "./_ssr/tabs-loader-BqKgkBjI.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/_committee._subType._year-CTz2MVR6.js
+//#region node_modules/.nitro/vite/services/ssr/assets/_committee._subType._year-DfRkrjZd.js
 var import_jsx_runtime = require_jsx_runtime();
-var $$splitComponentImporter = () => import("./_committee._subType._year-CHH69vY4.mjs");
+var $$splitComponentImporter = () => import("./_committee._subType._year-_-OYvk_G.mjs");
 var Route = createFileRoute("/$committee/$subType/$year")({
 	component: lazyRouteComponent($$splitComponentImporter, "component"),
 	validateSearch: (search) => SearchSchema.parse(search),

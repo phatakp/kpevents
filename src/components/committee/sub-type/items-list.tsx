@@ -27,13 +27,14 @@ export function ItemsList() {
         <Card className="w-full max-w-[calc(100vw-2rem)] md:max-w-full p-0 bg-background border-0 pr-4">
             <CardHeader className="py-4 px-0">
                 <CardTitle className="title capitalize text-xl">
-                    {`Annadaan ${year} ${isBooking ? "bookings" : "items"}`}
+                    {`${subType === ROUTE_SUB_TYPE.ANNADAAN ? "Annadaan" : "Temple"} ${subType === ROUTE_SUB_TYPE.ANNADAAN ? year : ""} ${isBooking ? "item bookings" : "items"}`}
                 </CardTitle>
-                {auth.role === USER_ROLE.ADMIN && (
-                    <CardDescription>
-                        <SelectYear year={year} />
-                    </CardDescription>
-                )}
+                {auth.role === USER_ROLE.ADMIN &&
+                    subType === ROUTE_SUB_TYPE.ANNADAAN && (
+                        <CardDescription>
+                            <SelectYear year={year} />
+                        </CardDescription>
+                    )}
                 {!isBooking && cartItems.length > 0 && (
                     <CardAction>
                         <TxnButton

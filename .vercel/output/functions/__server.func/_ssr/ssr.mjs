@@ -129,7 +129,7 @@ function getResponse() {
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-BO8Fv8F-.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-CX-85vzi.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -1538,7 +1538,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-DfM11f3A.mjs"),
+		import("./router-BU9s4h4_.mjs"),
 		import("./start-CG-qmhNc.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);
