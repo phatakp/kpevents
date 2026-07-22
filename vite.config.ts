@@ -17,7 +17,11 @@ const config = defineConfig({
         devtools(),
         nitro({ preset: "vercel" }),
         tailwindcss(),
-        tanstackStart(),
+        tanstackStart({
+            serverFns: {
+                disableCsrfMiddlewareWarning: true,
+            },
+        }),
         viteReact(),
         babel({ presets: [reactCompilerPreset()] }),
     ],
