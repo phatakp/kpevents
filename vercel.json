@@ -1,0 +1,5 @@
+{
+  "functions": {
+    "runtime": "bun1.x"
+  }
+}
