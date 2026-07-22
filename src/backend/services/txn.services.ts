@@ -5,7 +5,7 @@ import {
     assertAdminMiddleware,
     assertAuthMiddleware,
 } from "@/backend/middlewares/auth.middleware";
-import { withMetaLogger } from "@/backend/middlewares/logging.middleware";
+// import { withMetaLogger } from "@/backend/middlewares/logging.middleware";
 import { api, handleAPIError } from "@/integrations/axios";
 import { DONATION_TYPE } from "@/lib/constants";
 import type {
@@ -30,7 +30,7 @@ import {
 export const getBalancesByCommittee = createServerFn({
     method: "GET",
 })
-    .middleware([withMetaLogger("/transactions/balances/committee/<name>")])
+    // .middleware([withMetaLogger("/transactions/balances/committee/<name>")])
     .validator(CommitteeQuerySchema)
     .handler(async ({ data }) => {
         try {
@@ -46,9 +46,9 @@ export const getBalancesByCommittee = createServerFn({
 export const getDonationStatsByCommittee = createServerFn({
     method: "GET",
 })
-    .middleware([
-        withMetaLogger("/transactions/donation/stats/<committee>/<year>"),
-    ])
+    // .middleware([
+    //     withMetaLogger("/transactions/donation/stats/<committee>/<year>"),
+    // ])
     .validator(CommitteeYearQuerySchema)
     .handler(async ({ data }) => {
         const res = await api.get(
@@ -62,7 +62,7 @@ export const getTransactionsByCommittee = createServerFn({
 })
     .middleware([
         assertAuthMiddleware,
-        withMetaLogger("/transactions/committee/<committee>/<txnType>/<year>"),
+        // withMetaLogger("/transactions/committee/<committee>/<txnType>/<year>"),
     ])
     .validator(TxnQuerySchema)
     .handler(async ({ data }) => {
@@ -84,7 +84,7 @@ export const getTransactionsByCommittee = createServerFn({
 export const createTransaction = createServerFn({
     method: "POST",
 })
-    .middleware([withMetaLogger("/transactions")])
+    // .middleware([withMetaLogger("/transactions")])
     .validator(TransactionSchemaWithValidation)
     .handler(async ({ data }) => {
         const { flatNumber, amount, ...input } = data;
@@ -127,7 +127,10 @@ export const createTransaction = createServerFn({
 export const updateTransaction = createServerFn({
     method: "POST",
 })
-    .middleware([assertAuthMiddleware, withMetaLogger("/transactions")])
+    .middleware([
+        assertAuthMiddleware,
+        // withMetaLogger("/transactions")
+    ])
     .validator(TransactionSchemaWithValidation)
     .handler(async ({ data }) => {
         const { flatNumber, ...input } = data;
@@ -149,7 +152,10 @@ export const updateTransaction = createServerFn({
 export const deleteTransaction = createServerFn({
     method: "POST",
 })
-    .middleware([assertAdminMiddleware, withMetaLogger("/transactions")])
+    .middleware([
+        assertAdminMiddleware,
+        // withMetaLogger("/transactions")
+    ])
     .validator(TransactionIDSchema)
     .handler(async ({ data }) => {
         try {
@@ -163,7 +169,7 @@ export const deleteTransaction = createServerFn({
 export const getLinkedTransfer = createServerFn({
     method: "GET",
 })
-    .middleware([withMetaLogger("/transactions/linked/<txnId>")])
+    // .middleware([withMetaLogger("/transactions/linked/<txnId>")])
     .validator(z4.object({ txnId: z4.string().optional() }))
     .handler(async ({ data }) => {
         try {
@@ -178,7 +184,7 @@ export const getLinkedTransfer = createServerFn({
 export const getItems = createServerFn({
     method: "GET",
 })
-    .middleware([withMetaLogger("/items/<itemType>/<year>")])
+    // .middleware([withMetaLogger("/items/<itemType>/<year>")])
     .validator(ItemQuerySchema)
     .handler(async ({ data }) => {
         try {

@@ -7,13 +7,16 @@ import { api, handleAPIError } from "@/integrations/axios";
 import type { User, UserBalance } from "@/types";
 import { CommitteeQuerySchema } from "@/zod/common.schema";
 import { ProfileSchemaWithValidation } from "@/zod/user.schema";
-import { withMetaLogger } from "../middlewares/logging.middleware";
+// import { withMetaLogger } from "../middlewares/logging.middleware";
 
 // Backend services
 export const getCurrUserFromDB = createServerFn({
     method: "GET",
 })
-    .middleware([authMiddleware, withMetaLogger("/users/me")])
+    .middleware([
+        authMiddleware,
+        // withMetaLogger("/users/me")
+    ])
     .handler(async ({ context }) => {
         if (!context.userId) return null;
         try {
@@ -27,7 +30,10 @@ export const getCurrUserFromDB = createServerFn({
 export const createProfile = createServerFn({
     method: "POST",
 })
-    .middleware([assertAuthMiddleware, withMetaLogger("/users")])
+    .middleware([
+        assertAuthMiddleware,
+        // withMetaLogger("/users")
+    ])
     .validator(ProfileSchemaWithValidation)
     .handler(async ({ data }) => {
         try {
@@ -41,7 +47,10 @@ export const createProfile = createServerFn({
 export const updateProfile = createServerFn({
     method: "POST",
 })
-    .middleware([assertAuthMiddleware, withMetaLogger("/users")])
+    .middleware([
+        assertAuthMiddleware,
+        // withMetaLogger("/users")
+    ])
     .validator(ProfileSchemaWithValidation)
     .handler(async ({ data }) => {
         try {
@@ -57,7 +66,7 @@ export const becomeMember = createServerFn({
 })
     .middleware([
         assertAuthMiddleware,
-        withMetaLogger("/members/commmittee/<name>"),
+        // withMetaLogger("/members/commmittee/<name>"),
     ])
     .validator(CommitteeQuerySchema)
     .handler(async ({ data }) => {
@@ -72,7 +81,7 @@ export const becomeMember = createServerFn({
 export const getMembersByCommittee = createServerFn({
     method: "GET",
 })
-    .middleware([withMetaLogger("/members/committee/<name>")])
+    // .middleware([withMetaLogger("/members/committee/<name>")])
     .validator(CommitteeQuerySchema)
     .handler(async ({ data }) => {
         try {
@@ -88,7 +97,7 @@ export const getCurrUserBalancesByCommittee = createServerFn({
 })
     .middleware([
         assertAuthMiddleware,
-        withMetaLogger("/users/me/balances/committee/<name>"),
+        // withMetaLogger("/users/me/balances/committee/<name>"),
     ])
     .validator(CommitteeQuerySchema)
     .handler(async ({ data }) => {
@@ -107,7 +116,7 @@ export const getMemberBalancesByCommittee = createServerFn({
 })
     .middleware([
         assertAuthMiddleware,
-        withMetaLogger("/users/balances/committee/<name>"),
+        // withMetaLogger("/users/balances/committee/<name>"),
     ])
     .validator(CommitteeQuerySchema)
     .handler(async ({ data }) => {
