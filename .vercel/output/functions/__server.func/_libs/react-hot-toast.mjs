@@ -1,5 +1,5 @@
 import { __toESM } from "../_runtime.mjs";
-import { require_react } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./@clerk/clerk-react+[...].mjs";
 import { h as h$1, m, u, w as w$1 } from "./goober.mjs";
 //#region node_modules/react-hot-toast/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);

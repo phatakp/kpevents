@@ -1,5 +1,5 @@
 import { __commonJSMin, __toESM } from "../../_runtime.mjs";
-import { require_react, require_react_dom } from "../@floating-ui/react-dom+[...].mjs";
+import { require_react, require_react_dom } from "../@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../@radix-ui/react-arrow+[...].mjs";
 import { parseHref } from "../tanstack__history.mjs";
 import { require_with_selector } from "./react-form+[...].mjs";

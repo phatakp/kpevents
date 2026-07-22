@@ -1,5 +1,5 @@
 import { __commonJSMin, __toESM } from "../_runtime.mjs";
-import { require_react } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./@clerk/clerk-react+[...].mjs";
 //#region node_modules/use-sync-external-store/cjs/use-sync-external-store-with-selector.production.js
 /**
 * @license React

@@ -1,5 +1,5 @@
 import "../_runtime.mjs";
-import { require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
+import { require_react } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { Slot, require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { cva } from "../_libs/class-variance-authority+clsx.mjs";
 import { cn } from "./user.schema-BooD9qhh.mjs";

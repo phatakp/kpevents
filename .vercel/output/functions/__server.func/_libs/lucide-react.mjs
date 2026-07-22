@@ -1,5 +1,5 @@
 import { __toESM } from "../_runtime.mjs";
-import { require_react } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./@clerk/clerk-react+[...].mjs";
 //#region node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 /**

@@ -1,6 +1,6 @@
+import { SignIn } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { Background } from "./background-CnDfhJFa.mjs";
-import { SignIn } from "@clerk/clerk-react";
 //#region node_modules/.nitro/vite/services/ssr/assets/sign-in._-CcaAkQIA.js
 var import_jsx_runtime = require_jsx_runtime();
 function RouteComponent() {

@@ -1,5 +1,5 @@
 import { __commonJSMin, __toESM } from "../../_runtime.mjs";
-import { require_react, require_react_dom } from "../@floating-ui/react-dom+[...].mjs";
+import { require_react, require_react_dom } from "../@clerk/clerk-react+[...].mjs";
 //#region node_modules/react/cjs/react-jsx-runtime.production.js
 /**
 * @license React

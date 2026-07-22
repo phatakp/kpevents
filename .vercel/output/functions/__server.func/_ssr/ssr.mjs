@@ -1,5 +1,5 @@
 import { __exportAll } from "../_runtime.mjs";
-import { require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
+import { require_react } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { RouterProvider, defineHandlerCallback, executeRewriteInput, getScriptPreloadAttrs, getStylesheetHref, invariant, isNotFound, isRedirect, isResolvedRedirect, isSsrResponse, normalizeSsrResponse, parseRedirect, renderRouterToStream, replaceSsrResponse, resolveManifestAssetLink, resolveManifestCssLink, rootRouteId, stripSsrResponseBody } from "../_libs/@tanstack/react-router+[...].mjs";
 import { createMemoryHistory } from "../_libs/tanstack__history.mjs";
@@ -1539,7 +1539,7 @@ var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
 		import("./router-CvQtQGeL.mjs"),
-		import("./start-DvHDLADN.mjs"),
+		import("./start-DMpp4-2h.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);
 	return {

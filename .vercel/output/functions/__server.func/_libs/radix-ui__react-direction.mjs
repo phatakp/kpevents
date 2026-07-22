@@ -1,5 +1,5 @@
 import { __toESM } from "../_runtime.mjs";
-import { require_react } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "./@radix-ui/react-arrow+[...].mjs";
 //#region node_modules/@radix-ui/react-direction/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);

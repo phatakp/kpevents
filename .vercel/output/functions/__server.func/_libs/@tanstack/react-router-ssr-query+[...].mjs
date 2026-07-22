@@ -1,5 +1,5 @@
 import { __toESM } from "../../_runtime.mjs";
-import { require_react } from "../@floating-ui/react-dom+[...].mjs";
+import { require_react } from "../@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../@radix-ui/react-arrow+[...].mjs";
 import "./react-router+[...].mjs";
 import { dehydrate } from "../tanstack__query-core.mjs";

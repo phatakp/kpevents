@@ -1,5 +1,5 @@
 import { __toESM } from "../_runtime.mjs";
-import { require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
+import { require_react } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { createFormHook, createFormHookContexts } from "../_libs/@tanstack/react-form+[...].mjs";
 import { BUILDING_OPTIONS } from "./common.schema-CKnvY_hu.mjs";

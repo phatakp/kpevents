@@ -1,5 +1,5 @@
 import { __toESM } from "./_runtime.mjs";
-import { require_react } from "./_libs/@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "./_libs/@radix-ui/react-arrow+[...].mjs";
 import { Link } from "./_libs/@tanstack/react-router+[...].mjs";
 import { ROUTE_TXN_TYPE } from "./_ssr/common.schema-CKnvY_hu.mjs";

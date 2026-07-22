@@ -15,14 +15,9 @@ const config = defineConfig({
     },
     plugins: [
         devtools(),
-        nitro({
-            rollupConfig: { external: [/^@sentry\//, /^@clerk\//] },
-            preset: "vercel",
-        }),
+        nitro({ preset: "vercel" }),
         tailwindcss(),
-        tanstackStart({
-            serverFns: { disableCsrfMiddlewareWarning: true },
-        }),
+        tanstackStart(),
         viteReact(),
         babel({ presets: [reactCompilerPreset()] }),
     ],

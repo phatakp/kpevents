@@ -1,3 +1,4 @@
+import { useUser } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { COMMITTEE, QUERY_KEYS, TXN_TYPE } from "./common.schema-CKnvY_hu.mjs";
@@ -14,7 +15,6 @@ import { Badge, SuspenseErrorBoundary } from "./suspense-error-boundary-C0RTtts7
 import { Amount, Modal, Tabs$1, TabsContent, TabsContents, TabsList, TabsTrigger, useAppForm, useModal } from "./animated-list-Bg-CRS3L.mjs";
 import { CardStatsLoader } from "./card-stats-loader-Benmu24x.mjs";
 import { MemberBalanceList } from "./members-balance-list-Bv_cqZWv.mjs";
-import { useUser } from "@clerk/clerk-react";
 //#region node_modules/.nitro/vite/services/ssr/assets/dashboard-e71YF3dh.js
 var import_jsx_runtime = require_jsx_runtime();
 function CommitteeTabs() {

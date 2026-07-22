@@ -1,5 +1,5 @@
 import { __toESM } from "../_runtime.mjs";
-import { require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
+import { ClerkProvider, SignedIn, SignedOut, UserButton, require_react } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { HeadContent, Link, ScriptOnce, Scripts, createRootRouteWithContext, useLocation } from "../_libs/@tanstack/react-router+[...].mjs";
 import { createServerFn } from "./ssr.mjs";
@@ -12,12 +12,12 @@ import { QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { QueryClientProvider, queryOptions } from "../_libs/tanstack__react-query.mjs";
 import { configOptions } from "./admin.queries-BOrzEKU7.mjs";
 import { Image } from "../_libs/unpic__react.mjs";
+import { require_dist } from "../_libs/clerk__themes.mjs";
 import { Fe } from "../_libs/react-hot-toast.mjs";
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
-import { dark } from "@clerk/themes";
 //#region node_modules/.nitro/vite/services/ssr/assets/separator-CR3Hz17M.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
+var import_dist = require_dist();
 var context;
 function getContext() {
 	if (context) return context;
@@ -156,7 +156,7 @@ function AppClerkProvider({ children }) {
 		publishableKey: PUBLISHABLE_KEY,
 		afterSignOutUrl: "/",
 		appearance: {
-			baseTheme: dark,
+			baseTheme: import_dist.dark,
 			elements: {
 				headerTitle: {
 					fontFamily: "var(--font-heading)",

@@ -1,10 +1,10 @@
+import { SignedIn } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { ArrowUpRight } from "../_libs/lucide-react.mjs";
 import { Button } from "./button-CBOXaQon.mjs";
 import { Image } from "../_libs/unpic__react.mjs";
 import { Background } from "./background-CnDfhJFa.mjs";
-import { SignedIn } from "@clerk/clerk-react";
 //#region node_modules/.nitro/vite/services/ssr/assets/routes-Dd9265y4.js
 var import_jsx_runtime = require_jsx_runtime();
 function Home() {

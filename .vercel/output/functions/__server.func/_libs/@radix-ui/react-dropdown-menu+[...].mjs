@@ -1,11 +1,12 @@
 import { __toESM } from "../../_runtime.mjs";
-import { arrow, flip, hide, limitShift, offset, require_react, shift, size, useFloating } from "../@floating-ui/react-dom+[...].mjs";
+import { require_react } from "../@clerk/clerk-react+[...].mjs";
 import { Primitive, Root as Root$1, composeRefs, createSlot, dispatchDiscreteCustomEvent, require_jsx_runtime, useComposedRefs } from "./react-arrow+[...].mjs";
 import { composeEventHandlers } from "../radix-ui__primitive.mjs";
 import { createCollection, createContextScope } from "./react-collection+[...].mjs";
 import { DismissableLayer, FocusScope, Portal as Portal$1, Presence, ReactRemoveScroll, hideOthers, useCallbackRef, useControllableState, useFocusGuards, useId, useLayoutEffect2 } from "./react-dialog+[...].mjs";
 import { useDirection } from "../radix-ui__react-direction.mjs";
 import { autoUpdate } from "../@floating-ui/dom+[...].mjs";
+import { arrow, flip, hide, limitShift, offset, shift, size, useFloating } from "../floating-ui__react-dom.mjs";
 //#region node_modules/@radix-ui/react-use-size/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 function useSize(element) {

@@ -1,6 +1,6 @@
 import { getGlobalStartContext } from "./ssr.mjs";
 import { errorThrower } from "./utils-D_6BNord.mjs";
-import { getAuthObjectForAcceptedToken } from "@clerk/backend/internal";
+import { getAuthObjectForAcceptedToken } from "../_libs/clerk__backend+clerk__shared.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/auth-Bf5LRocI.js
 var createErrorMessage = (msg) => {
 	return `🔒 Clerk: ${msg.trim()}

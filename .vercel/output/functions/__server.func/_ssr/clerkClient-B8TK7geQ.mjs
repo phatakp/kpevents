@@ -1,7 +1,5 @@
-import { getEnvVariable } from "@clerk/shared/getEnvVariable";
-import { isTruthy } from "@clerk/shared/underscore";
-import { apiUrlFromPublishableKey } from "@clerk/shared/apiUrlFromPublishableKey";
-import { createClerkClient } from "@clerk/backend";
+import { apiUrlFromPublishableKey, getEnvVariable, isTruthy } from "../_libs/clerk__shared.mjs";
+import { createClerkClient } from "../_libs/clerk__backend+clerk__shared.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/clerkClient-B8TK7geQ.js
 var getPublicEnvVariables = () => {
 	const getValue = (name) => {

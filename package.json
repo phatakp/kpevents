@@ -18,7 +18,9 @@
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@clerk/clerk-react": "^5.61.3",
+    "@clerk/shared": "^4.25.6",
     "@clerk/tanstack-react-start": "^1.4.9",
+    "@clerk/tanstack-start": "^0.11.5",
     "@clerk/themes": "^2.4.57",
     "@fontsource-variable/lexend": "^5.2.11",
     "@fontsource-variable/overpass": "^5.2.8",

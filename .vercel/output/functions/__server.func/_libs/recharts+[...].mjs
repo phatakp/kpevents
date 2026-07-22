@@ -1,5 +1,5 @@
 import { __exportAll, __toESM } from "../_runtime.mjs";
-import { require_react, require_react_dom } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react, require_react_dom } from "./@clerk/clerk-react+[...].mjs";
 import { require_with_selector } from "./@tanstack/react-form+[...].mjs";
 import { clsx } from "./class-variance-authority+clsx.mjs";
 import { Symbol as Symbol$1, area_default, basisClosed_default, basisOpen_default, basis_default, bumpX, bumpY, circle_default, cross_default, diamond_default, expand_default, line_default, linearClosed_default, linear_default, monotoneX, monotoneY, natural_default, none_default as none_default$1, none_default$1 as none_default, silhouette_default, square_default, stack_default, star_default, stepAfter, stepBefore, step_default, triangle_default, wiggle_default, wye_default } from "./d3-shape.mjs";

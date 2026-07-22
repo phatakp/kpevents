@@ -1,5 +1,5 @@
 import "../_runtime.mjs";
-import { require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
+import { require_react } from "../_libs/@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { QUERY_KEYS } from "./common.schema-CKnvY_hu.mjs";
 import { cn } from "./user.schema-BooD9qhh.mjs";

@@ -1,5 +1,5 @@
 import { __toESM } from "../../_runtime.mjs";
-import { require_react, require_react_dom } from "../@floating-ui/react-dom+[...].mjs";
+import { require_react, require_react_dom } from "../@clerk/clerk-react+[...].mjs";
 import { Primitive, createSlot, require_jsx_runtime, useComposedRefs } from "./react-arrow+[...].mjs";
 import { composeEventHandlers } from "../radix-ui__primitive.mjs";
 import { createCollection, createContextScope } from "./react-collection+[...].mjs";

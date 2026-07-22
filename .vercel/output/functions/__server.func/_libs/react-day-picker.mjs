@@ -1,5 +1,5 @@
 import { __exportAll, __toESM } from "../_runtime.mjs";
-import { require_react } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./@clerk/clerk-react+[...].mjs";
 import { addDays, addMonths, addWeeks, addYears, differenceInCalendarDays, differenceInCalendarMonths, eachMonthOfInterval, eachYearOfInterval, enUS as enUS$1, endOfISOWeek, endOfMonth, endOfWeek, endOfYear, format, getISOWeek, getMonth, getWeek, getYear, isAfter, isBefore, isDate, isSameDay, isSameMonth, isSameYear, max, min, setMonth, setYear, startOfDay, startOfISOWeek, startOfMonth, startOfWeek, startOfYear } from "./date-fns.mjs";
 import { TZDate } from "./date-fns__tz.mjs";
 //#region node_modules/react-day-picker/dist/esm/helpers/getBroadcastWeeksInMonth.js

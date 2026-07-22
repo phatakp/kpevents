@@ -1,5 +1,5 @@
 import { __toESM } from "../_runtime.mjs";
-import { require_react } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./@clerk/clerk-react+[...].mjs";
 import { Primitive, composeRefs } from "./@radix-ui/react-arrow+[...].mjs";
 import { Dialog, DialogContent, DialogOverlay, DialogPortal, useId } from "./@radix-ui/react-dialog+[...].mjs";
 //#region node_modules/cmdk/dist/chunk-NZJY6EH4.mjs

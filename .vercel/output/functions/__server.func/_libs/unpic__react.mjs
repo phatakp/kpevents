@@ -1,5 +1,5 @@
 import { __toESM } from "../_runtime.mjs";
-import { require_react } from "./@floating-ui/react-dom+[...].mjs";
+import { require_react } from "./@clerk/clerk-react+[...].mjs";
 import { require_jsx_runtime } from "./@radix-ui/react-arrow+[...].mjs";
 import { transformProps, transformSourceProps } from "./unpic+unpic__core.mjs";
 //#region node_modules/@unpic/react/dist/chunk-VTEFGNYT.mjs
