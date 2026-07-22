@@ -6,6 +6,8 @@ export const withMetaLogger = (url: string) =>
     })
         .client(async ({ next, method }) => {
             // Safely allow the client-side execution to proceed without logging
+            if (process.env.NODE_ENV?.includes("prod"))
+                return await next({ sendContext: { method, url } });
             console.log(`[CLIENT] Calling ${method} ${url}`);
             return await next({ sendContext: { method, url } });
         })
