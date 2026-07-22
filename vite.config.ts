@@ -18,10 +18,9 @@ const config = defineConfig({
         nitro({
             rollupConfig: { external: [/^@sentry\//, /^@clerk\//] },
             preset: "vercel",
-            storage: {
-                cache: {
-                    driver: "fs",
-                    base: "/tmp/cache",
+            vercel: {
+                functions: {
+                    runtime: "bun1.x", // If you want to use the Bun runtime on Vercel
                 },
             },
         }),
