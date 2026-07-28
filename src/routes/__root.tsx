@@ -7,8 +7,8 @@ import {
     Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { configOptions } from "@/backend/queries/admin.queries";
-import { getLoggedInUser } from "@/backend/services/auth.services";
+import { getLoggedInUser } from "@/api/functions/auth.function";
+import { configOptions } from "@/api/queries/admin.queries";
 import { Navbar } from "@/components/shared/navigation";
 import ClerkProvider from "@/integrations/clerk/provider";
 import { ReactHotToast } from "@/integrations/react-toast";
@@ -43,8 +43,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         ],
     }),
     beforeLoad: async ({ context }) => {
-        const config =
-            await context.queryClient.ensureQueryData(configOptions());
+        const config = await context.queryClient.ensureQueryData(configOptions);
+        if (!config) throw new Error("Config not available");
+
         const auth = await getLoggedInUser();
         return { auth, config }; // Injected into router context
     },

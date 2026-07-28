@@ -1,13 +1,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
-    balancesByCommitteeOptions,
-    donationStatsByCommitteeOptions,
-} from "@/backend/queries/txn.queries";
+    committeeBalancesOptions,
+    donationStatsOptions,
+} from "@/api/queries/txn.queries";
 import {
+    committeeMemberOptions,
     currDBUserQueryOptions,
-    membersByCommitteeOptions,
-} from "@/backend/queries/user.queries";
+} from "@/api/queries/user.queries";
 import { CommitteeCard } from "@/components/committee/committee-card";
 import { CommitteeMemberList } from "@/components/committee/committee-member-list";
 import { DonationStatsByBuilding } from "@/components/committee/txns/donation-stats";
@@ -16,7 +16,7 @@ import { CardLoader } from "@/components/shared/loaders/card-loader";
 import { CardStatsLoader } from "@/components/shared/loaders/card-stats-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 import { cn } from "@/lib/utils";
-import type { Committee, RouteCommittee } from "@/types";
+import type { Committee, RouteCommittee, User } from "@/types";
 
 export const Route = createFileRoute("/$committee/$year")({
     component: RouteComponent,
@@ -29,13 +29,13 @@ export const Route = createFileRoute("/$committee/$year")({
     loader: async ({ context, params }) => {
         // get user profile from db
         context.queryClient.ensureQueryData({
-            ...currDBUserQueryOptions(),
+            ...currDBUserQueryOptions,
             revalidateIfStale: true,
         });
 
         // get committee balances
         context.queryClient.ensureQueryData({
-            ...balancesByCommitteeOptions({
+            ...committeeBalancesOptions({
                 committee: params.committee.toUpperCase() as Committee,
             }),
             revalidateIfStale: true,
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/$committee/$year")({
 
         // get stats for each building
         context.queryClient.ensureQueryData({
-            ...donationStatsByCommitteeOptions({
+            ...donationStatsOptions({
                 committee: params.committee.toUpperCase() as Committee,
                 year: params.year ?? context.config.activeYear,
             }),
@@ -73,21 +73,21 @@ function RouteComponent() {
     const { committee, year } = Route.useParams();
     const { config } = Route.useRouteContext();
 
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions());
+    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
 
     const member = user?.memberships.find(
         (m) => m.committee.toLowerCase() === committee,
     );
 
     const { data: stats } = useSuspenseQuery({
-        ...donationStatsByCommitteeOptions({
+        ...donationStatsOptions({
             committee: committee.toUpperCase() as Committee,
             year: year ?? config.activeYear,
         }),
     });
 
     const { data: members } = useSuspenseQuery({
-        ...membersByCommitteeOptions({
+        ...committeeMemberOptions({
             committee: committee.toUpperCase() as Committee,
         }),
     });
@@ -133,7 +133,7 @@ function RouteComponent() {
 
                     {members && (
                         <CommitteeMemberList
-                            data={members}
+                            data={members as User[]}
                             className={cn(
                                 "md:order-2 order-3 mx-auto",
                                 stats && stats.length > 0

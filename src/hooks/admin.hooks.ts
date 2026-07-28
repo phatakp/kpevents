@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { approveMember, deleteMember } from "@/backend/services/admin.services";
-import { QUERY_KEYS } from "@/lib/constants";
+import { approveMember, deleteMember } from "@/api/functions/member.function";
+import { QUERY_KEYS } from "@/api/keys";
 
 export function useApproveMember() {
     const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ export function useApproveMember() {
         onSuccess: () => {
             toast.success(`Profile updated successfully`);
             return queryClient.invalidateQueries({
-                queryKey: QUERY_KEYS.approveMember,
+                queryKey: QUERY_KEYS.allUsers,
             });
         },
         onError: (error) => {
@@ -26,7 +26,7 @@ export function useDeleteMember() {
         onSuccess: () => {
             toast.success(`Profile deleted successfully`);
             return queryClient.invalidateQueries({
-                queryKey: QUERY_KEYS.approveMember,
+                queryKey: QUERY_KEYS.allUsers,
             });
         },
         onError: (error) => {

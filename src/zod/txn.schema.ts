@@ -290,6 +290,13 @@ export const TransactionSchemaWithValidation = TransactionFormSchema.check(
     },
 );
 
+export const TransactionRequestSchema = TransactionFormSchema.omit({
+    flatNumber: true,
+}).extend({
+    donorBuilding: z4.union([BuildingSchema, z4.undefined()]),
+    donorFlat: z4.coerce.number<number>().optional(),
+});
+
 export const ItemSchema = z4.object({
     id: z4.coerce.number<number>(),
     itemName: z4.string(),

@@ -1,6 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Image } from "@unpic/react";
-import { currDBUserQueryOptions } from "@/backend/queries/user.queries";
+import {
+    allUserBalancesOptions,
+    currDBUserQueryOptions,
+} from "@/api/queries/user.queries";
 import { Badge } from "@/components/ui/badge";
 import {
     Card,
@@ -10,13 +13,19 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { COMMITTEE } from "@/lib/constants";
+import { COMMITTEE_OPTIONS } from "@/zod/common.schema";
+import { SelectYear } from "../committee/select-year";
 import { MembershipStat } from "./membership-stat";
 import { ProfileButton } from "./profile-button";
 
-export function UserCard() {
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions());
-    if (!user) return;
+type Props = {
+    year: number;
+    handleSelect: (year: string) => void;
+};
+export function UserCard({ year, handleSelect }: Props) {
+    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
+    const { data } = useSuspenseQuery(allUserBalancesOptions);
+    if (!data || !user) return;
 
     return (
         <div className="flex items-center justify-center w-full">
@@ -31,7 +40,13 @@ export function UserCard() {
                                 </span>
                             </div>
                         </CardTitle>
-                        <CardDescription>Your Balance Summary</CardDescription>
+                        <CardDescription className="w-full">
+                            <SelectYear
+                                year={year}
+                                handleSelect={handleSelect}
+                                className="md:w-full"
+                            />
+                        </CardDescription>
                         <CardAction className="flex items-center gap-2">
                             <Badge>
                                 {user?.building}-{user?.flat}
@@ -41,15 +56,16 @@ export function UserCard() {
                     </CardHeader>
                     <CardContent>
                         <div className="py-4 flex flex-col gap-9 justify-between">
-                            <div className="grid md:grid-cols-2 items-center md:divide-x divide-y md:divide-y-0 sm:w-3/4">
-                                <MembershipStat
-                                    committee={COMMITTEE.CULTURAL}
-                                    user={user}
-                                />
-                                <MembershipStat
-                                    committee={COMMITTEE.TEMPLE}
-                                    user={user}
-                                />
+                            <div className="grid md:grid-cols-2  md:divide-x divide-y md:divide-y-0 sm:w-3/4">
+                                {COMMITTEE_OPTIONS.map((committee) => (
+                                    <MembershipStat
+                                        key={committee}
+                                        committee={committee}
+                                        user={user}
+                                        data={data}
+                                        year={year}
+                                    />
+                                ))}
                             </div>
                         </div>
                         {/* image */}

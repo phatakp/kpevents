@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
+    allUserBalancesOptions,
     currDBUserQueryOptions,
-    memberBalancesByCommitteeOptions,
-} from "@/backend/queries/user.queries";
+} from "@/api/queries/user.queries";
 import { CommitteeTabs } from "@/components/dashboard/committee-tabs";
 import { UserCard } from "@/components/dashboard/user-card";
 import { Background } from "@/components/shared/background";
@@ -18,22 +19,28 @@ export const Route = createFileRoute("/dashboard")({
     loaderDeps: ({ search }) => ({
         committee: search?.committee ?? COMMITTEE.CULTURAL,
     }),
-    loader: async ({ context, deps }) => {
+    loader: async ({ context }) => {
         // get user profile
         context.queryClient.ensureQueryData({
-            ...currDBUserQueryOptions(),
+            ...currDBUserQueryOptions,
             revalidateIfStale: true,
         });
 
         // get committee balances by member
         context.queryClient.ensureQueryData({
-            ...memberBalancesByCommitteeOptions({ committee: deps.committee }),
+            ...allUserBalancesOptions,
             revalidateIfStale: true,
         });
     },
 });
 
 function RouteComponent() {
+    const { config } = Route.useRouteContext();
+    const [year, setYear] = useState(config.activeYear);
+    const handleSelect = (selectedYear: string) => {
+        setYear(Number(selectedYear));
+    };
+
     return (
         <Background className="items-start">
             <section className="container py-8">
@@ -42,14 +49,17 @@ function RouteComponent() {
                         id={`user-card`}
                         fallback={<CardStatsLoader />}
                     >
-                        <UserCard />
+                        <UserCard year={year} handleSelect={handleSelect} />
                     </SuspenseErrorBoundary>
 
                     <SuspenseErrorBoundary
                         id={`committee-tabs`}
                         fallback={<TabsLoader className="h-[50vh]" />}
                     >
-                        <CommitteeTabs />
+                        <CommitteeTabs
+                            year={year}
+                            handleSelect={handleSelect}
+                        />
                     </SuspenseErrorBoundary>
                 </div>
             </section>

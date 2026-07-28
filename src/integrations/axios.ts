@@ -22,6 +22,22 @@ api.interceptors.request.use(async (config) => {
     return config;
 });
 
+api.interceptors.response.use(
+    (response) => {
+        // Triggers for any 2xx status code
+        // You can unpack data globally to avoid writing '.data' every time
+        return response.data;
+    },
+    (error) => {
+        // Triggers for status codes outside the 2xx range
+        if (error.response && error.response.status === 401) {
+            // Global action: redirect to login or trigger a token refresh
+            window.location.href = "/login";
+        }
+        return Promise.reject(error);
+    },
+);
+
 type APIErrResponse = {
     errorCode: string;
     errorDescription: string;

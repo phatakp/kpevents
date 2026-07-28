@@ -220,3 +220,9 @@ export function getStepAmount(currAmt: number) {
 export function getStepQty(currQty: number) {
     return currQty > 20 ? 2 : currQty > 2 ? 1 : 0.5;
 }
+
+export function isBookingType(type: DonationType | undefined) {
+    return (
+        type === DONATION_TYPE.ANNADAAN || type === DONATION_TYPE.TEMPLE_ITEM
+    );
+}

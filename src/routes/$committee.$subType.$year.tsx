@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { itemsOptions } from "@/backend/queries/txn.queries";
+import { itemsOptions } from "@/api/queries/txn.queries";
 import { ItemsTabs } from "@/components/committee/sub-type/items-tab";
 import { Background } from "@/components/shared/background";
 import { TabsLoader } from "@/components/shared/loaders/tabs-loader";
@@ -25,21 +25,7 @@ export const Route = createFileRoute("/$committee/$subType/$year")({
             year: parseInt(rawParams.year, 10),
         }),
     },
-    loader: async ({ context, params, deps }) => {
-        // // get user profile from db
-        // context.queryClient.ensureQueryData({
-        //     ...currDBUserQueryOptions(),
-        //     revalidateIfStale: true,
-        // });
-
-        // // get user profile from db
-        // context.queryClient.ensureQueryData({
-        //     ...membersByCommitteeOptions({
-        //         committee: params.committee.toUpperCase() as Committee,
-        //     }),
-        //     revalidateIfStale: true,
-        // });
-
+    loader: async ({ context, params }) => {
         // get items from db
         context.queryClient.ensureQueryData({
             ...itemsOptions({
@@ -48,18 +34,6 @@ export const Route = createFileRoute("/$committee/$subType/$year")({
             }),
             revalidateIfStale: true,
         });
-
-        // // get bookings
-        // context.queryClient.ensureQueryData({
-        //     ...txnsByCommitteeOptions({
-        //         committee: params.committee.toUpperCase() as Committee,
-        //         year: params.year,
-        //         txnType: TXN_TYPE.DONATION,
-        //         building: undefined,
-        //         donationType: params.subType.toUpperCase() as DonationType,
-        //     }),
-        //     revalidateIfStale: true,
-        // });
     },
     pendingComponent: () => <TabsLoader />,
 });

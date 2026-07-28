@@ -1,13 +1,13 @@
-import { pendingMemberOptions } from "@/backend/queries/admin.queries";
-import { PendingMembers } from "@/components/admin/pending-members";
+import { createFileRoute } from "@tanstack/react-router";
+import { allMembersOptions } from "@/api/queries/admin.queries";
+import { AllMembers } from "@/components/admin/all-members";
 import { Background } from "@/components/shared/background";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
-import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin")({
     component: RouteComponent,
     loader: async ({ context }) => {
-        context.queryClient.ensureQueryData(pendingMemberOptions());
+        context.queryClient.ensureQueryData(allMembersOptions);
     },
 });
 
@@ -21,7 +21,7 @@ function RouteComponent() {
                     id={`user-card`}
                     fallback={<div>Loading...</div>}
                 >
-                    <PendingMembers />
+                    <AllMembers />
                 </SuspenseErrorBoundary>
             </div>
         </Background>

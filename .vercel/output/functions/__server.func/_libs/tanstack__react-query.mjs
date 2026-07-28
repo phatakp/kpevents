@@ -128,11 +128,6 @@ function useBaseQuery(options, Observer, queryClient) {
 	return !defaultedOptions.notifyOnChangeProps ? observer.trackResult(result) : result;
 }
 //#endregion
-//#region node_modules/@tanstack/react-query/build/modern/useQuery.js
-function useQuery(options, queryClient) {
-	return useBaseQuery(options, QueryObserver, queryClient);
-}
-//#endregion
 //#region node_modules/@tanstack/react-query/build/modern/useSuspenseQuery.js
 function useSuspenseQuery(options, queryClient) {
 	return useBaseQuery({
@@ -168,4 +163,4 @@ function useMutation(options, queryClient) {
 	};
 }
 //#endregion
-export { QueryClientProvider, QueryErrorResetBoundary, queryOptions, useMutation, useQuery, useQueryClient, useSuspenseQuery };
+export { QueryClientProvider, QueryErrorResetBoundary, queryOptions, useMutation, useQueryClient, useSuspenseQuery };

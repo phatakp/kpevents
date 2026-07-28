@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { txnsByCommitteeOptions } from "@/backend/queries/txn.queries";
-import { currDBUserQueryOptions } from "@/backend/queries/user.queries";
+import { txnsOptions } from "@/api/queries/txn.queries";
+import { currDBUserQueryOptions } from "@/api/queries/user.queries";
 import { MemberBalanceList } from "@/components/dashboard/members-balance-list";
 import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
 import { DONATION_TYPE, ROUTE_TXN_TYPE } from "@/lib/constants";
@@ -38,13 +38,13 @@ export function TransactionList() {
         donationType,
         mode,
     } = Route.useSearch();
-    const { data: profile } = useSuspenseQuery(currDBUserQueryOptions());
+    const { data: profile } = useSuspenseQuery(currDBUserQueryOptions);
 
     const member = profile?.memberships.find(
         (m) => m.committee.toLowerCase() === committee,
     );
     const { data: pageResp } = useSuspenseQuery({
-        ...txnsByCommitteeOptions({
+        ...txnsOptions({
             committee: committee.toUpperCase() as Committee,
             txnType: type.toUpperCase() as TxnType,
             year: year,
@@ -77,6 +77,7 @@ export function TransactionList() {
                 committee={committee.toUpperCase() as Committee}
                 type={type.toUpperCase() as TxnType}
                 year={year}
+                handleSelect={() => {}}
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 w-full">
                 {type === ROUTE_TXN_TYPE.DONATION && (

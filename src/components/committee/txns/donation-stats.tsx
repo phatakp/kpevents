@@ -7,7 +7,7 @@ import {
     XAxis,
 } from "recharts";
 import type { BarShapeProps } from "recharts/types/cartesian/Bar";
-
+import { Amount } from "@/components/shared/amount";
 import {
     Card,
     CardAction,
@@ -17,15 +17,14 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import {
+    type ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-    type ChartConfig,
 } from "@/components/ui/chart";
-import type { DonationStat } from "@/types";
-import { Amount } from "@/components/shared/amount";
 import { amountShortener, cn } from "@/lib/utils";
 import { Route } from "@/routes/$committee.$year";
+import type { DonationStat } from "@/types";
 
 const chartConfig = {
     collection: {

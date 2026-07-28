@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { CardLoader } from "@/components/shared/loaders/card-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 import {
@@ -18,10 +19,21 @@ import { ItemBookingContent } from "./booking-content";
 import { ItemListContent } from "./items-content";
 
 export function ItemsList() {
+    const navigate = useNavigate();
     const { committee, subType, year } = Route.useParams();
     const { isBooking } = Route.useSearch();
     const { auth, config } = Route.useRouteContext();
     const cartItems = useCart((state) => state.items);
+
+    const handleSelect = (selectedYear: string) => {
+        navigate({
+            to: ".",
+            params: (old) => ({
+                ...old,
+                year: Number(selectedYear),
+            }),
+        });
+    };
 
     return (
         <Card className="w-full max-w-[calc(100vw-2rem)] md:max-w-full p-0 bg-background border-0 pr-4">
@@ -32,7 +44,10 @@ export function ItemsList() {
                 {auth.role === USER_ROLE.ADMIN &&
                     subType === ROUTE_SUB_TYPE.ANNADAAN && (
                         <CardDescription>
-                            <SelectYear year={year} />
+                            <SelectYear
+                                year={year}
+                                handleSelect={handleSelect}
+                            />
                         </CardDescription>
                     )}
                 {!isBooking && cartItems.length > 0 && (

@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { currDBUserQueryOptions } from "@/backend/queries/user.queries";
+import { currDBUserQueryOptions } from "@/api/queries/user.queries";
 import {
     Tabs,
     TabsContent,
@@ -9,12 +9,15 @@ import {
     TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
 import { COMMITTEE, TXN_TYPE } from "@/lib/constants";
-import { Route } from "@/routes/__root";
 import { MemberBalanceList } from "./members-balance-list";
 
-export function CommitteeTabs() {
-    const { config } = Route.useRouteContext();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions());
+type Props = {
+    year: number;
+    handleSelect: (year: string) => void;
+};
+
+export function CommitteeTabs({ year, handleSelect }: Props) {
+    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
     const activeMemberShip = user?.memberships?.filter((m) => m.isActive) ?? [];
     if (activeMemberShip.length === 0) return;
 
@@ -24,7 +27,9 @@ export function CommitteeTabs() {
                 <MemberBalanceList
                     committee={activeMemberShip[0].committee}
                     type={TXN_TYPE.DONATION}
-                    year={config.activeYear}
+                    year={year}
+                    handleSelect={handleSelect}
+                    showOther
                 />
             ) : (
                 <Tabs defaultValue={COMMITTEE.CULTURAL}>
@@ -54,7 +59,8 @@ export function CommitteeTabs() {
                             <MemberBalanceList
                                 committee={COMMITTEE.CULTURAL}
                                 type={TXN_TYPE.DONATION}
-                                year={config.activeYear}
+                                year={year}
+                                handleSelect={handleSelect}
                                 showOther
                             />
                         </TabsContent>
@@ -65,7 +71,8 @@ export function CommitteeTabs() {
                             <MemberBalanceList
                                 committee={COMMITTEE.TEMPLE}
                                 type={TXN_TYPE.DONATION}
-                                year={config.activeYear}
+                                year={year}
+                                handleSelect={handleSelect}
                                 showOther
                             />
                         </TabsContent>

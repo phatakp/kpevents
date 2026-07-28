@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { txnsByCommitteeOptions } from "@/backend/queries/txn.queries";
+import { txnsOptions } from "@/api/queries/txn.queries";
 import { Amount } from "@/components/shared/amount";
 import { AnimatedList, AnimatedListItem } from "@/components/ui/animated-list";
 import {
@@ -18,7 +18,7 @@ export function ItemBookingContent() {
     const { auth } = Route.useRouteContext();
     const { page = 0 } = Route.useSearch();
     const { data: pageResp } = useSuspenseQuery({
-        ...txnsByCommitteeOptions({
+        ...txnsOptions({
             committee: committee.toUpperCase() as Committee,
             txnType: TXN_TYPE.DONATION,
             year: year,

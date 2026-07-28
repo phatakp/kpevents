@@ -1,36 +1,57 @@
-import { useQuery } from "@tanstack/react-query";
-import { currUserBalancesByCommitteeOptions } from "@/backend/queries/user.queries";
 import { Amount } from "@/components/shared/amount";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAddMember } from "@/hooks/user.hooks";
 import { cn } from "@/lib/utils";
-import type { Committee, User } from "@/types";
+import type { Committee, User, UserBalance } from "@/types";
 
 type Props = {
     committee: Committee;
     user: User;
+    data: UserBalance[];
+    year: number;
 };
 
-export function MembershipStat({ committee, user }: Props) {
+export function MembershipStat({ committee, user, data, year }: Props) {
+    const { mutate } = useAddMember();
+    const currTxns = data.filter(
+        (d) => d.clerkId === user.clerkId && d.committee === committee,
+    );
+
+    const totalBalance = currTxns.reduce((acc, b) => acc + b.balance, 0);
     const member = user.memberships.find((m) => m.committee === committee);
 
-    const { data: userBalance } = useQuery({
-        ...currUserBalancesByCommitteeOptions({ committee }),
-        enabled: !!member,
-    });
+    const currYearBalances = currTxns.filter((t) => t.year === year);
+    const otherYearBalances = currTxns.filter((t) => t.year !== year);
 
-    const { mutate } = useAddMember();
+    const groupedYear = Object.values(
+        otherYearBalances.reduce(
+            (acc, curr) => {
+                const key = curr.year;
+                if (!acc[key]) {
+                    acc[key] = { year: key, totalAmount: 0 };
+                }
+                acc[key].totalAmount += curr.balance;
+                return acc;
+            },
+            {} as Record<number, { year: number; totalAmount: number }>,
+        ),
+    );
 
-    if (!userBalance) return;
+    const groupedYearBalances =
+        groupedYear
+            .filter((u) => u.totalAmount !== 0)
+            .sort((a, b) => (b.year > a.year ? 1 : -1)) ?? [];
 
     return (
         <div className="flex flex-col gap-2 py-4 md:px-4">
             {member?.isActive ? (
                 <div className="flex items-center justify-between">
-                    <span className="text-lg font-heading">{committee}</span>
+                    <span className="font-heading capitalize">
+                        Your {committee.toLowerCase()} balance
+                    </span>
                     <Amount
-                        amount={userBalance.total}
+                        amount={totalBalance}
                         className="text-xl md:text-2xl"
                     />
                 </div>
@@ -58,7 +79,7 @@ export function MembershipStat({ committee, user }: Props) {
 
             {member?.isActive && (
                 <div className="grid gap-2 text-sm">
-                    {userBalance?.balances?.map((bal) => {
+                    {currYearBalances?.map((bal) => {
                         const title =
                             bal.txnType === "DONATION"
                                 ? `${bal.donationType?.toLowerCase()} donations`
@@ -67,7 +88,7 @@ export function MembershipStat({ committee, user }: Props) {
                                   : "Internal Transfers";
                         return (
                             <div
-                                key={`${bal.year}-${bal.txnType}-${bal.donationType}`}
+                                key={`${bal.txnType}-${bal.donationType}`}
                                 className="flex items-center w-full justify-between text-muted-foreground"
                             >
                                 <span className="capitalize font-heading font-normal">
@@ -78,6 +99,28 @@ export function MembershipStat({ committee, user }: Props) {
                                     className={cn(
                                         "text-sm font-normal",
                                         bal.balance < 0
+                                            ? "text-destructive"
+                                            : "text-success",
+                                    )}
+                                    iconClass="size-3"
+                                />
+                            </div>
+                        );
+                    })}
+                    {groupedYearBalances?.map((bal) => {
+                        return (
+                            <div
+                                key={bal.year}
+                                className="flex items-center w-full justify-between text-muted-foreground"
+                            >
+                                <span className="capitalize font-heading font-normal">
+                                    {bal.year} balance
+                                </span>
+                                <Amount
+                                    amount={bal.totalAmount}
+                                    className={cn(
+                                        "text-sm font-normal",
+                                        bal.totalAmount < 0
                                             ? "text-destructive"
                                             : "text-success",
                                     )}

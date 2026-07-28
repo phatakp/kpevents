@@ -18,16 +18,12 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import type { SelectOption } from "@/types";
 import { type FormBaseProps, FormInputBase } from "./base";
 import { useFieldContext } from "./hooks";
 
-type Option = {
-    value: string;
-    label: string;
-};
-
 type Props = FormBaseProps & {
-    options: Option[];
+    options: SelectOption[];
     isCreatable?: boolean;
     onCreate?: (val: string) => void;
 };
@@ -41,7 +37,7 @@ export const SelectInput = ({
     const field = useFieldContext<string | undefined>();
     const currValue = options.find((o) => o.value === field.state.value);
     const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState<Option>(
+    const [selected, setSelected] = useState<SelectOption>(
         currValue ?? { label: "", value: "" },
     );
     const [search, setSearch] = useState("");

@@ -36,6 +36,13 @@ import type {
     UserShortSchema,
 } from "./zod/user.schema";
 
+export type APIErrResponse = {
+    errorCode: string;
+    errorDescription: string;
+    timestamp: string;
+    fieldErrors: Record<string, string>[] | null;
+};
+
 // Utility type to fix optional types
 type Evaluate<T> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Evaluate<
@@ -84,3 +91,4 @@ export type ItemResponse = z4.infer<typeof ItemSchema>;
 export type ItemQueryOptions = z4.infer<typeof ItemQuerySchema>;
 
 export type BookingRequest = z4.infer<typeof BookingSchema>;
+export type SelectOption = { label: string; value: string };

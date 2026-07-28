@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { txnsByCommitteeOptions } from "@/backend/queries/txn.queries";
+import { txnsOptions } from "@/api/queries/txn.queries";
 import {
+    allUserBalancesOptions,
+    committeeMemberOptions,
     currDBUserQueryOptions,
-    memberBalancesByCommitteeOptions,
-    membersByCommitteeOptions,
-} from "@/backend/queries/user.queries";
+} from "@/api/queries/user.queries";
 import { TxnTypeTabs } from "@/components/committee/txns/txn-type-tabs";
 import { Background } from "@/components/shared/background";
 import { TabsLoader } from "@/components/shared/loaders/tabs-loader";
@@ -42,13 +42,13 @@ export const Route = createFileRoute("/transactions/$committee/$type/$year")({
     loader: async ({ context, params, deps }) => {
         // get user profile from db
         context.queryClient.ensureQueryData({
-            ...currDBUserQueryOptions(),
+            ...currDBUserQueryOptions,
             revalidateIfStale: true,
         });
 
         // get user profile from db
         context.queryClient.ensureQueryData({
-            ...membersByCommitteeOptions({
+            ...committeeMemberOptions({
                 committee: params.committee.toUpperCase() as Committee,
             }),
             revalidateIfStale: true,
@@ -56,15 +56,13 @@ export const Route = createFileRoute("/transactions/$committee/$type/$year")({
 
         // get committee balances by member
         context.queryClient.ensureQueryData({
-            ...memberBalancesByCommitteeOptions({
-                committee: params.committee.toUpperCase() as Committee,
-            }),
+            ...allUserBalancesOptions,
             revalidateIfStale: true,
         });
 
         // get transactions
         context.queryClient.ensureQueryData({
-            ...txnsByCommitteeOptions({
+            ...txnsOptions({
                 committee: params.committee.toUpperCase() as Committee,
                 year: params.year,
                 txnType: params.type.toUpperCase() as TxnType,

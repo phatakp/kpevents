@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createContext, useContext } from "react";
-import { linkedTransferOptions } from "@/backend/queries/txn.queries";
-import { membersByCommitteeOptions } from "@/backend/queries/user.queries";
+import { createContext, type PropsWithChildren, useContext } from "react";
+import { linkedTransferOptions } from "@/api/queries/txn.queries";
+import { committeeMemberOptions } from "@/api/queries/user.queries";
 import {
     Tabs,
     TabsContent,
@@ -23,6 +23,7 @@ import { useCart } from "@/stores/cart.store";
 import type {
     Committee,
     DonationType,
+    SelectOption,
     Transaction,
     TxnFormValues,
     TxnType,
@@ -46,12 +47,10 @@ type Props = {
 const TxnFormContext = createContext(
     {} as {
         defaultValues: TxnFormValues;
-        memberOptions: {
-            label: string;
-            value: string;
-        }[];
+        memberOptions: SelectOption[];
     },
 );
+
 export const useTxnFormContext = () => useContext(TxnFormContext);
 
 export function TransactionForm({
@@ -64,16 +63,6 @@ export function TransactionForm({
     const { data: linked } = useSuspenseQuery({
         ...linkedTransferOptions(txn),
     });
-    const { data: users } = useSuspenseQuery({
-        ...membersByCommitteeOptions({ committee }),
-    });
-
-    const memberOptions =
-        users?.map((u) => ({
-            label: getUserInfo(u),
-            value: u.clerkId,
-        })) ?? [];
-
     const items = useCart((state) => state.items);
     const defaultFormOptions = getDefaultFormOptions({
         committee,
@@ -83,6 +72,9 @@ export function TransactionForm({
         fromUserId: linked?.fromUserId,
         loggedInUserId: auth.userId as string,
         items,
+    });
+    const { data: memberOptions } = useSuspenseQuery({
+        ...committeeMemberOptions({ committee, optionsOnly: true }),
     });
 
     const { mutate: createTransaction } = useCreateTransaction();
@@ -116,7 +108,7 @@ export function TransactionForm({
         <TxnFormContext.Provider
             value={{
                 ...defaultFormOptions,
-                memberOptions,
+                memberOptions: memberOptions as SelectOption[],
             }}
         >
             <form

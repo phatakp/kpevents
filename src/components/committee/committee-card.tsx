@@ -1,10 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 import { ArrowRightIcon } from "lucide-react";
-import { balancesByCommitteeOptions } from "@/backend/queries/txn.queries";
-import { currDBUserQueryOptions } from "@/backend/queries/user.queries";
+import { committeeBalancesOptions } from "@/api/queries/txn.queries";
+import { currDBUserQueryOptions } from "@/api/queries/user.queries";
 import { Amount } from "@/components/shared/amount";
+import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 import { buttonVariants } from "@/components/ui/button";
 import {
     Card,
@@ -16,12 +17,11 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ROUTE_TXN_TYPE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Route } from "@/routes/$committee.$year";
 import type { Committee, RouteCommittee } from "@/types";
-import { SuspenseErrorBoundary } from "../shared/suspense-error-boundary";
-import { Skeleton } from "../ui/skeleton";
 import { SelectYear } from "./select-year";
 import { TxnButton } from "./txns/txn-button";
 
@@ -127,18 +127,29 @@ export function CommitteeCard({ className }: Props) {
 }
 
 function CommitteeCardDescription() {
+    const navigate = useNavigate();
     const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions());
+    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
     const member = user?.memberships.find(
         (m) => m.committee.toLowerCase() === committee,
     );
-    if (member?.isActive) return <SelectYear year={year} />;
+    const handleSelect = (selectedYear: string) => {
+        navigate({
+            to: ".",
+            params: (old) => ({
+                ...old,
+                year: Number(selectedYear),
+            }),
+        });
+    };
+    if (member?.isActive)
+        return <SelectYear year={year} handleSelect={handleSelect} />;
     return `Committee Balance - ${year}`;
 }
 
 function CommitteeCardAction() {
     const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions());
+    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
     const member = user?.memberships.find(
         (m) => m.committee.toLowerCase() === committee,
     );
@@ -154,7 +165,7 @@ function CommitteeCardAction() {
 }
 function CommitteeCardFooter() {
     const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions());
+    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
     const member = user?.memberships.find(
         (m) => m.committee.toLowerCase() === committee,
     );
@@ -178,7 +189,7 @@ function CommitteeCardFooter() {
 
 function CommitteeCardTitle() {
     const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions());
+    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
     const member = user?.memberships.find(
         (m) => m.committee.toLowerCase() === committee,
     );
@@ -194,7 +205,7 @@ function CommitteeCardTitle() {
 function OtherYearTotals() {
     const { committee, year } = Route.useParams();
     const { data: balances } = useSuspenseQuery({
-        ...balancesByCommitteeOptions({
+        ...committeeBalancesOptions({
             committee: committee.toUpperCase() as Committee,
         }),
     });
@@ -241,7 +252,7 @@ function OtherYearTotals() {
 function CurrentYearTotals() {
     const { committee, year } = Route.useParams();
     const { data: balances } = useSuspenseQuery({
-        ...balancesByCommitteeOptions({
+        ...committeeBalancesOptions({
             committee: committee.toUpperCase() as Committee,
         }),
     });
@@ -291,7 +302,7 @@ function CurrentYearTotals() {
 function TotalBalance() {
     const { committee, year } = Route.useParams();
     const { data: balances } = useSuspenseQuery({
-        ...balancesByCommitteeOptions({
+        ...committeeBalancesOptions({
             committee: committee.toUpperCase() as Committee,
         }),
     });

@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
     Tabs,
     TabsContent,
@@ -30,8 +30,19 @@ type Props = {
 };
 
 export function TxnTypeTabs({ className }: Props) {
+    const navigate = useNavigate();
     const { committee, type, year } = Route.useParams();
     const { donationType } = Route.useSearch();
+
+    const handleSelect = (selectedYear: string) => {
+        navigate({
+            to: ".",
+            params: (old) => ({
+                ...old,
+                year: Number(selectedYear),
+            }),
+        });
+    };
 
     return (
         <div
@@ -74,7 +85,10 @@ export function TxnTypeTabs({ className }: Props) {
                                         {committee} {type}s
                                     </CardTitle>
                                     <CardDescription>
-                                        <SelectYear year={year} />
+                                        <SelectYear
+                                            year={year}
+                                            handleSelect={handleSelect}
+                                        />
                                     </CardDescription>
                                     <CardAction>
                                         <TxnButton

@@ -1,12 +1,9 @@
-import {
-    becomeMember,
-    createProfile,
-    updateProfile,
-} from "@/backend/services/user.services";
-import { useModal } from "@/components/shared/modal";
-import { QUERY_KEYS } from "@/lib/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { requestMemberShip } from "@/api/functions/member.function";
+import { createProfile, updateProfile } from "@/api/functions/user.function";
+import { QUERY_KEYS } from "@/api/keys";
+import { useModal } from "@/components/shared/modal";
 
 export function useCreateProfile() {
     const queryClient = useQueryClient();
@@ -47,7 +44,7 @@ export function useUpdateProfile() {
 export function useAddMember() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: becomeMember,
+        mutationFn: requestMemberShip,
         onSuccess: (_, input) => {
             toast.success(`${input.data.committee} Membership Requested`);
             return queryClient.invalidateQueries({

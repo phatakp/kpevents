@@ -3,6 +3,7 @@ import { getFlatsForBuilding } from "@/lib/utils";
 import {
     BalanceStatSchema,
     BuildingSchema,
+    CommitteeBalanceSchema,
     CommitteeSchema,
     UserRoleSchema,
 } from "./common.schema";
@@ -36,10 +37,10 @@ export const UserShortSchema = UserSchema.pick({
     flat: true,
 });
 
-export const UserBalanceSchema = UserShortSchema.extend({
-    total: z4.coerce.number<number>(),
-    balances: z4.array(BalanceStatSchema),
-});
+export const UserBalanceSchema = z4.intersection(
+    UserShortSchema,
+    CommitteeBalanceSchema,
+);
 
 export const FlatNumberSchema = z4.object({
     building: z4.union([BuildingSchema, z4.undefined()]),

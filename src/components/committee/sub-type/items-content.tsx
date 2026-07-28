@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { itemsOptions } from "@/backend/queries/txn.queries";
+import { itemsOptions } from "@/api/queries/txn.queries";
 import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
 import { Amount } from "@/components/shared/amount";
 import { AnimatedList, AnimatedListItem } from "@/components/ui/animated-list";

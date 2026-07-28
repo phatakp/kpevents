@@ -1,4 +1,4 @@
-import { IndianRupee, Pen, PlusIcon, ShoppingCart, Trash } from "lucide-react";
+import { Pen, ShoppingCart, Trash } from "lucide-react";
 import { Modal } from "@/components/shared/modal";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -56,15 +56,7 @@ export function TxnButton({
                 />
             }
         >
-            {!txn && !isBooking && (
-                <>
-                    <div className="flex items-center">
-                        <IndianRupee className="size-3" />
-                        <PlusIcon className="size-3" />
-                    </div>
-                    Add
-                </>
-            )}
+            {!txn && !isBooking && <span>Add Transaction</span>}
 
             {!txn && isBooking && (
                 <>

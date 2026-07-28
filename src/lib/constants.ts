@@ -1,10 +1,3 @@
-import type {
-    CommitteeQueryOptions,
-    CommitteeYearQueryOptions,
-    ItemQueryOptions,
-    TxnQueryOptions,
-} from "@/types";
-
 export const PAGE_SIZE = 10;
 export const PER_FLOOR_FLATS = 4;
 
@@ -73,77 +66,4 @@ export const localization = {
             subtitle: "Sign in to {{applicationName}}",
         },
     },
-};
-
-export const QUERY_KEYS = {
-    config: ["config"] as const,
-
-    allUsers: ["users"] as const,
-
-    approveMember: ["approve"] as const,
-
-    allTxns: ["txns"] as const,
-
-    currUser: ["approve", "users", "curr-user"] as const,
-
-    currSessionUser: ["users", "session-user"] as const,
-
-    pendingMembers: ["approve", "admin", "pending"] as const,
-
-    membersByCommittee: ({ committee }: CommitteeQueryOptions) => [
-        "approve",
-        "users",
-        "members",
-        committee,
-    ],
-
-    balancesByCommittee: ({ committee }: CommitteeQueryOptions) => [
-        "txns",
-        "balance",
-        committee,
-    ],
-
-    currUserBalancesByCommittee: ({ committee }: CommitteeQueryOptions) => [
-        "txns",
-        "users",
-        "curr-user",
-        "member-balance",
-        committee,
-    ],
-
-    memberBalancesByCommittee: ({ committee }: CommitteeQueryOptions) => [
-        "txns",
-        "users",
-        "member-balance",
-        committee,
-    ],
-
-    donationStatsByCommittee: ({
-        committee,
-        year,
-    }: CommitteeYearQueryOptions) => [
-        "txns",
-        "donation-stats",
-        committee,
-        year,
-    ],
-
-    txnsByCommittee: ({
-        committee,
-        txnType,
-        year,
-        building,
-        donationType,
-    }: TxnQueryOptions) => [
-        "txns",
-        committee,
-        txnType,
-        year,
-        building,
-        donationType,
-    ],
-
-    linkedTransfer: (txnId: string) => ["txns", "linked", txnId],
-
-    items: ({ type, year }: ItemQueryOptions) => ["txns", "items", type, year],
 };
