@@ -8,11 +8,7 @@ export const getLoggedInUser = createServerFn({ method: "GET" }).handler(
         try {
             const { userId, sessionClaims } = await auth();
             if (!userId) throw Error("Not authenticated");
-            // if (userId) user = await clerkClient().users.getUser(userId);
-            // if (sessionId) {
-            //     const token = await clerkClient().sessions.getToken(sessionId);
-            //     console.log(token);
-            // }
+
             return {
                 userId,
                 role: sessionClaims.metadata?.role as UserRole,

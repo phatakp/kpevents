@@ -21,6 +21,18 @@ const config = defineConfig({
                     runtime: "bun1.x", // Keeping the Bun runtime execution is fine
                 },
             },
+            // Force Nitro to use memory drivers instead of local disk for storage and caching
+            storage: {
+                cache: {
+                    driver: "memory",
+                },
+            },
+            devStorage: {
+                cache: {
+                    driver: "fs",
+                    base: "./.nitro/cache",
+                },
+            },
         }),
         tailwindcss(),
         tanstackStart({
