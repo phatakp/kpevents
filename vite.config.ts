@@ -15,7 +15,13 @@ const config = defineConfig({
     },
     plugins: [
         devtools(),
-        nitro({ preset: "vercel" }),
+        nitro({
+            vercel: {
+                functions: {
+                    runtime: "bun1.x", // Keeping the Bun runtime execution is fine
+                },
+            },
+        }),
         tailwindcss(),
         tanstackStart({
             serverFns: {

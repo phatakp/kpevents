@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { Amount } from "@/components/shared/amount";
 import { AnimatedList, AnimatedListItem } from "@/components/ui/animated-list";
 import { Badge } from "@/components/ui/badge";
-import { TXN_MODE } from "@/lib/constants";
+import { TXN_MODE, TXN_TYPE } from "@/lib/constants";
 import { cn, getUserInfo } from "@/lib/utils";
 import { Route } from "@/routes/transactions.$committee.$type.$year";
 import type { Transaction } from "@/types";
@@ -78,7 +78,7 @@ export function OtherTxnList({ txns }: Props) {
 
                                     <TxnActions txn={txn} isMobile />
                                     <span className="text-left text-xs capitalize text-muted-foreground w-full md:hidden col-span-11 col-start-2">
-                                        {`Receiver: ${getUserInfo(txn.txnUser)}`}
+                                        {`${txn.txnType === TXN_TYPE.EXPENSE ? "Paid By" : "Receiver"}: ${getUserInfo(txn.txnUser)}`}
                                     </span>
                                 </div>
                             </AnimatedListItem>
