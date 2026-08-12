@@ -96,7 +96,7 @@ export const RouteTypeSchema = z4.enum(ROUTE_TYPE_OPTIONS);
 export const RouteSubTypeSchema = z4.enum(ROUTE_SUBTYPE_OPTIONS);
 
 export const ControlRecordSchema = z4.object({
-    activeYear: z4.coerce.number<number>(),
+    activeYear: z4.coerce.number<number>().min(2025).max(2100),
     isAnnadaanActive: z4.coerce.boolean<boolean>(),
 });
 

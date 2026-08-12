@@ -30,7 +30,10 @@ export class AdminRepository {
 
     async updateConfig(request: z4.infer<typeof ControlRecordSchema>) {
         try {
-            const res = await api.put(`${this.url}`, JSON.stringify(request));
+            const res = await api.put(
+                `${this.url}/config`,
+                JSON.stringify(request),
+            );
             return res.data as Control;
         } catch (error) {
             handleAPIError(error);

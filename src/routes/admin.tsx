@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { allMembersOptions } from "@/api/queries/admin.queries";
+import { AdminForm } from "@/components/admin/admin-form";
 import { AllMembers } from "@/components/admin/all-members";
 import { Background } from "@/components/shared/background";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
@@ -16,6 +17,8 @@ function RouteComponent() {
         <Background className="items-start">
             <div className="flex flex-col gap-6 py-8 container">
                 <span className="title">Admin Page</span>
+
+                <AdminForm />
 
                 <SuspenseErrorBoundary
                     id={`user-card`}

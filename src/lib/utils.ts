@@ -84,7 +84,7 @@ export const capitalise = (s: string) => {
 
 export const getUserInfo = (user?: UserShort) => {
     if (!user) return "";
-    return `${user.firstName.toLowerCase()} ${user.lastName?.toLowerCase()} (${user.building}-${user.flat})`;
+    return `${user.firstName.toLowerCase()} ${user.lastName?.toLowerCase()} ${user.firstName.toLowerCase() === "unknown" ? "" : `(${user.building}-${user.flat})`}`;
 };
 
 export const getUserOptions = (filteredTxns: Transaction[]) => {
