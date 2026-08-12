@@ -14,6 +14,10 @@ import type {
 } from "@/types";
 import type { SearchSchema } from "@/zod/common.schema";
 import {
+    type TransactionRequestSchema,
+    TransactionSchema,
+} from "@/zod/txn.schema";
+import {
     BUILDING_FLOORS,
     COMMITTEE,
     DONATION_TYPE,
@@ -225,4 +229,10 @@ export function isBookingType(type: DonationType | undefined) {
     return (
         type === DONATION_TYPE.ANNADAAN || type === DONATION_TYPE.TEMPLE_ITEM
     );
+}
+
+export function mapReqToTransaction(
+    req: z4.infer<typeof TransactionRequestSchema>,
+) {
+    return TransactionSchema.safeParse({ ...req }).data;
 }

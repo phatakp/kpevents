@@ -15,23 +15,30 @@ export function useApproveMember() {
                 queryKey: QUERY_KEYS.users.allUsers,
             });
             // 2) Snapshot the previous state (for rollback)
-            const previousMemberList = queryClient.getQueryData(
+            const previousMemberList = queryClient.getQueryData<User[]>(
                 QUERY_KEYS.users.allUsers,
             );
             // 3) Optimistically update the cache
-            queryClient.setQueryData(QUERY_KEYS.users.allUsers, (old: User[]) =>
-                old.map((u) =>
-                    u.clerkId === variables.data.userId
-                        ? {
-                              ...u,
-                              memberships: u.memberships.map((m) => {
-                                  if (m.committee === variables.data.committee)
-                                      return { ...m, isActive: true };
-                                  return m;
-                              }),
-                          }
-                        : u,
-                ),
+            queryClient.setQueryData(
+                QUERY_KEYS.users.allUsers,
+                (old?: User[]) =>
+                    old
+                        ? old.map((u) =>
+                              u.clerkId === variables.data.userId
+                                  ? {
+                                        ...u,
+                                        memberships: u.memberships.map((m) => {
+                                            if (
+                                                m.committee ===
+                                                variables.data.committee
+                                            )
+                                                return { ...m, isActive: true };
+                                            return m;
+                                        }),
+                                    }
+                                  : u,
+                          )
+                        : [],
             );
             return { previousMemberList };
         },
@@ -40,7 +47,7 @@ export function useApproveMember() {
                 queryKey: QUERY_KEYS.users.allUsers,
             });
         },
-        onError: (error, variables, context) => {
+        onError: (error, _, context) => {
             toast.error(error.message ?? "Could not process request");
             queryClient.setQueryData(
                 QUERY_KEYS.users.allUsers,
@@ -63,22 +70,27 @@ export function useDeleteMember() {
                 queryKey: QUERY_KEYS.users.allUsers,
             });
             // 2) Snapshot the previous state (for rollback)
-            const previousMemberList = queryClient.getQueryData(
+            const previousMemberList = queryClient.getQueryData<User[]>(
                 QUERY_KEYS.users.allUsers,
             );
             // 3) Optimistically update the cache
-            queryClient.setQueryData(QUERY_KEYS.users.allUsers, (old: User[]) =>
-                old.map((u) =>
-                    u.clerkId === variables.data.userId
-                        ? {
-                              ...u,
-                              memberships: u.memberships.filter(
-                                  (m) =>
-                                      m.committee !== variables.data.committee,
-                              ),
-                          }
-                        : u,
-                ),
+            queryClient.setQueryData(
+                QUERY_KEYS.users.allUsers,
+                (old?: User[]) =>
+                    old
+                        ? old.map((u) =>
+                              u.clerkId === variables.data.userId
+                                  ? {
+                                        ...u,
+                                        memberships: u.memberships.filter(
+                                            (m) =>
+                                                m.committee !==
+                                                variables.data.committee,
+                                        ),
+                                    }
+                                  : u,
+                          )
+                        : [],
             );
             return { previousMemberList };
         },
@@ -87,7 +99,7 @@ export function useDeleteMember() {
                 queryKey: QUERY_KEYS.users.allUsers,
             });
         },
-        onError: (error, variables, context) => {
+        onError: (error, _, context) => {
             toast.error(error.message ?? "Could not process request");
             queryClient.setQueryData(
                 QUERY_KEYS.users.allUsers,
@@ -110,13 +122,19 @@ export function useUpdateConfig() {
                 queryKey: QUERY_KEYS.config,
             });
             // 2) Snapshot the previous state (for rollback)
-            const previousConfig = queryClient.getQueryData(QUERY_KEYS.config);
+            const previousConfig = queryClient.getQueryData<Control>(
+                QUERY_KEYS.config,
+            );
             // 3) Optimistically update the cacheQUERY_KEYS.config);
             // 3) Optimistically update the cache
-            queryClient.setQueryData(QUERY_KEYS.config, (old: Control) => ({
-                ...old,
-                ...variables.data,
-            }));
+            queryClient.setQueryData(QUERY_KEYS.config, (old?: Control) =>
+                old
+                    ? {
+                          ...old,
+                          ...variables.data,
+                      }
+                    : undefined,
+            );
             return { previousConfig };
         },
         onSettled: () => {
@@ -124,7 +142,7 @@ export function useUpdateConfig() {
                 queryKey: QUERY_KEYS.config,
             });
         },
-        onError: (error, variables, context) => {
+        onError: (error, _, context) => {
             toast.error(error.message ?? "Could not process request");
             queryClient.setQueryData(
                 QUERY_KEYS.config,
