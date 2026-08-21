@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
     Card,
+    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
@@ -29,6 +30,7 @@ type Props = {
     year: number;
     handleSelect: (year: string) => void;
     showOther?: boolean;
+    totalElements?: number;
 };
 
 export function MemberBalanceList({
@@ -37,6 +39,7 @@ export function MemberBalanceList({
     year,
     showOther,
     handleSelect,
+    totalElements,
 }: Props) {
     const { data: profile } = useSuspenseQuery(currDBUserQueryOptions);
 
@@ -93,6 +96,11 @@ export function MemberBalanceList({
                         className="title text-3xl"
                     />
                 </CardDescription>
+                {totalElements && (
+                    <CardAction>
+                        <Badge>{totalElements} entries</Badge>
+                    </CardAction>
+                )}
             </CardHeader>
 
             <CardContent className="flex flex-col gap-4">

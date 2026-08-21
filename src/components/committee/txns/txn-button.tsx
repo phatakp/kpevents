@@ -32,10 +32,15 @@ export function TxnButton({
             closeBtnClass="text-primary-foreground hover:text-accent"
             btnClass={cn(
                 buttonVariants({
-                    size: "sm",
-                    variant: !txn ? "default" : "ghost",
+                    size: !txn && !isBooking ? "sm" : "icon-xs",
+                    variant: !txn
+                        ? "default"
+                        : isDelete
+                          ? "destructive"
+                          : "ghost",
                 }),
-                txn && "justify-start",
+                // txn && "justify-start",
+                !txn && "w-full max-w-sm",
             )}
             title={
                 !txn

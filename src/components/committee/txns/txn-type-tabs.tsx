@@ -81,7 +81,7 @@ export function TxnTypeTabs({ className }: Props) {
                         <TabsContent key={typ} value={typ}>
                             <Card className="w-full max-w-[calc(100vw-2rem)] md:max-w-full p-0 bg-background border-0 pr-4">
                                 <CardHeader className="py-4 px-0">
-                                    <CardTitle className="title capitalize text-xl">
+                                    <CardTitle className="title capitalize text-2xl">
                                         {committee} {type}s
                                     </CardTitle>
                                     <CardDescription>
@@ -90,15 +90,14 @@ export function TxnTypeTabs({ className }: Props) {
                                             handleSelect={handleSelect}
                                         />
                                     </CardDescription>
-                                    <CardAction>
-                                        <TxnButton
-                                            committee={
-                                                committee.toUpperCase() as Committee
-                                            }
-                                            year={year}
-                                            donationType={donationType}
-                                        />
-                                    </CardAction>
+
+                                    <TxnButton
+                                        committee={
+                                            committee.toUpperCase() as Committee
+                                        }
+                                        year={year}
+                                        donationType={donationType}
+                                    />
                                 </CardHeader>
                                 <CardContent className="px-0">
                                     <SuspenseErrorBoundary

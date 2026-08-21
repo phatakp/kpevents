@@ -40,7 +40,7 @@ export function AllMembers() {
     } = useDeleteMember();
     const flattenedUsers = Array.prototype.flat.call(
         users?.map((u) => u.memberships.map((m) => ({ ...u, ...m }))),
-    ) as (UserShort & UserMembership)[];
+    ) as (UserShort & UserMembership & { email: string })[];
     const filteredUsers = flattenedUsers
         .filter((u) => u.committee === committee)
         .sort((a, b) => (a.isActive > b.isActive ? 1 : -1));
@@ -97,7 +97,14 @@ export function AllMembers() {
                             return (
                                 <TableRow key={u.clerkId + u.committee}>
                                     <TableCell className="font-medium text-muted-foreground">
-                                        {u.firstName} {u?.lastName}
+                                        <div className="grid">
+                                            <span>
+                                                {u.firstName} {u?.lastName}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground">
+                                                {u.email}
+                                            </span>
+                                        </div>
                                     </TableCell>
                                     <TableCell className="font-medium text-muted-foreground">
                                         {u.isActive ? "Active" : "Inactive"}

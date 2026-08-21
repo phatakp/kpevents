@@ -78,6 +78,7 @@ export function TransactionList() {
                 type={type.toUpperCase() as TxnType}
                 year={year}
                 handleSelect={() => {}}
+                totalElements={totalElements}
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 w-full">
                 {type === ROUTE_TXN_TYPE.DONATION && (
