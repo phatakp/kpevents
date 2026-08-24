@@ -164,7 +164,7 @@ export const TransactionSchemaWithValidation = TransactionFormSchema.check(
         }
 
         if (
-            (ctx.value.txnType !== TXN_TYPE.DONATION ||
+            (ctx.value.txnType === TXN_TYPE.EXPENSE ||
                 ctx.value.donationType === DONATION_TYPE.OTHER) &&
             !ctx.value.description
         ) {
