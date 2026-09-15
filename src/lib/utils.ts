@@ -14,6 +14,8 @@ import type {
 } from "@/types";
 import type { SearchSchema } from "@/zod/common.schema";
 import {
+    type ItemRequestSchema,
+    ItemSchema,
     type TransactionRequestSchema,
     TransactionSchema,
 } from "@/zod/txn.schema";
@@ -235,4 +237,12 @@ export function mapReqToTransaction(
     req: z4.infer<typeof TransactionRequestSchema>,
 ) {
     return TransactionSchema.safeParse({ ...req }).data;
+}
+
+export function mapReqToItem(req: z4.infer<typeof ItemRequestSchema>) {
+    return ItemSchema.safeParse({
+        ...req,
+        availableQty: req.quantity,
+        availableAmt: req.amount,
+    }).data;
 }

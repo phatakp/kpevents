@@ -22,6 +22,7 @@ import type {
     BookingSchema,
     DonationSchema,
     ItemQuerySchema,
+    ItemRequestSchema,
     ItemSchema,
     LinkedTransferSchema,
     PageSchema,
@@ -87,6 +88,7 @@ export type TxnQueryOptions = z4.infer<typeof TxnQuerySchema>;
 
 export type TxnFormValues = z4.infer<typeof TransactionSchemaWithValidation>;
 
+export type ItemRequest = z4.infer<typeof ItemRequestSchema>;
 export type ItemResponse = z4.infer<typeof ItemSchema>;
 export type ItemQueryOptions = z4.infer<typeof ItemQuerySchema>;
 

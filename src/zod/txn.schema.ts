@@ -308,6 +308,16 @@ export const ItemSchema = z4.object({
     type: ItemTypeSchema,
 });
 
+export const ItemRequestSchema = ItemSchema.omit({
+    id: true,
+    availableQty: true,
+    availableAmt: true,
+}).extend({
+    id: z4
+        .union([z4.coerce.number<number>(), z4.undefined()])
+        .transform((e) => (e === 0 ? undefined : e)),
+});
+
 export const ItemQuerySchema = ItemSchema.pick({ type: true }).extend({
     year: z4.coerce.number<number>(),
 });

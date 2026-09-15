@@ -1,9 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { updateConfig } from "@/api/functions/admin.function";
+import {
+    createItem,
+    deleteItem,
+    updateConfig,
+    updateItem,
+} from "@/api/functions/admin.function";
 import { approveMember, deleteMember } from "@/api/functions/member.function";
 import { QUERY_KEYS } from "@/api/keys";
-import type { Control, User } from "@/types";
+import { useModal } from "@/components/shared/modal";
+import { mapReqToItem } from "@/lib/utils";
+import type { Control, ItemResponse, User } from "@/types";
 
 export function useApproveMember() {
     const queryClient = useQueryClient();
@@ -151,6 +158,138 @@ export function useUpdateConfig() {
         },
         onSuccess: () => {
             toast.success(`Configuration updated successfully`);
+        },
+    });
+}
+
+export function useCreateAnnadaanItem() {
+    const queryClient = useQueryClient();
+    const { modalId, closeModal } = useModal();
+
+    return useMutation({
+        mutationFn: createItem,
+        onMutate: async (variables) => {
+            // 1) Cancel in-flight refetches to prevent race conditions
+            await queryClient.cancelQueries({
+                queryKey: QUERY_KEYS.txns.allItems,
+            });
+            // 2) Snapshot the previous state (for rollback)
+            const previousItems = queryClient.getQueryData<ItemResponse[]>(
+                QUERY_KEYS.txns.allItems,
+            );
+            // 3) Optimistically update the cache
+            queryClient.setQueryData(
+                QUERY_KEYS.txns.allItems,
+                (old?: ItemResponse[]) =>
+                    old ? [...old, mapReqToItem(variables.data)] : [],
+            );
+            return { previousItems };
+        },
+        onSettled: () => {
+            return queryClient.invalidateQueries({
+                queryKey: QUERY_KEYS.txns.allItems,
+            });
+        },
+        onError: (error, _, context) => {
+            toast.error(error.message ?? "Could not process request");
+            queryClient.setQueryData(
+                QUERY_KEYS.txns.allItems,
+                context?.previousItems,
+            );
+        },
+        onSuccess: () => {
+            toast.success(`Item added successfully`);
+            closeModal(modalId);
+        },
+    });
+}
+
+export function useUpdateAnnadaanItem() {
+    const queryClient = useQueryClient();
+    const { modalId, closeModal } = useModal();
+
+    return useMutation({
+        mutationFn: updateItem,
+        onMutate: async (variables) => {
+            // 1) Cancel in-flight refetches to prevent race conditions
+            await queryClient.cancelQueries({
+                queryKey: QUERY_KEYS.txns.allItems,
+            });
+            // 2) Snapshot the previous state (for rollback)
+            const previousItems = queryClient.getQueryData<ItemResponse[]>(
+                QUERY_KEYS.txns.allItems,
+            );
+            // 3) Optimistically update the cache
+            queryClient.setQueryData(
+                QUERY_KEYS.txns.allItems,
+                (old?: ItemResponse[]) =>
+                    old
+                        ? old.map((o) =>
+                              o.id === variables.data.id
+                                  ? mapReqToItem(variables.data)
+                                  : o,
+                          )
+                        : [],
+            );
+            return { previousItems };
+        },
+        onSettled: () => {
+            return queryClient.invalidateQueries({
+                queryKey: QUERY_KEYS.txns.allItems,
+            });
+        },
+        onError: (error, _, context) => {
+            toast.error(error.message ?? "Could not process request");
+            queryClient.setQueryData(
+                QUERY_KEYS.txns.allItems,
+                context?.previousItems,
+            );
+        },
+        onSuccess: () => {
+            toast.success(`Item updated successfully`);
+            closeModal(modalId);
+        },
+    });
+}
+
+export function useDeleteAnnadaanItem() {
+    const queryClient = useQueryClient();
+    const { modalId, closeModal } = useModal();
+
+    return useMutation({
+        mutationFn: deleteItem,
+        onMutate: async (variables) => {
+            // 1) Cancel in-flight refetches to prevent race conditions
+            await queryClient.cancelQueries({
+                queryKey: QUERY_KEYS.txns.allItems,
+            });
+            // 2) Snapshot the previous state (for rollback)
+            const previousItems = queryClient.getQueryData<ItemResponse[]>(
+                QUERY_KEYS.txns.allItems,
+            );
+            // 3) Optimistically update the cache
+            queryClient.setQueryData(
+                QUERY_KEYS.txns.allItems,
+                (old?: ItemResponse[]) =>
+                    old ? old.filter((o) => o.id !== variables.data.id) : [],
+            );
+            return { previousItems };
+        },
+        onSettled: () => {
+            return queryClient.invalidateQueries({
+                queryKey: QUERY_KEYS.txns.allItems,
+            });
+        },
+        onError: (error, _, context) => {
+            toast.error(error.message ?? "Could not process request");
+            queryClient.setQueryData(
+                QUERY_KEYS.txns.allItems,
+                context?.previousItems,
+            );
+        },
+        onSuccess: () => {
+            toast.success(`Item deleted successfully`);
+            closeModal(modalId);
         },
     });
 }

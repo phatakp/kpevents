@@ -57,5 +57,6 @@ export const QUERY_KEYS = {
             type,
             year,
         ],
+        allItems: ["items"] as const,
     },
 };
