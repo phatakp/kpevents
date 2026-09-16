@@ -1,5 +1,13 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 export function NavLink({
@@ -7,29 +15,69 @@ export function NavLink({
     title,
     icon,
     partial,
+    isDropdown,
+    dropdownLinks,
 }: {
     href: string;
     title: string;
     icon: ReactNode;
     partial?: string;
+    isDropdown?: boolean;
+    dropdownLinks?: {
+        title: string;
+        href: string;
+    }[];
 }) {
     const location = useLocation();
-
-    return (
-        <Link to={href} className="flex flex-col items-center gap-1">
+    const btn = (
+        <>
             <span className="hidden md:flex title font-semibold text-base font-sans">
                 {title}
             </span>
             {icon}
             <span
                 className={cn(
-                    "bg-foreground h-1 w-12 transition-all duration-1000 ease-in-out",
+                    "bg-foreground h-1 w-full transition-all duration-1000 ease-in-out absolute -bottom-1",
                     location.pathname === href ||
                         (partial && location.pathname.includes(partial))
                         ? "opacity-100 translate-x-0"
                         : "opacity-0 -translate-x-full",
                 )}
-            ></span>
+            />
+        </>
+    );
+
+    if (isDropdown)
+        return (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size={"sm"} className="relative">
+                        {btn}
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuGroup className="pt-4">
+                        {dropdownLinks?.map((d) => {
+                            return (
+                                <DropdownMenuItem key={d.title} asChild>
+                                    <Link to={d.href}>{d.title}</Link>
+                                </DropdownMenuItem>
+                            );
+                        })}
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        );
+
+    return (
+        <Link
+            to={href}
+            className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "relative",
+            )}
+        >
+            {btn}
         </Link>
     );
 }

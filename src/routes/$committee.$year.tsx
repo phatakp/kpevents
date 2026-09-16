@@ -15,7 +15,8 @@ import { Background } from "@/components/shared/background";
 import { CardLoader } from "@/components/shared/loaders/card-loader";
 import { CardStatsLoader } from "@/components/shared/loaders/card-stats-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
-import { cn } from "@/lib/utils";
+import { MEMBER_STATUS } from "@/lib/constants";
+import { cn, getMemberStatus } from "@/lib/utils";
 import type { Committee, RouteCommittee, User } from "@/types";
 
 export const Route = createFileRoute("/$committee/$year")({
@@ -75,8 +76,9 @@ function RouteComponent() {
 
     const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
 
-    const member = user?.memberships.find(
-        (m) => m.committee.toLowerCase() === committee,
+    const memberStatus = getMemberStatus(
+        user as User,
+        committee.toUpperCase() as Committee,
     );
 
     const { data: stats } = useSuspenseQuery({
@@ -98,11 +100,16 @@ function RouteComponent() {
                 <div
                     className={cn(
                         "grid gap-6 w-full max-w-[calc(100vw-1rem)] mx-auto md:max-w-full",
-                        member?.isActive && stats && stats.length > 0 && members
+                        memberStatus === MEMBER_STATUS.ACTIVE &&
+                            stats &&
+                            stats.length > 0 &&
+                            members
                             ? "md:grid-cols-3"
-                            : member?.isActive && stats && stats.length > 0
+                            : memberStatus === MEMBER_STATUS.ACTIVE &&
+                                stats &&
+                                stats.length > 0
                               ? "md:grid-cols-1"
-                              : member?.isActive && members
+                              : memberStatus === MEMBER_STATUS.ACTIVE && members
                                 ? "md:grid-cols-3"
                                 : "md:grid-cols-1",
                     )}

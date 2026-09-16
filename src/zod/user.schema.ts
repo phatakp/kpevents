@@ -4,13 +4,11 @@ import {
     BuildingSchema,
     CommitteeBalanceSchema,
     CommitteeSchema,
+    MemberStatusSchema,
     UserRoleSchema,
 } from "./common.schema";
 
-export const UserMembershipSchema = z4.object({
-    committee: CommitteeSchema,
-    isActive: z4.coerce.boolean<boolean>(),
-});
+export const UserMembershipSchema = z4.map(CommitteeSchema, MemberStatusSchema);
 
 export const UserSchema = z4.object({
     clerkId: z4.string({ error: "Clerk ID is required" }),
@@ -25,7 +23,7 @@ export const UserSchema = z4.object({
     building: BuildingSchema,
     role: UserRoleSchema,
     flat: z4.coerce.number<number>(),
-    memberships: z4.array(UserMembershipSchema).transform((e) => e ?? []),
+    membership: UserMembershipSchema,
 });
 
 export const UserShortSchema = UserSchema.pick({
@@ -50,7 +48,7 @@ export const ProfileSchema = UserSchema.omit({
     building: true,
     flat: true,
     role: true,
-    memberships: true,
+    membership: true,
 }).extend({ flatNumber: FlatNumberSchema });
 
 export const ProfileSchemaWithValidation = ProfileSchema.check((ctx) => {

@@ -1,8 +1,9 @@
 import { AnimatedList, AnimatedListItem } from "@/components/ui/animated-list";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { MEMBER_STATUS } from "@/lib/constants";
+import { cn, getMemberStatus } from "@/lib/utils";
 import { Route } from "@/routes/$committee.$year";
-import type { User } from "@/types";
+import type { Committee, User } from "@/types";
 
 type Props = {
     data: User[];
@@ -23,11 +24,11 @@ export function CommitteeMemberList({ className, data }: Props) {
             <span className="title text-xl md:text-3xl">Committee Members</span>
             <AnimatedList>
                 {users?.map((u) => {
-                    const isActive = u.memberships.find(
-                        (m) =>
-                            m.committee === committee.toUpperCase() &&
-                            m.isActive,
-                    );
+                    const isActive =
+                        getMemberStatus(
+                            u,
+                            committee.toUpperCase() as Committee,
+                        ) === MEMBER_STATUS.ACTIVE;
 
                     return (
                         <AnimatedListItem key={u.clerkId}>

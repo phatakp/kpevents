@@ -4,6 +4,7 @@ import {
     COMMITTEE,
     DONATION_TYPE,
     ITEM_TYPE,
+    MEMBER_STATUS,
     ROUTE_COMMITTEE,
     ROUTE_SUB_TYPE,
     ROUTE_TXN_TYPE,
@@ -51,6 +52,12 @@ export const TXN_TYPE_OPTIONS = [
     TXN_TYPE.TRANSFER,
 ] as const;
 
+export const MEMBER_STATUS_OPTIONS = [
+    MEMBER_STATUS.ACTIVE,
+    MEMBER_STATUS.INACTIVE,
+    MEMBER_STATUS.NON,
+] as const;
+
 export const DONATION_TYPE_OPTIONS = [
     DONATION_TYPE.ANNADAAN,
     DONATION_TYPE.CULTURAL,
@@ -82,6 +89,7 @@ export const BuildingSchema = z4.enum(BUILDING_OPTIONS);
 export const CommitteeSchema = z4.enum(COMMITTEE_OPTIONS, {
     error: "Committee is required",
 });
+export const MemberStatusSchema = z4.enum(MEMBER_STATUS_OPTIONS);
 export const DonationTypeSchema = z4.enum(DONATION_TYPE_OPTIONS);
 export const TxnTypeSchema = z4.enum(TXN_TYPE_OPTIONS, {
     error: "Txn Type is required",

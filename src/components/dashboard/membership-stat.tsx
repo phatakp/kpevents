@@ -2,7 +2,8 @@ import { Amount } from "@/components/shared/amount";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAddMember } from "@/hooks/user.hooks";
-import { cn } from "@/lib/utils";
+import { MEMBER_STATUS } from "@/lib/constants";
+import { cn, getMemberStatus } from "@/lib/utils";
 import type { Committee, User, UserBalance } from "@/types";
 
 type Props = {
@@ -19,7 +20,7 @@ export function MembershipStat({ committee, user, data, year }: Props) {
     );
 
     const totalBalance = currTxns.reduce((acc, b) => acc + b.balance, 0);
-    const member = user.memberships.find((m) => m.committee === committee);
+    const memberStatus = getMemberStatus(user, committee);
 
     const currYearBalances = currTxns.filter((t) => t.year === year);
     const otherYearBalances = currTxns.filter((t) => t.year !== year);
@@ -45,7 +46,7 @@ export function MembershipStat({ committee, user, data, year }: Props) {
 
     return (
         <div className="flex flex-col gap-2 py-4 md:px-4">
-            {member?.isActive ? (
+            {memberStatus === MEMBER_STATUS.ACTIVE ? (
                 <div className="flex items-center justify-between">
                     <span className="font-heading capitalize">
                         Your {committee.toLowerCase()} balance
@@ -61,7 +62,7 @@ export function MembershipStat({ committee, user, data, year }: Props) {
                         {committee}
                     </p>
                     <div className="flex items-center gap-1">
-                        {!member && (
+                        {memberStatus === MEMBER_STATUS.NON && (
                             <Button
                                 size={"sm"}
                                 className="w-fit"
@@ -70,14 +71,14 @@ export function MembershipStat({ committee, user, data, year }: Props) {
                                 Request Membership
                             </Button>
                         )}
-                        {member && !member.isActive && (
+                        {memberStatus === MEMBER_STATUS.INACTIVE && (
                             <Badge>Membership Requested</Badge>
                         )}
                     </div>
                 </>
             )}
 
-            {member?.isActive && (
+            {memberStatus === MEMBER_STATUS.ACTIVE && (
                 <div className="grid gap-2 text-sm">
                     {currYearBalances?.map((bal) => {
                         const title =

@@ -8,7 +8,8 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
-import { COMMITTEE, TXN_TYPE } from "@/lib/constants";
+import { COMMITTEE, MEMBER_STATUS, TXN_TYPE } from "@/lib/constants";
+import type { Committee } from "@/types";
 import { MemberBalanceList } from "./members-balance-list";
 
 type Props = {
@@ -18,14 +19,17 @@ type Props = {
 
 export function CommitteeTabs({ year, handleSelect }: Props) {
     const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const activeMemberShip = user?.memberships?.filter((m) => m.isActive) ?? [];
+    const activeMemberShip = Object.entries(user?.membership ?? {})
+        .filter(([_, v]) => v === MEMBER_STATUS.ACTIVE)
+        .map(([k, _]) => k);
+
     if (activeMemberShip.length === 0) return;
 
     return (
         <div className="flex w-full max-w-3xl flex-col gap-6 mx-auto">
             {activeMemberShip.length === 1 ? (
                 <MemberBalanceList
-                    committee={activeMemberShip[0].committee}
+                    committee={activeMemberShip[0] as Committee}
                     type={TXN_TYPE.DONATION}
                     year={year}
                     handleSelect={handleSelect}

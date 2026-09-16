@@ -52,6 +52,11 @@ export const ITEM_TYPE = {
     TEMPLE: "TEMPLE",
 } as const;
 export const USER_ROLE = { ADMIN: "ADMIN", USER: "USER" } as const;
+export const MEMBER_STATUS = {
+    ACTIVE: "ACTIVE_MEMBER",
+    INACTIVE: "INACTIVE_MEMBER",
+    NON: "NON_MEMBER",
+} as const;
 
 export const localization = {
     signUp: {

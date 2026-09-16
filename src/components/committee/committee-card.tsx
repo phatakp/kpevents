@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ROUTE_TXN_TYPE } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { MEMBER_STATUS, ROUTE_TXN_TYPE } from "@/lib/constants";
+import { cn, getMemberStatus } from "@/lib/utils";
 import { Route } from "@/routes/$committee.$year";
-import type { Committee, RouteCommittee } from "@/types";
+import type { Committee, RouteCommittee, User } from "@/types";
 import { SelectYear } from "./select-year";
 import { TxnButton } from "./txns/txn-button";
 
@@ -130,9 +130,11 @@ function CommitteeCardDescription() {
     const navigate = useNavigate();
     const { committee, year } = Route.useParams();
     const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const member = user?.memberships.find(
-        (m) => m.committee.toLowerCase() === committee,
+    const memberStatus = getMemberStatus(
+        user as User,
+        committee.toUpperCase() as Committee,
     );
+
     const handleSelect = (selectedYear: string) => {
         navigate({
             to: ".",
@@ -142,7 +144,7 @@ function CommitteeCardDescription() {
             }),
         });
     };
-    if (member?.isActive)
+    if (memberStatus === MEMBER_STATUS.ACTIVE)
         return <SelectYear year={year} handleSelect={handleSelect} />;
     return `Committee Balance - ${year}`;
 }
@@ -150,10 +152,11 @@ function CommitteeCardDescription() {
 function CommitteeCardAction() {
     const { committee, year } = Route.useParams();
     const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const member = user?.memberships.find(
-        (m) => m.committee.toLowerCase() === committee,
+    const memberStatus = getMemberStatus(
+        user as User,
+        committee.toUpperCase() as Committee,
     );
-    if (!member?.isActive) return null;
+    if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
     return (
         <CardAction>
             <TxnButton
@@ -166,10 +169,11 @@ function CommitteeCardAction() {
 function CommitteeCardFooter() {
     const { committee, year } = Route.useParams();
     const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const member = user?.memberships.find(
-        (m) => m.committee.toLowerCase() === committee,
+    const memberStatus = getMemberStatus(
+        user as User,
+        committee.toUpperCase() as Committee,
     );
-    if (!member?.isActive) return null;
+    if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
     return (
         <CardFooter>
             <Link
@@ -190,10 +194,11 @@ function CommitteeCardFooter() {
 function CommitteeCardTitle() {
     const { committee, year } = Route.useParams();
     const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const member = user?.memberships.find(
-        (m) => m.committee.toLowerCase() === committee,
+    const memberStatus = getMemberStatus(
+        user as User,
+        committee.toUpperCase() as Committee,
     );
-    if (!member?.isActive) return null;
+    if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
     return (
         <>
             <span className="text-base">Committee Balance - {year}</span>

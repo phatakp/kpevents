@@ -19,9 +19,20 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { COMMITTEE, ROUTE_SUB_TYPE, TXN_TYPE } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-import type { BalanceStat, Committee, RouteCommittee, TxnType } from "@/types";
+import {
+    COMMITTEE,
+    MEMBER_STATUS,
+    ROUTE_SUB_TYPE,
+    TXN_TYPE,
+} from "@/lib/constants";
+import { cn, getMemberStatus } from "@/lib/utils";
+import type {
+    BalanceStat,
+    Committee,
+    RouteCommittee,
+    TxnType,
+    User,
+} from "@/types";
 import { SelectYear } from "../committee/select-year";
 
 type Props = {
@@ -43,7 +54,7 @@ export function MemberBalanceList({
 }: Props) {
     const { data: profile } = useSuspenseQuery(currDBUserQueryOptions);
 
-    const member = profile?.memberships.find((m) => m.committee === committee);
+    const memberStatus = getMemberStatus(profile as User, committee);
 
     const { data: txns } = useSuspenseQuery(allUserBalancesOptions);
     const committeeTxns = txns?.filter((t) => t.committee === committee) ?? [];
@@ -106,7 +117,7 @@ export function MemberBalanceList({
             <CardContent className="flex flex-col gap-4">
                 {type === TXN_TYPE.DONATION &&
                     !showOther &&
-                    member?.isActive && (
+                    memberStatus === MEMBER_STATUS.ACTIVE && (
                         <Link
                             to="/$committee/$subType/$year"
                             params={{

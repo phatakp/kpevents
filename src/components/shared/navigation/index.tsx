@@ -3,6 +3,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 import { ArrowRight, UserKeyIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 import { USER_ROLE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Route } from "@/routes/__root";
@@ -54,34 +55,216 @@ export function Navbar() {
                             }
                         />
                     </SignedIn>
-                    <NavLink
-                        href={`/cultural/${config.activeYear}`}
-                        title="Cultural"
-                        partial="/cultural/"
-                        icon={
-                            <Image
-                                src={"/hindu.png"}
-                                width={36}
-                                height={36}
-                                alt="logo-3"
-                                className="md:hidden"
-                            />
-                        }
-                    />
-                    <NavLink
-                        href={`/temple/${config.activeYear}`}
-                        title="Temple"
-                        partial="/temple/"
-                        icon={
-                            <Image
-                                src={"/temple.png"}
-                                width={40}
-                                height={32}
-                                alt="logo-2"
-                                className="md:hidden pb-1"
-                            />
-                        }
-                    />
+                    <SignedOut>
+                        <NavLink
+                            href={`/cultural/${config.activeYear}`}
+                            title="Cultural"
+                            partial="/cultural/"
+                            icon={
+                                <Image
+                                    src={"/hindu.png"}
+                                    width={36}
+                                    height={36}
+                                    alt="logo-3"
+                                    className="md:hidden"
+                                />
+                            }
+                        />
+                        <NavLink
+                            href={`/temple/${config.activeYear}`}
+                            title="Temple"
+                            partial="/temple/"
+                            icon={
+                                <Image
+                                    src={"/temple.png"}
+                                    width={40}
+                                    height={32}
+                                    alt="logo-2"
+                                    className="md:hidden pb-1"
+                                />
+                            }
+                        />
+                    </SignedOut>
+                    <SignedIn>
+                        <NavLink
+                            href={`/cultural/${config.activeYear}`}
+                            title="Cultural"
+                            partial="/cultural/"
+                            icon={
+                                <Image
+                                    src={"/hindu.png"}
+                                    width={36}
+                                    height={36}
+                                    alt="logo-3"
+                                    className="md:hidden"
+                                />
+                            }
+                            isDropdown
+                            dropdownLinks={[
+                                {
+                                    title: "Stats",
+                                    href: `/cultural/${config.activeYear}`,
+                                },
+                                {
+                                    title: "Cultural Transactions",
+                                    href: `/transactions/cultural/donation/${config.activeYear}`,
+                                },
+                                {
+                                    title: "Annadaan Transactions",
+                                    href: `/cultural/annadaan/${config.activeYear}`,
+                                },
+                            ]}
+                        />
+
+                        <NavLink
+                            href={`/temple/${config.activeYear}`}
+                            title="Temple"
+                            partial="/temple/"
+                            icon={
+                                <Image
+                                    src={"/temple.png"}
+                                    width={40}
+                                    height={32}
+                                    alt="logo-2"
+                                    className="md:hidden pb-1"
+                                />
+                            }
+                            isDropdown
+                            dropdownLinks={[
+                                {
+                                    title: "Stats",
+                                    href: `/temple/${config.activeYear}`,
+                                },
+                                {
+                                    title: "Temple Transactions",
+                                    href: `/transactions/temple/donation/${config.activeYear}`,
+                                },
+                                {
+                                    title: "Item Bookings",
+                                    href: `/temple/temple/${config.activeYear}`,
+                                },
+                            ]}
+                        />
+
+                        {/* <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size={"sm"}>
+                                    <span className="hidden md:flex title font-semibold text-base font-sans">
+                                        Cultural
+                                    </span>
+                                    <Image
+                                        src={"/hindu.png"}
+                                        width={36}
+                                        height={36}
+                                        alt="logo-3"
+                                        className="md:hidden"
+                                    />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuGroup className="pt-4">
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            to="/$committee/$year"
+                                            params={{
+                                                committee:
+                                                    ROUTE_COMMITTEE.CULTURAL,
+                                                year: config.activeYear,
+                                            }}
+                                        >
+                                            Stats
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            to="/transactions/$committee/$type/$year"
+                                            params={{
+                                                committee:
+                                                    ROUTE_COMMITTEE.CULTURAL,
+                                                type: ROUTE_TXN_TYPE.DONATION,
+                                                year: config.activeYear,
+                                            }}
+                                        >
+                                            Cultural Transactions
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            to="/$committee/$subType/$year"
+                                            params={{
+                                                committee:
+                                                    ROUTE_COMMITTEE.CULTURAL,
+                                                subType:
+                                                    ROUTE_SUB_TYPE.ANNADAAN,
+                                                year: config.activeYear,
+                                            }}
+                                        >
+                                            Annadaan Transactions
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size={"sm"}>
+                                    <span className="hidden md:flex title font-semibold text-base font-sans">
+                                        Temple
+                                    </span>
+                                    <Image
+                                        src={"/temple.png"}
+                                        width={40}
+                                        height={32}
+                                        alt="logo-2"
+                                        className="md:hidden pb-1"
+                                    />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuGroup className="pt-4">
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            to="/$committee/$year"
+                                            params={{
+                                                committee:
+                                                    ROUTE_COMMITTEE.TEMPLE,
+                                                year: config.activeYear,
+                                            }}
+                                        >
+                                            Stats
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            to="/transactions/$committee/$type/$year"
+                                            params={{
+                                                committee:
+                                                    ROUTE_COMMITTEE.TEMPLE,
+                                                type: ROUTE_TXN_TYPE.DONATION,
+                                                year: config.activeYear,
+                                            }}
+                                        >
+                                            Temple Transactions
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            to="/$committee/$subType/$year"
+                                            params={{
+                                                committee:
+                                                    ROUTE_COMMITTEE.TEMPLE,
+                                                subType: ROUTE_SUB_TYPE.TEMPLE,
+                                                year: config.activeYear,
+                                            }}
+                                        >
+                                            Item Bookings
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu> */}
+                    </SignedIn>
                 </div>
                 <SignedIn>
                     <UserButton>

@@ -3,10 +3,11 @@ import { txnsOptions } from "@/api/queries/txn.queries";
 import { currDBUserQueryOptions } from "@/api/queries/user.queries";
 import { MemberBalanceList } from "@/components/dashboard/members-balance-list";
 import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
-import { DONATION_TYPE, ROUTE_TXN_TYPE } from "@/lib/constants";
+import { DONATION_TYPE, MEMBER_STATUS, ROUTE_TXN_TYPE } from "@/lib/constants";
 import {
     cn,
     getFilteredTxns,
+    getMemberStatus,
     getPaidByOptions,
     getUserOptions,
 } from "@/lib/utils";
@@ -17,6 +18,7 @@ import type {
     DonationType,
     RouteType,
     TxnType,
+    User,
 } from "@/types";
 import { BuildingFilter } from "./building-filter";
 import { DonationList } from "./donation-list";
@@ -40,8 +42,9 @@ export function TransactionList() {
     } = Route.useSearch();
     const { data: profile } = useSuspenseQuery(currDBUserQueryOptions);
 
-    const member = profile?.memberships.find(
-        (m) => m.committee.toLowerCase() === committee,
+    const memberStatus = getMemberStatus(
+        profile as User,
+        committee.toUpperCase() as Committee,
     );
     const { data: pageResp } = useSuspenseQuery({
         ...txnsOptions({
@@ -54,7 +57,7 @@ export function TransactionList() {
         }),
     });
 
-    if (!member?.isActive) return null;
+    if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
 
     const start = page === 0 ? 0 : page * 10;
     const end = start + 10;

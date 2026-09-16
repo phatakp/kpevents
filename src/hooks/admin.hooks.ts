@@ -9,6 +9,7 @@ import {
 import { approveMember, deleteMember } from "@/api/functions/member.function";
 import { QUERY_KEYS } from "@/api/keys";
 import { useModal } from "@/components/shared/modal";
+import { MEMBER_STATUS } from "@/lib/constants";
 import { mapReqToItem } from "@/lib/utils";
 import type { Control, ItemResponse, User } from "@/types";
 
@@ -34,14 +35,11 @@ export function useApproveMember() {
                               u.clerkId === variables.data.userId
                                   ? {
                                         ...u,
-                                        memberships: u.memberships.map((m) => {
-                                            if (
-                                                m.committee ===
-                                                variables.data.committee
-                                            )
-                                                return { ...m, isActive: true };
-                                            return m;
-                                        }),
+                                        membership: {
+                                            ...u.membership,
+                                            [variables.data.committee]:
+                                                MEMBER_STATUS.ACTIVE,
+                                        },
                                     }
                                   : u,
                           )
@@ -89,11 +87,11 @@ export function useDeleteMember() {
                               u.clerkId === variables.data.userId
                                   ? {
                                         ...u,
-                                        memberships: u.memberships.filter(
-                                            (m) =>
-                                                m.committee !==
-                                                variables.data.committee,
-                                        ),
+                                        membership: {
+                                            ...u.membership,
+                                            [variables.data.committee]:
+                                                MEMBER_STATUS.NON,
+                                        },
                                     }
                                   : u,
                           )

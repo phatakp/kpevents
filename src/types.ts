@@ -10,6 +10,7 @@ import type {
     DonationStatSchema,
     DonationTypeSchema,
     ItemTypeSchema,
+    MemberStatusSchema,
     RouteCommitteeSchema,
     RouteSubTypeSchema,
     RouteTypeSchema,
@@ -58,6 +59,7 @@ export type ItemType = z4.infer<typeof ItemTypeSchema>;
 export type TxnMode = z4.infer<typeof TxnModeSchema>;
 export type UserRole = z4.infer<typeof UserRoleSchema>;
 export type Control = z4.infer<typeof ControlRecordSchema>;
+export type MemberStatus = z4.infer<typeof MemberStatusSchema>;
 
 export type RouteType = z4.infer<typeof RouteTypeSchema>;
 export type RouteCommittee = z4.infer<typeof RouteCommitteeSchema>;

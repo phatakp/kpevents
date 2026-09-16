@@ -21,8 +21,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { useApproveMember, useDeleteMember } from "@/hooks/admin.hooks";
-import { COMMITTEE } from "@/lib/constants";
-import type { Committee, UserMembership, UserShort } from "@/types";
+import { COMMITTEE, MEMBER_STATUS } from "@/lib/constants";
+import { getMemberStatus } from "@/lib/utils";
+import type { Committee } from "@/types";
 import { COMMITTEE_OPTIONS } from "@/zod/common.schema";
 
 export function AllMembers() {
@@ -38,12 +39,9 @@ export function AllMembers() {
         isPending: isPendingDelete,
         variables: deleteInput,
     } = useDeleteMember();
-    const flattenedUsers = Array.prototype.flat.call(
-        users?.map((u) => u.memberships.map((m) => ({ ...u, ...m }))),
-    ) as (UserShort & UserMembership & { email: string })[];
-    const filteredUsers = flattenedUsers
-        .filter((u) => u.committee === committee)
-        .sort((a, b) => (a.isActive > b.isActive ? 1 : -1));
+    const filteredUsers = users?.filter(
+        (u) => getMemberStatus(u, committee) !== MEMBER_STATUS.NON,
+    );
 
     return (
         <div className="flex flex-col gap-6 mt-8">
@@ -85,17 +83,18 @@ export function AllMembers() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredUsers.map((u) => {
+                        {filteredUsers?.map((u) => {
+                            const memberStatus = getMemberStatus(u, committee);
                             const isUpdating =
                                 isPendingUpdate &&
                                 approveInput?.data.userId === u.clerkId &&
-                                approveInput?.data.committee === u.committee;
+                                approveInput?.data.committee === committee;
                             const isDeleting =
                                 isPendingDelete &&
                                 deleteInput?.data.userId === u.clerkId &&
-                                deleteInput?.data.committee === u.committee;
+                                deleteInput?.data.committee === committee;
                             return (
-                                <TableRow key={u.clerkId + u.committee}>
+                                <TableRow key={u.clerkId + committee}>
                                     <TableCell className="font-medium text-muted-foreground">
                                         <div className="grid">
                                             <span>
@@ -107,10 +106,11 @@ export function AllMembers() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="font-medium text-muted-foreground">
-                                        {u.isActive ? "Active" : "Inactive"}
+                                        {memberStatus}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {!u.isActive && (
+                                        {memberStatus ===
+                                            MEMBER_STATUS.INACTIVE && (
                                             <Button
                                                 variant={"success"}
                                                 size={"icon-sm"}
@@ -118,8 +118,7 @@ export function AllMembers() {
                                                 onClick={() =>
                                                     approveMember({
                                                         data: {
-                                                            committee:
-                                                                u.committee,
+                                                            committee,
                                                             userId: u.clerkId,
                                                         },
                                                     })
@@ -128,7 +127,8 @@ export function AllMembers() {
                                                 <Check />
                                             </Button>
                                         )}
-                                        {u.isActive && (
+                                        {memberStatus ===
+                                            MEMBER_STATUS.ACTIVE && (
                                             <Button
                                                 variant={"destructive"}
                                                 size={"icon-sm"}
@@ -136,8 +136,7 @@ export function AllMembers() {
                                                 onClick={() =>
                                                     deleteMember({
                                                         data: {
-                                                            committee:
-                                                                u.committee,
+                                                            committee,
                                                             userId: u.clerkId,
                                                         },
                                                     })

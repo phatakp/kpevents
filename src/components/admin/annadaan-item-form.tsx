@@ -46,6 +46,7 @@ export function AnnadaanItemForm({ item, isDelete }: Props) {
 
     return (
         <form
+            id={`${item?.id ?? "new"}-${isDelete}`}
             className="flex flex-col gap-7 max-w-sm mx-auto"
             onSubmit={(e) => {
                 e.preventDefault();
@@ -64,7 +65,18 @@ export function AnnadaanItemForm({ item, isDelete }: Props) {
                     )}
                 </form.AppField>
 
-                <form.AppField name={"quantity"}>
+                <form.AppField
+                    name={"quantity"}
+                    listeners={{
+                        onChangeDebounceMs: 500,
+                        onChange: ({ value }) => {
+                            const price = form.getFieldValue("price");
+                            if (price > 0) {
+                                form.setFieldValue("amount", price * value);
+                            }
+                        },
+                    }}
+                >
                     {(field) => (
                         <field.TextInput
                             label={"Quantity"}
@@ -74,7 +86,18 @@ export function AnnadaanItemForm({ item, isDelete }: Props) {
                     )}
                 </form.AppField>
 
-                <form.AppField name={"price"}>
+                <form.AppField
+                    name={"price"}
+                    listeners={{
+                        onChangeDebounceMs: 500,
+                        onChange: ({ value }) => {
+                            const quantity = form.getFieldValue("quantity");
+                            if (quantity > 0) {
+                                form.setFieldValue("amount", quantity * value);
+                            }
+                        },
+                    }}
+                >
                     {(field) => (
                         <field.TextInput
                             label={"Price"}

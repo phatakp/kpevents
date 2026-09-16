@@ -9,7 +9,9 @@ import type {
     Building,
     Committee,
     DonationType,
+    MemberStatus,
     Transaction,
+    User,
     UserShort,
 } from "@/types";
 import type { SearchSchema } from "@/zod/common.schema";
@@ -23,6 +25,7 @@ import {
     BUILDING_FLOORS,
     COMMITTEE,
     DONATION_TYPE,
+    MEMBER_STATUS,
     PER_FLOOR_FLATS,
     TXN_MODE,
     TXN_TYPE,
@@ -245,4 +248,9 @@ export function mapReqToItem(req: z4.infer<typeof ItemRequestSchema>) {
         availableQty: req.quantity,
         availableAmt: req.amount,
     }).data;
+}
+
+export function getMemberStatus(user: User, committee: Committee) {
+    return (Object.assign(user.membership)[committee] ??
+        MEMBER_STATUS.NON) as MemberStatus;
 }
