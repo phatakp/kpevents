@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { txnsOptions } from "@/api/queries/txn.queries";
+import { apiQueries } from "@/api/queries";
 import { Amount } from "@/components/shared/amount";
 import { AnimatedList, AnimatedListItem } from "@/components/ui/animated-list";
 import {
@@ -17,8 +17,8 @@ export function ItemBookingContent() {
     const { committee, subType, year } = Route.useParams();
     const { auth } = Route.useRouteContext();
     const { page = 0 } = Route.useSearch();
-    const { data: pageResp } = useSuspenseQuery({
-        ...txnsOptions({
+    const { data: pageResp } = useSuspenseQuery(
+        apiQueries.txn.filtered({
             committee: committee.toUpperCase() as Committee,
             txnType: TXN_TYPE.DONATION,
             year: year,
@@ -28,7 +28,7 @@ export function ItemBookingContent() {
                     ? DONATION_TYPE.ANNADAAN
                     : DONATION_TYPE.TEMPLE_ITEM,
         }),
-    });
+    );
 
     if (auth.role !== USER_ROLE.ADMIN) return null;
 
@@ -100,7 +100,7 @@ export function ItemBookingContent() {
                                 />
                             </div>
 
-                            <TxnActions txn={txn} isMobile isBooking />
+                            {/* <TxnActions txn={txn} isMobile isBooking /> */}
                             <span className="text-left text-xs capitalize text-muted-foreground md:hidden col-span-11 col-start-2">
                                 {`Receiver: ${getUserInfo(txn.txnUser)}`}
                             </span>

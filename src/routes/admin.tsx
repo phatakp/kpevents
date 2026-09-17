@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { allMembersOptions } from "@/api/queries/admin.queries";
+import { apiQueries } from "@/api/queries";
 import { AdminForm } from "@/components/admin/admin-form";
 import { AllMembers } from "@/components/admin/all-members";
 import { AnnadaanItemList } from "@/components/admin/annadaan-item-list";
@@ -16,7 +16,8 @@ import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-bounda
 export const Route = createFileRoute("/admin")({
     component: RouteComponent,
     loader: async ({ context }) => {
-        context.queryClient.ensureQueryData(allMembersOptions);
+        context.queryClient.prefetchQuery(apiQueries.user.allMembers());
+        context.queryClient.prefetchQuery(apiQueries.admin.annadaanItems());
     },
 });
 

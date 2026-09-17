@@ -1,4 +1,6 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { apiQueries } from "@/api/queries";
 import {
     Tabs,
     TabsContent,
@@ -6,9 +8,10 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
-import { USER_ROLE } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { MEMBER_STATUS, USER_ROLE } from "@/lib/constants";
+import { cn, getMemberStatus } from "@/lib/utils";
 import { Route } from "@/routes/$committee.$subType.$year";
+import type { Committee, MemberStatus } from "@/types";
 import { ItemsList } from "./items-list";
 
 type Props = {
@@ -16,9 +19,18 @@ type Props = {
 };
 export function ItemsTabs({ className }: Props) {
     const { auth } = Route.useRouteContext();
+    const { committee } = Route.useParams();
     const { isBooking } = Route.useSearch();
+    const { data: user } = useSuspenseQuery(apiQueries.user.currDBUser());
+    let memberStatus: MemberStatus = MEMBER_STATUS.NON;
+    if (user)
+        memberStatus = getMemberStatus(
+            user,
+            committee.toUpperCase() as Committee,
+        );
 
-    if (auth.role !== USER_ROLE.ADMIN) return <ItemsList />;
+    if (auth.role !== USER_ROLE.ADMIN || memberStatus !== MEMBER_STATUS.ACTIVE)
+        return <ItemsList />;
 
     return (
         <div

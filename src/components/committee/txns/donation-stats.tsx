@@ -83,7 +83,7 @@ export function DonationStatsByBuilding({ data, className }: Props) {
     }));
 
     return (
-        <Card className={cn("w-full", className)}>
+        <Card className={cn("w-full feature-card", className)}>
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <div className="grid gap-1">

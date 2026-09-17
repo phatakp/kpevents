@@ -12,8 +12,9 @@ import { useTxnFormContext } from "./txn-form";
 type Props = {
     txn?: Transaction;
     isDelete?: boolean | undefined;
+    isViewOnly?: boolean | undefined;
 };
-export function TempleItemForm({ txn, isDelete }: Props) {
+export function TempleItemForm({ txn, isDelete, isViewOnly }: Props) {
     const { defaultValues, memberOptions } = useTxnFormContext();
     const form = useTypedAppFormContext({ defaultValues });
     const items = useCart((state) => state.items);
@@ -199,9 +200,11 @@ export function TempleItemForm({ txn, isDelete }: Props) {
                 </div>
             </div>
 
-            <Button variant={"outline"} onClick={clearCart} type="button">
-                Clear Cart
-            </Button>
+            {!isViewOnly && (
+                <Button variant={"outline"} onClick={clearCart} type="button">
+                    Clear Cart
+                </Button>
+            )}
         </>
     );
 }

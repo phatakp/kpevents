@@ -1,11 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { txnsOptions } from "@/api/queries/txn.queries";
-import {
-    allUserBalancesOptions,
-    currDBUserQueryOptions,
-} from "@/api/queries/user.queries";
-import { TotalBalanceCard } from "@/components/dashboard/new/total-balance-card";
+import { apiQueries } from "@/api/queries";
+import { TotalBalanceCard } from "@/components/dashboard/total-balance-card";
 import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
+import { Card } from "@/components/ui/card";
 import { DONATION_TYPE, MEMBER_STATUS, ROUTE_TXN_TYPE } from "@/lib/constants";
 import {
     cn,
@@ -43,8 +40,8 @@ export function TransactionList() {
         donationType,
         mode,
     } = Route.useSearch();
-    const { data: profile } = useSuspenseQuery(currDBUserQueryOptions);
-    const { data } = useSuspenseQuery(allUserBalancesOptions);
+    const { data: profile } = useSuspenseQuery(apiQueries.user.currDBUser());
+    const { data } = useSuspenseQuery(apiQueries.txn.allUserBalances());
     const totalBalance =
         data
             ?.filter((d) => d.committee === committee.toUpperCase())
@@ -54,8 +51,8 @@ export function TransactionList() {
         profile as User,
         committee.toUpperCase() as Committee,
     );
-    const { data: pageResp } = useSuspenseQuery({
-        ...txnsOptions({
+    const { data: pageResp } = useSuspenseQuery(
+        apiQueries.txn.filtered({
             committee: committee.toUpperCase() as Committee,
             txnType: type.toUpperCase() as TxnType,
             year: year,
@@ -63,7 +60,7 @@ export function TransactionList() {
             donationType:
                 donationType === DONATION_TYPE.OTHER ? donationType : undefined,
         }),
-    });
+    );
 
     if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
 

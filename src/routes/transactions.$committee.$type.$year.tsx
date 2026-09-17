@@ -1,10 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { txnsOptions } from "@/api/queries/txn.queries";
-import {
-    allUserBalancesOptions,
-    committeeMemberOptions,
-    currDBUserQueryOptions,
-} from "@/api/queries/user.queries";
+import { apiQueries } from "@/api/queries";
 import { TxnTypeTabs } from "@/components/committee/txns/txn-type-tabs";
 import { Background } from "@/components/shared/background";
 import { TabsLoader } from "@/components/shared/loaders/tabs-loader";
@@ -41,36 +36,28 @@ export const Route = createFileRoute("/transactions/$committee/$type/$year")({
     },
     loader: async ({ context, params, deps }) => {
         // get user profile from db
-        context.queryClient.ensureQueryData({
-            ...currDBUserQueryOptions,
-            revalidateIfStale: true,
-        });
+        context.queryClient.prefetchQuery(apiQueries.user.currDBUser());
 
-        // get user profile from db
-        context.queryClient.ensureQueryData({
-            ...committeeMemberOptions({
-                committee: params.committee.toUpperCase() as Committee,
-            }),
-            revalidateIfStale: true,
-        });
+        // get committee members
+        context.queryClient.prefetchQuery(
+            apiQueries.user.membership(
+                params.committee.toUpperCase() as Committee,
+            ),
+        );
 
-        // get committee balances by member
-        context.queryClient.ensureQueryData({
-            ...allUserBalancesOptions,
-            revalidateIfStale: true,
-        });
+        // get balances for all members
+        context.queryClient.prefetchQuery(apiQueries.txn.allUserBalances());
 
         // get transactions
-        context.queryClient.ensureQueryData({
-            ...txnsOptions({
+        context.queryClient.prefetchQuery(
+            apiQueries.txn.filtered({
                 committee: params.committee.toUpperCase() as Committee,
                 year: params.year,
                 txnType: params.type.toUpperCase() as TxnType,
                 building: deps.building as Building,
                 donationType: deps.donationType,
             }),
-            revalidateIfStale: true,
-        });
+        );
     },
     pendingComponent: () => <TabsLoader cnt={3} />,
 });

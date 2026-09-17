@@ -27,6 +27,7 @@ type Props = {
     btnClass?: string;
     closeBtnClass?: string;
     onClose?: () => void;
+    onClick?: () => void;
 };
 
 type ModalContextProps = {

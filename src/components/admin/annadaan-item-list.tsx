@@ -1,7 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { IndianRupeeIcon, Pen, Plus, Trash2 } from "lucide-react";
-import { annadaanItemOptions } from "@/api/queries/admin.queries";
+import { apiQueries } from "@/api/queries";
 import { Amount } from "@/components/shared/amount";
+import { Modal } from "@/components/shared/modal";
+import { buttonVariants } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -13,13 +15,11 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Route } from "@/routes/__root";
-import { Modal } from "../shared/modal";
-import { buttonVariants } from "../ui/button";
 import { AnnadaanItemForm } from "./annadaan-item-form";
 
 export function AnnadaanItemList() {
     const { config } = Route.useRouteContext();
-    const { data: items } = useSuspenseQuery(annadaanItemOptions);
+    const { data: items } = useSuspenseQuery(apiQueries.admin.annadaanItems());
     return (
         <div className="flex flex-col gap-6">
             <span className="font-heading font-semibold text-lg">

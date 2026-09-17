@@ -1,10 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { itemsOptions } from "@/api/queries/txn.queries";
+import { apiQueries } from "@/api/queries";
 import { ItemsTabs } from "@/components/committee/sub-type/items-tab";
 import { Background } from "@/components/shared/background";
 import { TabsLoader } from "@/components/shared/loaders/tabs-loader";
+import { DONATION_TYPE, ROUTE_SUB_TYPE, TXN_TYPE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import type { ItemType, RouteCommittee, RouteSubType } from "@/types";
+import type {
+    Committee,
+    ItemType,
+    RouteCommittee,
+    RouteSubType,
+} from "@/types";
 import { SearchSchema } from "@/zod/common.schema";
 
 export const Route = createFileRoute("/$committee/$subType/$year")({
@@ -25,15 +31,27 @@ export const Route = createFileRoute("/$committee/$subType/$year")({
             year: parseInt(rawParams.year, 10),
         }),
     },
-    loader: async ({ context, params }) => {
+    loader: async ({ context, params, deps }) => {
         // get items from db
-        context.queryClient.ensureQueryData({
-            ...itemsOptions({
-                type: params.subType.toUpperCase() as ItemType,
-                year: params.year,
-            }),
-            revalidateIfStale: true,
-        });
+        context.queryClient.prefetchQuery(
+            apiQueries.txn.availableItems(
+                params.subType.toUpperCase() as ItemType,
+                params.year,
+            ),
+        );
+        if (deps.isBooking)
+            context.queryClient.prefetchQuery(
+                apiQueries.txn.filtered({
+                    committee: params.committee.toUpperCase() as Committee,
+                    txnType: TXN_TYPE.DONATION,
+                    year: params.year,
+                    building: undefined,
+                    donationType:
+                        params.subType === ROUTE_SUB_TYPE.ANNADAAN
+                            ? DONATION_TYPE.ANNADAAN
+                            : DONATION_TYPE.TEMPLE_ITEM,
+                }),
+            );
     },
     pendingComponent: () => <TabsLoader />,
 });

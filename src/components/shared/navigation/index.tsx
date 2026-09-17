@@ -1,11 +1,10 @@
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
-import { useQuery } from "@tanstack/react-query";
+import { Show, UserButton } from "@clerk/tanstack-react-start";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 import { ArrowRight, UserKeyIcon } from "lucide-react";
-import { currDBUserQueryOptions } from "@/api/queries/user.queries";
+import { apiQueries } from "@/api/queries";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { COMMITTEE, MEMBER_STATUS, USER_ROLE } from "@/lib/constants";
 import { cn, getMemberStatus } from "@/lib/utils";
 import { Route } from "@/routes/__root";
@@ -15,10 +14,10 @@ import { Logo } from "./site-logo";
 
 export function Navbar() {
     const { auth, config } = Route.useRouteContext();
-    const { data: user, isLoading } = useQuery(currDBUserQueryOptions);
+    const { data: user } = useSuspenseQuery(apiQueries.user.currDBUser());
     const location = useLocation();
     const isAdmin = auth?.role === USER_ROLE.ADMIN;
-    if (isLoading) return <Skeleton className="inset-x-0 h-16 absolute" />;
+
     let culturalMember: MemberStatus = MEMBER_STATUS.NON;
     let templeMember: MemberStatus = MEMBER_STATUS.NON;
     if (user) {
@@ -103,7 +102,7 @@ export function Navbar() {
                             />
                         }
                     />
-                    <SignedIn>
+                    <Show when={"signed-in"}>
                         <NavLink
                             href="/dashboard"
                             title="Dashboard"
@@ -117,8 +116,8 @@ export function Navbar() {
                                 />
                             }
                         />
-                    </SignedIn>
-                    <SignedOut>
+                    </Show>
+                    <Show when={"signed-out"}>
                         <NavLink
                             href={`/cultural/${config.activeYear}`}
                             title="Cultural"
@@ -147,8 +146,8 @@ export function Navbar() {
                                 />
                             }
                         />
-                    </SignedOut>
-                    <SignedIn>
+                    </Show>
+                    <Show when={"signed-in"}>
                         <NavLink
                             href={`/cultural/${config.activeYear}`}
                             title="Cultural"
@@ -182,129 +181,20 @@ export function Navbar() {
                             isDropdown
                             dropdownLinks={templeLinks}
                         />
-
-                        {/* <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size={"sm"}>
-                                    <span className="hidden md:flex title font-semibold text-base font-sans">
-                                        Cultural
-                                    </span>
-                                    <Image
-                                        src={"/hindu.png"}
-                                        width={36}
-                                        height={36}
-                                        alt="logo-3"
-                                        className="md:hidden"
-                                    />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuGroup className="pt-4">
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            to="/$committee/$year"
-                                            params={{
-                                                committee:
-                                                    ROUTE_COMMITTEE.CULTURAL,
-                                                year: config.activeYear,
-                                            }}
-                                        >
-                                            Stats
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            to="/transactions/$committee/$type/$year"
-                                            params={{
-                                                committee:
-                                                    ROUTE_COMMITTEE.CULTURAL,
-                                                type: ROUTE_TXN_TYPE.DONATION,
-                                                year: config.activeYear,
-                                            }}
-                                        >
-                                            Cultural Transactions
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            to="/$committee/$subType/$year"
-                                            params={{
-                                                committee:
-                                                    ROUTE_COMMITTEE.CULTURAL,
-                                                subType:
-                                                    ROUTE_SUB_TYPE.ANNADAAN,
-                                                year: config.activeYear,
-                                            }}
-                                        >
-                                            Annadaan Transactions
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size={"sm"}>
-                                    <span className="hidden md:flex title font-semibold text-base font-sans">
-                                        Temple
-                                    </span>
-                                    <Image
-                                        src={"/temple.png"}
-                                        width={40}
-                                        height={32}
-                                        alt="logo-2"
-                                        className="md:hidden pb-1"
-                                    />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuGroup className="pt-4">
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            to="/$committee/$year"
-                                            params={{
-                                                committee:
-                                                    ROUTE_COMMITTEE.TEMPLE,
-                                                year: config.activeYear,
-                                            }}
-                                        >
-                                            Stats
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            to="/transactions/$committee/$type/$year"
-                                            params={{
-                                                committee:
-                                                    ROUTE_COMMITTEE.TEMPLE,
-                                                type: ROUTE_TXN_TYPE.DONATION,
-                                                year: config.activeYear,
-                                            }}
-                                        >
-                                            Temple Transactions
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            to="/$committee/$subType/$year"
-                                            params={{
-                                                committee:
-                                                    ROUTE_COMMITTEE.TEMPLE,
-                                                subType: ROUTE_SUB_TYPE.TEMPLE,
-                                                year: config.activeYear,
-                                            }}
-                                        >
-                                            Item Bookings
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu> */}
-                    </SignedIn>
+                    </Show>
                 </div>
-                <SignedIn>
-                    <UserButton>
+                <Show when={"signed-in"}>
+                    <UserButton
+                        appearance={{
+                            elements: {
+                                userButtonPopoverActionButton:
+                                    "bg-primary text-primary-foreground",
+                                userButtonPopoverCard: "bg-card",
+                                userButtonPopoverMain:
+                                    "bg-card text-card-foreground",
+                            },
+                        }}
+                    >
                         <UserButton.MenuItems>
                             {isAdmin && (
                                 <UserButton.Link
@@ -316,8 +206,8 @@ export function Navbar() {
                             <UserButton.Action label="signOut" />
                         </UserButton.MenuItems>
                     </UserButton>
-                </SignedIn>
-                <SignedOut>
+                </Show>
+                <Show when={"signed-out"}>
                     {!location.pathname.endsWith("annadaan") &&
                         !location.pathname.endsWith("itemized") && (
                             <div className="flex items-center gap-4">
@@ -331,7 +221,7 @@ export function Navbar() {
                                 </Button>
                             </div>
                         )}
-                </SignedOut>
+                </Show>
             </nav>
         </header>
     );

@@ -8,8 +8,10 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { getLoggedInUser } from "@/api/functions/auth.function";
-import { configOptions } from "@/api/queries/admin.queries";
+import { apiQueries } from "@/api/queries";
 import { Navbar } from "@/components/shared/navigation";
+import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
+import { Skeleton } from "@/components/ui/skeleton";
 import ClerkProvider from "@/integrations/clerk/provider";
 import { ReactHotToast } from "@/integrations/react-toast";
 import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
@@ -43,7 +45,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         ],
     }),
     beforeLoad: async ({ context }) => {
-        const config = await context.queryClient.ensureQueryData(configOptions);
+        const config = await context.queryClient.ensureQueryData(
+            apiQueries.admin.config(),
+        );
         if (!config) throw new Error("Config not available");
 
         const auth = await getLoggedInUser();
@@ -77,7 +81,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                 <ThemeProvider initialTheme={"dark"}>
                     <TanStackQueryProvider>
                         <ClerkProvider>
-                            <Navbar />
+                            <SuspenseErrorBoundary
+                                id="navbar"
+                                fallback={
+                                    <Skeleton className="inset-x-0 h-16 absolute" />
+                                }
+                            >
+                                <Navbar />
+                            </SuspenseErrorBoundary>
                             <main className="relative min-h-[calc(100vh-2rem)] px-4">
                                 {children}
                             </main>

@@ -12,8 +12,9 @@ import { useTxnFormContext } from "./txn-form";
 type Props = {
     txn?: Transaction;
     isDelete?: boolean | undefined;
+    isViewOnly?: boolean | undefined;
 };
-export function AnnadaanForm({ txn, isDelete }: Props) {
+export function AnnadaanForm({ txn, isDelete, isViewOnly }: Props) {
     const { defaultValues, memberOptions } = useTxnFormContext();
     const form = useTypedAppFormContext({ defaultValues });
     const totalAmount = useCartTotal();
@@ -298,9 +299,11 @@ export function AnnadaanForm({ txn, isDelete }: Props) {
                 </div>
             </div>
 
-            <Button variant={"outline"} onClick={clearCart} type="button">
-                Clear Cart
-            </Button>
+            {!isViewOnly && (
+                <Button variant={"outline"} onClick={clearCart} type="button">
+                    Clear Cart
+                </Button>
+            )}
         </>
     );
 }

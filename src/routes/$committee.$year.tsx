@@ -1,13 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-    committeeBalancesOptions,
-    donationStatsOptions,
-} from "@/api/queries/txn.queries";
-import {
-    committeeMemberOptions,
-    currDBUserQueryOptions,
-} from "@/api/queries/user.queries";
+import { apiQueries } from "@/api/queries";
+
 import { CommitteeCard } from "@/components/committee/committee-card";
 import { CommitteeMemberList } from "@/components/committee/committee-member-list";
 import { DonationStatsByBuilding } from "@/components/committee/txns/donation-stats";
@@ -29,27 +23,29 @@ export const Route = createFileRoute("/$committee/$year")({
     },
     loader: async ({ context, params }) => {
         // get user profile from db
-        context.queryClient.ensureQueryData({
-            ...currDBUserQueryOptions,
-            revalidateIfStale: true,
-        });
+        context.queryClient.prefetchQuery(apiQueries.user.currDBUser());
+
+        // get committee members
+        context.queryClient.prefetchQuery(
+            apiQueries.user.membership(
+                params.committee.toUpperCase() as Committee,
+            ),
+        );
 
         // get committee balances
-        context.queryClient.ensureQueryData({
-            ...committeeBalancesOptions({
-                committee: params.committee.toUpperCase() as Committee,
-            }),
-            revalidateIfStale: true,
-        });
+        context.queryClient.prefetchQuery(
+            apiQueries.txn.committeeBalances(
+                params.committee.toUpperCase() as Committee,
+            ),
+        );
 
         // get stats for each building
-        context.queryClient.ensureQueryData({
-            ...donationStatsOptions({
-                committee: params.committee.toUpperCase() as Committee,
-                year: params.year ?? context.config.activeYear,
-            }),
-            revalidateIfStale: true,
-        });
+        context.queryClient.prefetchQuery(
+            apiQueries.txn.donationStats(
+                params.committee.toUpperCase() as Committee,
+                params.year ?? context.config.activeYear,
+            ),
+        );
     },
     pendingComponent: () => {
         return (
@@ -74,24 +70,22 @@ function RouteComponent() {
     const { committee, year } = Route.useParams();
     const { config } = Route.useRouteContext();
 
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
+    const { data: user } = useSuspenseQuery(apiQueries.user.currDBUser());
 
     const memberStatus = user
         ? getMemberStatus(user as User, committee.toUpperCase() as Committee)
         : MEMBER_STATUS.NON;
 
-    const { data: stats } = useSuspenseQuery({
-        ...donationStatsOptions({
-            committee: committee.toUpperCase() as Committee,
-            year: year ?? config.activeYear,
-        }),
-    });
+    const { data: stats } = useSuspenseQuery(
+        apiQueries.txn.donationStats(
+            committee.toUpperCase() as Committee,
+            year ?? config.activeYear,
+        ),
+    );
 
-    const { data: members } = useSuspenseQuery({
-        ...committeeMemberOptions({
-            committee: committee.toUpperCase() as Committee,
-        }),
-    });
+    const { data: members } = useSuspenseQuery(
+        apiQueries.user.membership(committee.toUpperCase() as Committee),
+    );
 
     return (
         <Background className="items-start">
@@ -99,16 +93,12 @@ function RouteComponent() {
                 <div
                     className={cn(
                         "grid gap-6 w-full max-w-[calc(100vw-1rem)] mx-auto md:max-w-full",
-                        memberStatus === MEMBER_STATUS.ACTIVE &&
-                            stats &&
-                            stats.length > 0 &&
-                            members
+
+                        stats && stats.length > 0 && members.length > 0
                             ? "md:grid-cols-3"
-                            : memberStatus === MEMBER_STATUS.ACTIVE &&
-                                stats &&
-                                stats.length > 0
+                            : stats && stats.length > 0
                               ? "md:grid-cols-1"
-                              : memberStatus === MEMBER_STATUS.ACTIVE && members
+                              : members.length > 0
                                 ? "md:grid-cols-3"
                                 : "md:grid-cols-1",
                     )}
@@ -123,7 +113,9 @@ function RouteComponent() {
                             memberStatus={memberStatus}
                             className={cn(
                                 "md:col-span-2 order-1",
-                                members ? "" : "md:max-w-3xl mx-auto",
+                                members.length > 0
+                                    ? ""
+                                    : "md:max-w-3xl mx-auto",
                             )}
                         />
                     </SuspenseErrorBoundary>
@@ -133,7 +125,9 @@ function RouteComponent() {
                             data={stats}
                             className={cn(
                                 "md:col-span-2 md:order-3 order-2",
-                                members ? "" : "md:max-w-3xl mx-auto",
+                                members.length > 0
+                                    ? ""
+                                    : "md:max-w-3xl mx-auto",
                             )}
                         />
                     )}

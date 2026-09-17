@@ -1,6 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { currDBUserQueryOptions } from "@/api/queries/user.queries";
 import {
     Tabs,
     TabsContent,
@@ -8,81 +6,36 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
-import { COMMITTEE, MEMBER_STATUS, TXN_TYPE } from "@/lib/constants";
-import type { Committee } from "@/types";
-import { MemberBalanceList } from "./members-balance-list";
+import { COMMITTEE } from "@/lib/constants";
+import { capitalise } from "@/lib/utils";
+import { COMMITTEE_OPTIONS } from "@/zod/common.schema";
+import { CommitteeContent } from "./committee-content";
 
-type Props = {
-    year: number;
-    handleSelect: (year: string) => void;
-};
-
-export function CommitteeTabs({ year, handleSelect }: Props) {
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const activeMemberShip = Object.entries(user?.membership ?? {})
-        .filter(([_, v]) => v === MEMBER_STATUS.ACTIVE)
-        .map(([k, _]) => k);
-
-    if (activeMemberShip.length === 0) return;
-
+export function CommitteeTabs() {
     return (
-        <div className="flex w-full max-w-3xl flex-col gap-6 mx-auto">
-            {activeMemberShip.length === 1 ? (
-                <MemberBalanceList
-                    committee={activeMemberShip[0] as Committee}
-                    type={TXN_TYPE.DONATION}
-                    year={year}
-                    handleSelect={handleSelect}
-                    showOther
-                />
-            ) : (
-                <Tabs defaultValue={COMMITTEE.CULTURAL}>
-                    <TabsList>
-                        <TabsTrigger value={COMMITTEE.CULTURAL} asChild>
-                            <Link
-                                to="/dashboard"
-                                search={{ committee: COMMITTEE.CULTURAL }}
-                            >
-                                Cultural
+        <div className="w-full max-w-3xl mx-auto">
+            <Tabs defaultValue={COMMITTEE.CULTURAL}>
+                <TabsList>
+                    {COMMITTEE_OPTIONS.map((committee) => (
+                        <TabsTrigger key={committee} value={committee} asChild>
+                            <Link to="/dashboard" search={{ committee }}>
+                                {capitalise(committee)}
                             </Link>
                         </TabsTrigger>
-                        <TabsTrigger value={COMMITTEE.TEMPLE} asChild>
-                            <Link
-                                to="/dashboard"
-                                search={{ committee: COMMITTEE.TEMPLE }}
-                            >
-                                Temple
-                            </Link>
-                        </TabsTrigger>
-                    </TabsList>
-                    <TabsContents className="py-6">
+                    ))}
+                </TabsList>
+                <TabsContents className="py-6">
+                    {COMMITTEE_OPTIONS.map((committee) => (
                         <TabsContent
-                            value={COMMITTEE.CULTURAL}
+                            key={committee}
+                            value={committee}
                             className="flex flex-col gap-6"
                         >
-                            <MemberBalanceList
-                                committee={COMMITTEE.CULTURAL}
-                                type={TXN_TYPE.DONATION}
-                                year={year}
-                                handleSelect={handleSelect}
-                                showOther
-                            />
+                            <CommitteeContent committee={committee} />
                         </TabsContent>
-                        <TabsContent
-                            value={COMMITTEE.TEMPLE}
-                            className="flex flex-col gap-6"
-                        >
-                            <MemberBalanceList
-                                committee={COMMITTEE.TEMPLE}
-                                type={TXN_TYPE.DONATION}
-                                year={year}
-                                handleSelect={handleSelect}
-                                showOther
-                            />
-                        </TabsContent>
-                    </TabsContents>
-                </Tabs>
-            )}
+                    ))}
+                </TabsContents>
+            </Tabs>
         </div>
     );
 }

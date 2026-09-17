@@ -1,8 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import {
-    allUserBalancesOptions,
-    currDBUserQueryOptions,
-} from "@/api/queries/user.queries";
+import { apiQueries } from "@/api/queries";
 import { MEMBER_STATUS } from "@/lib/constants";
 import { getMemberStatus } from "@/lib/utils";
 import type { Committee, User } from "@/types";
@@ -14,8 +11,8 @@ type Props = {
     committee: Committee;
 };
 export function CommitteeContent({ committee }: Props) {
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const { data } = useSuspenseQuery(allUserBalancesOptions);
+    const { data: user } = useSuspenseQuery(apiQueries.user.currDBUser());
+    const { data } = useSuspenseQuery(apiQueries.txn.allUserBalances());
     const totalBalance =
         data
             ?.filter((d) => d.committee === committee)

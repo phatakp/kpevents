@@ -26,11 +26,16 @@ export function SelectYear({ year, handleSelect, className }: Props) {
     ).filter((y) => y >= 2025); // Only show years from 2025 onwards
 
     return (
-        <InputGroup className={cn("border-none h-9 md:w-fit", className)}>
+        <InputGroup
+            className={cn(
+                "border-none h-9 md:w-fit focus:outline-none focus:ring-0 focus:border-0",
+                className,
+            )}
+        >
             <InputGroupInput
-                className="pe-0 text-xs text-muted-foreground"
+                className="pe-0 text-xs"
                 value={`Show Details for`}
-                readOnly
+                disabled
             />
             <InputGroupAddon align={"inline-end"}>
                 <Select onValueChange={handleSelect} value={year.toString()}>

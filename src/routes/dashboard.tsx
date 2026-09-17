@@ -1,9 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-    allUserBalancesOptions,
-    currDBUserQueryOptions,
-} from "@/api/queries/user.queries";
-import { CommitteeTabs } from "@/components/dashboard/new/committee-tabs";
+import { apiQueries } from "@/api/queries";
+import { CommitteeTabs } from "@/components/dashboard/committee-tabs";
 import { Background } from "@/components/shared/background";
 import { TabsLoader } from "@/components/shared/loaders/tabs-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
@@ -18,16 +15,10 @@ export const Route = createFileRoute("/dashboard")({
     }),
     loader: async ({ context }) => {
         // get user profile
-        context.queryClient.ensureQueryData({
-            ...currDBUserQueryOptions,
-            revalidateIfStale: true,
-        });
+        context.queryClient.prefetchQuery(apiQueries.user.currDBUser());
 
-        // get committee balances by member
-        context.queryClient.ensureQueryData({
-            ...allUserBalancesOptions,
-            revalidateIfStale: true,
-        });
+        // get balances for all members
+        context.queryClient.prefetchQuery(apiQueries.txn.allUserBalances());
     },
 });
 

@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Image } from "@unpic/react";
-import { committeeBalancesOptions } from "@/api/queries/txn.queries";
+import { apiQueries } from "@/api/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MEMBER_STATUS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -16,15 +16,13 @@ type Props = {
 export function CommitteeCard({ memberStatus, className }: Props) {
     const { committee, year } = Route.useParams();
     const { data: balance } = useSuspenseQuery(
-        committeeBalancesOptions({
-            committee: committee.toUpperCase() as Committee,
-        }),
+        apiQueries.txn.committeeBalances(committee.toUpperCase() as Committee),
     );
 
     return (
         <div className={cn("flex items-center justify-center", className)}>
             <div className="container py-10 w-full">
-                <Card className="ring-0 border rounded-2xl relative h-full w-full ">
+                <Card className="relative feature-card">
                     <CardHeader>
                         <CardTitle className="title text-2xl md:text-4xl capitalize">
                             {committee} balance details

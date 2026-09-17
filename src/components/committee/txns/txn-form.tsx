@@ -1,7 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createContext, type PropsWithChildren, useContext } from "react";
-import { linkedTransferOptions } from "@/api/queries/txn.queries";
-import { committeeMemberOptions } from "@/api/queries/user.queries";
+import { createContext, useContext } from "react";
+import { apiQueries } from "@/api/queries";
 import {
     Tabs,
     TabsContent,
@@ -17,7 +16,7 @@ import {
     useUpdateTransaction,
 } from "@/hooks/txn.hooks";
 import { COMMITTEE, DONATION_TYPE, TXN_TYPE } from "@/lib/constants";
-import { getDefaultFormOptions, getUserInfo } from "@/lib/utils";
+import { getDefaultFormOptions } from "@/lib/utils";
 import { Route } from "@/routes/__root";
 import { useCart } from "@/stores/cart.store";
 import type {
@@ -43,6 +42,7 @@ type Props = {
     donationType?: DonationType;
     txn?: Transaction;
     isDelete?: boolean;
+    isViewOnly?: boolean;
 };
 
 const TxnFormContext = createContext(
@@ -60,11 +60,12 @@ export function TransactionForm({
     donationType,
     txn,
     isDelete,
+    isViewOnly,
 }: Props) {
     const { config, auth } = Route.useRouteContext();
-    const { data: linked } = useSuspenseQuery({
-        ...linkedTransferOptions(txn),
-    });
+    const { data: linked } = useSuspenseQuery(
+        apiQueries.txn.linkedTransfer(txn),
+    );
     const items = useCart((state) => state.items);
     const defaultFormOptions = getDefaultFormOptions({
         committee,
@@ -76,9 +77,9 @@ export function TransactionForm({
         loggedInUserId: auth.userId as string,
         items,
     });
-    const { data: memberOptions } = useSuspenseQuery({
-        ...committeeMemberOptions({ committee, optionsOnly: true }),
-    });
+    const { data: memberOptions } = useSuspenseQuery(
+        apiQueries.user.membership(committee, true),
+    );
 
     const { mutate: createTransaction } = useCreateTransaction();
     const { mutate: updateTransaction } = useUpdateTransaction();
@@ -94,13 +95,10 @@ export function TransactionForm({
             txn?.id
                 ? updateTransaction({ data: value })
                 : createTransaction({ data: value });
-            // console.log(value);
         },
     });
 
-    // console.log(form.state.values);
-
-    if (isDelete && !txn)
+    if ((isDelete || isViewOnly) && !txn)
         return (
             <div className="flex items-center justify-center w-full h-full">
                 Transaction Details Required
@@ -135,14 +133,16 @@ export function TransactionForm({
                                 return (
                                     <AnnadaanForm
                                         txn={txn}
-                                        isDelete={isDelete}
+                                        isDelete={isDelete || isViewOnly}
+                                        isViewOnly={isViewOnly}
                                     />
                                 );
                             if (dType === DONATION_TYPE.TEMPLE_ITEM)
                                 return (
                                     <TempleItemForm
                                         txn={txn}
-                                        isDelete={isDelete}
+                                        isDelete={isDelete || isViewOnly}
+                                        isViewOnly={isViewOnly}
                                     />
                                 );
                             return (
@@ -196,19 +196,28 @@ export function TransactionForm({
                                                                 : DONATION_TYPE.TEMPLE)
                                                         }
                                                         txn={txn}
-                                                        isDelete={isDelete}
+                                                        isDelete={
+                                                            isDelete ||
+                                                            isViewOnly
+                                                        }
                                                     />
                                                 )}
                                                 {txnType ===
                                                     TXN_TYPE.EXPENSE && (
                                                     <ExpenseForm
-                                                        isDelete={isDelete}
+                                                        isDelete={
+                                                            isDelete ||
+                                                            isViewOnly
+                                                        }
                                                     />
                                                 )}
                                                 {txnType ===
                                                     TXN_TYPE.TRANSFER && (
                                                     <TransferForm
-                                                        isDelete={isDelete}
+                                                        isDelete={
+                                                            isDelete ||
+                                                            isViewOnly
+                                                        }
                                                     />
                                                 )}
                                             </TabsContent>
@@ -230,9 +239,9 @@ export function TransactionForm({
                         >
                             Confirm Delete
                         </Button>
-                    ) : (
+                    ) : !isViewOnly ? (
                         <form.SubmitButton label="Submit" className="w-full" />
-                    )}
+                    ) : null}
                 </form.AppForm>
             </form>
         </TxnFormContext.Provider>

@@ -1,4 +1,3 @@
-import { SignedIn } from "@clerk/clerk-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 import { ArrowUpRight } from "lucide-react";
@@ -40,7 +39,7 @@ function Home() {
                         </div>
                     </div>
                     <div className="relative z-10">
-                        <div className="left-1/2! h-[92%]! w-[69%]! absolute top-2.5 -translate-x-[52%] overflow-hidden rounded-[35px]">
+                        <div className="left-1/2! h-[92%]! w-[69%]! absolute top-2.5 translate-x-[-52%] overflow-hidden rounded-[35px]">
                             <img
                                 src={
                                     "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-7-tall.svg"
@@ -59,17 +58,6 @@ function Home() {
                     </div>
                 </div>
             </section>
-            <SignedIn>
-                <div className="sticky flex w-full justify-end bottom-4 right-4">
-                    {/* <TxnButton
-						year={control.activeYear}
-						className="aspect-square size-12 gap-1 bg-primary text-primary-foreground shadow-lg shadow-chart-1 flex items-center justify-center rounded-sm"
-					>
-						<IndianRupee className="size-6" />
-						<Plus className="size-4" />
-					</TxnButton> */}
-                </div>
-            </SignedIn>
         </Background>
     );
 }

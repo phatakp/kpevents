@@ -72,19 +72,19 @@
 
 .dark {
     --background: oklch(0 0 0);
-    --foreground: oklch(1 0 0);
+    --foreground: oklch(90.387% 0.00873 16.672);
     --card: oklch(14.839% 0.00169 197.525);
-    --card-foreground: oklch(1 0 0);
+    --card-foreground: oklch(90.387% 0.00873 16.672);
     --popover: oklch(0.2167 0.0015 197.0424);
-    --popover-foreground: oklch(1 0 0);
-    --primary: oklch(1 0 0);
+    --popover-foreground: oklch(90.387% 0.00873 16.672);
+    --primary: oklch(90.387% 0.00873 16.672);
     --primary-foreground: oklch(0 0 0);
     --secondary: oklch(19.241% 0.00161 16.547);
     --secondary-foreground: oklch(0.8975 0 0);
     --muted: oklch(0.235 0 0);
     --muted-foreground: oklch(60.16% 0.0024 15.654);
     --accent: oklch(0.329 0 0);
-    --accent-foreground: oklch(1 0 0);
+    --accent-foreground: oklch(90.387% 0.00873 16.672);
     --destructive: oklch(54.556% 0.21387 28.251);
     --destructive-foreground: oklch(0 0 0);
     --success: oklch(66.099% 0.19337 146.763);
@@ -191,7 +191,11 @@
         @apply border-border outline-ring/50;
     }
     body {
-        @apply bg-linear-to-br from-background via-card to-background/90 w-full min-h-screen text-foreground;
+        background: conic-gradient(at 0% 0%, var(--background), var(--card), rgb(0, 0, 0));
+        width: 100%;
+        min-height: 100vh;
+        color: var(--foreground)
+        /* @apply bg-linear-to-br from-background via-card to-background/90 w-full min-h-screen text-foreground; */
     }
     button:not(:disabled),
     [role="button"]:not(:disabled) {
@@ -199,6 +203,29 @@
     }
     html {
         @apply font-sans;
+    }
+
+    .feature-card {
+        background: linear-gradient(165deg, color-mix(in oklab, var(--secondary) 93%, white 7%), var(--card));
+        box-shadow:
+            0 1px 0 var(--accent) inset,
+            0 18px 34px rgba(30, 38, 90, 0.1),
+            0 4px 14px rgba(23, 32, 64, 0.06);
+    }
+
+    .feature-card2 {
+        background: linear-gradient(165deg, color-mix(in oklab, var(--background) 93%, white 2%), var(--card));
+        box-shadow:
+            0 1px 0 var(--accent) inset,
+            0 18px 34px rgba(30, 38, 90, 0.1),
+            0 4px 14px rgba(23, 32, 64, 0.06);
+    }
+
+    .feature-card:hover,
+    .feature-card2:hover
+     {
+    transform: translateY(-1px);
+    border-color: color-mix(in oklab, var(--accent) 35%, #a3acee 65%);
     }
 
     /* Custom Scrollbar */

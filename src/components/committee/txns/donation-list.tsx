@@ -29,10 +29,14 @@ export function DonationList({ txns }: Props) {
 
     return (
         <AnimatedList>
-            {txns.map((txn) => {
+            {txns.map((txn, i) => {
                 return (
                     <AnimatedListItem key={txn.id}>
-                        <div className="grid grid-cols-12 w-full border-b pb-2 items-center">
+                        <div
+                            className={cn(
+                                "grid grid-cols-12 w-full border-b py-1 items-center",
+                            )}
+                        >
                             <TxnActions txn={txn} />
                             <div
                                 className={cn(
@@ -88,7 +92,7 @@ export function DonationList({ txns }: Props) {
                                 />
                             </div>
 
-                            <TxnActions txn={txn} isMobile />
+                            {/* <TxnActions txn={txn} isMobile /> */}
                             <span className="text-left text-xs capitalize text-muted-foreground md:hidden col-span-11 col-start-2">
                                 {`Receiver: ${getUserInfo(txn.txnUser)}`}
                             </span>

@@ -76,7 +76,7 @@ export function OtherTxnList({ txns }: Props) {
                                         />
                                     </div>
 
-                                    <TxnActions txn={txn} isMobile />
+                                    {/* <TxnActions txn={txn} isMobile /> */}
                                     <span className="text-left text-xs capitalize text-muted-foreground w-full md:hidden col-span-11 col-start-2">
                                         {`${txn.txnType === TXN_TYPE.EXPENSE ? "Paid By" : "Receiver"}: ${getUserInfo(txn.txnUser)}`}
                                     </span>

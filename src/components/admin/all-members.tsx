@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Check, Trash } from "lucide-react";
 import { useState } from "react";
-import { allMembersOptions } from "@/api/queries/admin.queries";
+import { apiQueries } from "@/api/queries";
 import { Button } from "@/components/ui/button";
 import {
     Select,
@@ -28,7 +28,7 @@ import { COMMITTEE_OPTIONS } from "@/zod/common.schema";
 
 export function AllMembers() {
     const [committee, setCommittee] = useState<Committee>(COMMITTEE.CULTURAL);
-    const { data: users } = useSuspenseQuery(allMembersOptions);
+    const { data: users } = useSuspenseQuery(apiQueries.user.allMembers());
     const {
         mutate: approveMember,
         isPending: isPendingUpdate,

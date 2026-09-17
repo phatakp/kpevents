@@ -1,4 +1,4 @@
-import { Pen, ShoppingCart, Trash } from "lucide-react";
+import { EyeIcon, Pen, ShoppingCart, Trash } from "lucide-react";
 import { Modal } from "@/components/shared/modal";
 import { buttonVariants } from "@/components/ui/button";
 import { TXN_TYPE } from "@/lib/constants";
@@ -15,6 +15,7 @@ type Props = {
     txn?: Transaction;
     isDelete?: boolean;
     isBooking?: boolean;
+    isViewOnly?: boolean;
 };
 
 export function TxnButton({
@@ -25,6 +26,7 @@ export function TxnButton({
     txn,
     isDelete,
     isBooking,
+    isViewOnly,
 }: Props) {
     const items = useCart((state) => state.items);
     return (
@@ -35,12 +37,12 @@ export function TxnButton({
             closeBtnClass="text-primary-foreground hover:text-accent"
             btnClass={cn(
                 buttonVariants({
-                    size: !txn ? "sm" : "icon-xs",
+                    size: "sm",
                     variant: !txn
                         ? "success"
                         : isDelete
                           ? "destructive"
-                          : "ghost",
+                          : "default",
                 }),
                 !txn && "w-full max-w-sm",
             )}
@@ -49,7 +51,9 @@ export function TxnButton({
                     ? `Add ${isBooking ? "Booking" : "Transaction"} Details`
                     : isDelete
                       ? `Delete Transaction`
-                      : `Edit Transaction Details`
+                      : isViewOnly
+                        ? `View Transaction Details`
+                        : `Edit Transaction Details`
             }
             content={
                 <TransactionForm
@@ -61,6 +65,7 @@ export function TxnButton({
                     txnType={txnType ?? TXN_TYPE.DONATION}
                     donationType={txn?.donation?.type ?? donationType}
                     isDelete={isDelete}
+                    isViewOnly={isViewOnly}
                 />
             }
         >
@@ -77,9 +82,26 @@ export function TxnButton({
                 </>
             )}
 
-            {!!txn?.id && isDelete && <Trash className="size-3" />}
+            {!!txn?.id && isDelete && (
+                <>
+                    <Trash className="size-3" />
+                    Delete
+                </>
+            )}
 
-            {!!txn?.id && !isDelete && <Pen className="size-3" />}
+            {!!txn?.id && !isDelete && !isViewOnly && (
+                <>
+                    <Pen className="size-3" />
+                    Edit
+                </>
+            )}
+
+            {!!txn?.id && !isDelete && isViewOnly && (
+                <>
+                    <EyeIcon className="size-3" />
+                    View
+                </>
+            )}
         </Modal>
     );
 }
