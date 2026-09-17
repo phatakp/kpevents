@@ -115,8 +115,28 @@ export const BalanceStatSchema = z4.object({
     balance: z4.coerce.number<number>(),
 });
 
-export const CommitteeBalanceSchema = BalanceStatSchema.extend({
+export const CommitteeTotalSchema = z4.object({
     committee: CommitteeSchema,
+    total: z4.coerce.number<number>(),
+});
+
+export const YearTotalSchema = z4.object({
+    year: z4.coerce.number<number>(),
+    total: z4.coerce.number<number>(),
+});
+
+export const YearTxnTypeTotalSchema = YearTotalSchema.extend({
+    txnType: TxnTypeSchema,
+});
+
+export const YearDonationTypeTotalSchema = YearTotalSchema.extend({
+    donationType: DonationTypeSchema,
+});
+
+export const CommitteeBalanceSchema = CommitteeTotalSchema.extend({
+    balanceByYear: z4.array(YearTotalSchema),
+    balanceByYearAndTxnType: z4.array(YearTxnTypeTotalSchema),
+    balanceByYearAndDonationType: z4.array(YearDonationTypeTotalSchema),
 });
 
 export const DonationStatSchema = z4.object({

@@ -1,7 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { txnsOptions } from "@/api/queries/txn.queries";
-import { currDBUserQueryOptions } from "@/api/queries/user.queries";
-import { MemberBalanceList } from "@/components/dashboard/members-balance-list";
+import {
+    allUserBalancesOptions,
+    currDBUserQueryOptions,
+} from "@/api/queries/user.queries";
+import { TotalBalanceCard } from "@/components/dashboard/new/total-balance-card";
 import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
 import { DONATION_TYPE, MEMBER_STATUS, ROUTE_TXN_TYPE } from "@/lib/constants";
 import {
@@ -41,6 +44,11 @@ export function TransactionList() {
         mode,
     } = Route.useSearch();
     const { data: profile } = useSuspenseQuery(currDBUserQueryOptions);
+    const { data } = useSuspenseQuery(allUserBalancesOptions);
+    const totalBalance =
+        data
+            ?.filter((d) => d.committee === committee.toUpperCase())
+            .reduce((acc, b) => acc + b.total, 0) ?? 0;
 
     const memberStatus = getMemberStatus(
         profile as User,
@@ -76,12 +84,16 @@ export function TransactionList() {
 
     return (
         <div className="flex flex-col gap-6">
-            <MemberBalanceList
+            <TotalBalanceCard
                 committee={committee.toUpperCase() as Committee}
-                type={type.toUpperCase() as TxnType}
-                year={year}
-                handleSelect={() => {}}
-                totalElements={totalElements}
+                totalBalance={totalBalance}
+                addTxn={memberStatus === MEMBER_STATUS.ACTIVE}
+                showTxns={
+                    type === ROUTE_TXN_TYPE.DONATION &&
+                    memberStatus === MEMBER_STATUS.ACTIVE
+                }
+                txnType={type.toUpperCase() as TxnType}
+                donationType={donationType}
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 w-full">
                 {type === ROUTE_TXN_TYPE.DONATION && (

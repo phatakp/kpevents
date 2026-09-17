@@ -1,14 +1,16 @@
 import { Pen, ShoppingCart, Trash } from "lucide-react";
 import { Modal } from "@/components/shared/modal";
 import { buttonVariants } from "@/components/ui/button";
+import { TXN_TYPE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/stores/cart.store";
-import type { Committee, DonationType, Transaction } from "@/types";
+import type { Committee, DonationType, Transaction, TxnType } from "@/types";
 import { TransactionForm } from "./txn-form";
 
 type Props = {
     committee: Committee;
     year: number;
+    txnType?: TxnType;
     donationType?: DonationType;
     txn?: Transaction;
     isDelete?: boolean;
@@ -18,6 +20,7 @@ type Props = {
 export function TxnButton({
     committee,
     year,
+    txnType,
     donationType,
     txn,
     isDelete,
@@ -32,14 +35,13 @@ export function TxnButton({
             closeBtnClass="text-primary-foreground hover:text-accent"
             btnClass={cn(
                 buttonVariants({
-                    size: !txn && !isBooking ? "sm" : "icon-xs",
+                    size: !txn ? "sm" : "icon-xs",
                     variant: !txn
-                        ? "default"
+                        ? "success"
                         : isDelete
                           ? "destructive"
                           : "ghost",
                 }),
-                // txn && "justify-start",
                 !txn && "w-full max-w-sm",
             )}
             title={
@@ -56,12 +58,17 @@ export function TxnButton({
                         txn?.committee ?? (committee.toUpperCase() as Committee)
                     }
                     year={txn?.year ?? year}
+                    txnType={txnType ?? TXN_TYPE.DONATION}
                     donationType={txn?.donation?.type ?? donationType}
                     isDelete={isDelete}
                 />
             }
         >
-            {!txn && !isBooking && <span>Add Transaction</span>}
+            {!txn && !isBooking && (
+                <span className="capitalize">
+                    Add {txnType?.toLowerCase() ?? "Transaction"}
+                </span>
+            )}
 
             {!txn && isBooking && (
                 <>

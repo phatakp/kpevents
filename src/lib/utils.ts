@@ -11,6 +11,7 @@ import type {
     DonationType,
     MemberStatus,
     Transaction,
+    TxnType,
     User,
     UserShort,
 } from "@/types";
@@ -159,6 +160,7 @@ export const getFilteredTxns = (
 export const getDefaultFormOptions = ({
     committee,
     year,
+    txnType,
     donationType,
     txn,
     fromUserId,
@@ -167,6 +169,7 @@ export const getDefaultFormOptions = ({
 }: {
     committee: Committee;
     year: number;
+    txnType: TxnType;
     donationType?: DonationType | undefined;
     txn?: Transaction | undefined;
     isDelete?: boolean;
@@ -189,7 +192,7 @@ export const getDefaultFormOptions = ({
             committee: (txn?.committee ?? committee) as Committee,
             year: txn?.year ?? year,
             txnUserId: fromUserId ?? txn?.txnUser.clerkId ?? loggedInUserId,
-            txnType: txn?.txnType ?? TXN_TYPE.DONATION,
+            txnType: txn?.txnType ?? txnType,
             txnMode: txn?.txnMode ?? TXN_MODE.ONLINE,
             donationType: txn
                 ? txn.donation?.type

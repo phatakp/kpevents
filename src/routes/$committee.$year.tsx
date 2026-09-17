@@ -76,10 +76,9 @@ function RouteComponent() {
 
     const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
 
-    const memberStatus = getMemberStatus(
-        user as User,
-        committee.toUpperCase() as Committee,
-    );
+    const memberStatus = user
+        ? getMemberStatus(user as User, committee.toUpperCase() as Committee)
+        : MEMBER_STATUS.NON;
 
     const { data: stats } = useSuspenseQuery({
         ...donationStatsOptions({
@@ -121,6 +120,7 @@ function RouteComponent() {
                         }
                     >
                         <CommitteeCard
+                            memberStatus={memberStatus}
                             className={cn(
                                 "md:col-span-2 order-1",
                                 members ? "" : "md:max-w-3xl mx-auto",

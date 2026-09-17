@@ -10,7 +10,6 @@ import { CardLoader } from "@/components/shared/loaders/card-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
@@ -19,10 +18,8 @@ import {
 import { ROUTE_TXN_TYPE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Route } from "@/routes/transactions.$committee.$type.$year";
-import type { Committee } from "@/types";
 import { ROUTE_TYPE_OPTIONS } from "@/zod/common.schema";
 import { SelectYear } from "../select-year";
-import { TxnButton } from "./txn-button";
 import { TransactionList } from "./txn-list";
 
 type Props = {
@@ -32,7 +29,6 @@ type Props = {
 export function TxnTypeTabs({ className }: Props) {
     const navigate = useNavigate();
     const { committee, type, year } = Route.useParams();
-    const { donationType } = Route.useSearch();
 
     const handleSelect = (selectedYear: string) => {
         navigate({
@@ -90,14 +86,6 @@ export function TxnTypeTabs({ className }: Props) {
                                             handleSelect={handleSelect}
                                         />
                                     </CardDescription>
-
-                                    <TxnButton
-                                        committee={
-                                            committee.toUpperCase() as Committee
-                                        }
-                                        year={year}
-                                        donationType={donationType}
-                                    />
                                 </CardHeader>
                                 <CardContent className="px-0">
                                     <SuspenseErrorBoundary

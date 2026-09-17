@@ -1,19 +1,82 @@
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 import { ArrowRight, UserKeyIcon } from "lucide-react";
+import { currDBUserQueryOptions } from "@/api/queries/user.queries";
 import { Button } from "@/components/ui/button";
-
-import { USER_ROLE } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { COMMITTEE, MEMBER_STATUS, USER_ROLE } from "@/lib/constants";
+import { cn, getMemberStatus } from "@/lib/utils";
 import { Route } from "@/routes/__root";
+import type { MemberStatus } from "@/types";
 import { NavLink } from "./nav-link";
 import { Logo } from "./site-logo";
 
 export function Navbar() {
     const { auth, config } = Route.useRouteContext();
+    const { data: user, isLoading } = useQuery(currDBUserQueryOptions);
     const location = useLocation();
     const isAdmin = auth?.role === USER_ROLE.ADMIN;
+    if (isLoading) return <Skeleton className="inset-x-0 h-16 absolute" />;
+    let culturalMember: MemberStatus = MEMBER_STATUS.NON;
+    let templeMember: MemberStatus = MEMBER_STATUS.NON;
+    if (user) {
+        culturalMember = getMemberStatus(user, COMMITTEE.CULTURAL);
+        templeMember = getMemberStatus(user, COMMITTEE.TEMPLE);
+    }
+    const culturalLinks =
+        culturalMember === MEMBER_STATUS.ACTIVE
+            ? [
+                  {
+                      title: "Cultural Dashboard",
+                      href: `/cultural/${config.activeYear}`,
+                  },
+                  {
+                      title: "Cultural Transactions",
+                      href: `/transactions/cultural/donation/${config.activeYear}`,
+                  },
+                  {
+                      title: "Annadaan",
+                      href: `/cultural/annadaan/${config.activeYear}`,
+                  },
+              ]
+            : [
+                  {
+                      title: "Cultural Dashboard",
+                      href: `/cultural/${config.activeYear}`,
+                  },
+                  {
+                      title: "Annadaan",
+                      href: `/cultural/annadaan/${config.activeYear}`,
+                  },
+              ];
+    const templeLinks =
+        templeMember === MEMBER_STATUS.ACTIVE
+            ? [
+                  {
+                      title: "Temple Dashboard",
+                      href: `/temple/${config.activeYear}`,
+                  },
+                  {
+                      title: "Temple Transactions",
+                      href: `/transactions/temple/donation/${config.activeYear}`,
+                  },
+                  {
+                      title: "Item Bookings",
+                      href: `/temple/temple/${config.activeYear}`,
+                  },
+              ]
+            : [
+                  {
+                      title: "Temple Dashboard",
+                      href: `/temple/${config.activeYear}`,
+                  },
+                  {
+                      title: "Item Bookings",
+                      href: `/temple/temple/${config.activeYear}`,
+                  },
+              ];
 
     return (
         <header
@@ -100,20 +163,7 @@ export function Navbar() {
                                 />
                             }
                             isDropdown
-                            dropdownLinks={[
-                                {
-                                    title: "Stats",
-                                    href: `/cultural/${config.activeYear}`,
-                                },
-                                {
-                                    title: "Cultural Transactions",
-                                    href: `/transactions/cultural/donation/${config.activeYear}`,
-                                },
-                                {
-                                    title: "Annadaan Transactions",
-                                    href: `/cultural/annadaan/${config.activeYear}`,
-                                },
-                            ]}
+                            dropdownLinks={culturalLinks}
                         />
 
                         <NavLink
@@ -130,20 +180,7 @@ export function Navbar() {
                                 />
                             }
                             isDropdown
-                            dropdownLinks={[
-                                {
-                                    title: "Stats",
-                                    href: `/temple/${config.activeYear}`,
-                                },
-                                {
-                                    title: "Temple Transactions",
-                                    href: `/transactions/temple/donation/${config.activeYear}`,
-                                },
-                                {
-                                    title: "Item Bookings",
-                                    href: `/temple/temple/${config.activeYear}`,
-                                },
-                            ]}
+                            dropdownLinks={templeLinks}
                         />
 
                         {/* <DropdownMenu>

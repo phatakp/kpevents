@@ -61,7 +61,7 @@ export class TransactionRepository {
             const res = await api.get(
                 `${this.url}/balances/committee/${request.committee}`,
             );
-            return res.data as CommitteeBalance[];
+            return res.data as CommitteeBalance;
         } catch (error) {
             handleAPIError(error);
         }

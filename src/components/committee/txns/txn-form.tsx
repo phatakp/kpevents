@@ -39,6 +39,7 @@ import { TransferForm } from "./transfer-form";
 type Props = {
     committee: Committee;
     year: number;
+    txnType: TxnType;
     donationType?: DonationType;
     txn?: Transaction;
     isDelete?: boolean;
@@ -55,6 +56,7 @@ export const useTxnFormContext = () => useContext(TxnFormContext);
 
 export function TransactionForm({
     committee,
+    txnType,
     donationType,
     txn,
     isDelete,
@@ -67,6 +69,7 @@ export function TransactionForm({
     const defaultFormOptions = getDefaultFormOptions({
         committee,
         year: txn?.year ?? config.activeYear,
+        txnType,
         donationType,
         txn,
         fromUserId: linked?.fromUserId,

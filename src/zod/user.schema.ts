@@ -2,10 +2,13 @@ import z4 from "zod/v4";
 import { getFlatsForBuilding } from "@/lib/utils";
 import {
     BuildingSchema,
-    CommitteeBalanceSchema,
     CommitteeSchema,
+    CommitteeTotalSchema,
     MemberStatusSchema,
     UserRoleSchema,
+    YearDonationTypeTotalSchema,
+    YearTotalSchema,
+    YearTxnTypeTotalSchema,
 } from "./common.schema";
 
 export const UserMembershipSchema = z4.map(CommitteeSchema, MemberStatusSchema);
@@ -34,10 +37,16 @@ export const UserShortSchema = UserSchema.pick({
     flat: true,
 });
 
-export const UserBalanceSchema = z4.intersection(
-    UserShortSchema,
-    CommitteeBalanceSchema,
-);
+export const UserBalanceSchema = z4
+    .object({
+        ...UserShortSchema.shape,
+        ...CommitteeTotalSchema.shape,
+    })
+    .extend({
+        balanceByYear: z4.array(YearTotalSchema),
+        balanceByYearAndTxnType: z4.array(YearTxnTypeTotalSchema),
+        balanceByYearAndDonationType: z4.array(YearDonationTypeTotalSchema),
+    });
 
 export const FlatNumberSchema = z4.object({
     building: z4.union([BuildingSchema, z4.undefined()]),

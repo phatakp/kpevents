@@ -1,329 +1,65 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
-import { ArrowRightIcon } from "lucide-react";
 import { committeeBalancesOptions } from "@/api/queries/txn.queries";
-import { currDBUserQueryOptions } from "@/api/queries/user.queries";
-import { Amount } from "@/components/shared/amount";
-import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
-import { buttonVariants } from "@/components/ui/button";
-import {
-    Card,
-    CardAction,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { MEMBER_STATUS, ROUTE_TXN_TYPE } from "@/lib/constants";
-import { cn, getMemberStatus } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MEMBER_STATUS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { Route } from "@/routes/$committee.$year";
-import type { Committee, RouteCommittee, User } from "@/types";
-import { SelectYear } from "./select-year";
+import type { Committee, MemberStatus } from "@/types";
+import { CommitteeStat } from "./committee-stat";
 import { TxnButton } from "./txns/txn-button";
 
 type Props = {
+    memberStatus: MemberStatus;
     className?: string;
 };
-export function CommitteeCard({ className }: Props) {
-    const { committee } = Route.useParams();
+export function CommitteeCard({ memberStatus, className }: Props) {
+    const { committee, year } = Route.useParams();
+    const { data: balance } = useSuspenseQuery(
+        committeeBalancesOptions({
+            committee: committee.toUpperCase() as Committee,
+        }),
+    );
 
     return (
-        <div className={cn("py-10 w-full", className)}>
-            <Card className="ring-0 border rounded-2xl relative h-full w-full">
-                <CardHeader>
-                    <CardTitle>
-                        <div className="title text-2xl md:text-4xl capitalize">
-                            {committee.toLowerCase()}
-                        </div>
-                    </CardTitle>
-
-                    <CardDescription>
-                        <SuspenseErrorBoundary
-                            id="committee-card-desc"
-                            fallback={<Skeleton className="w-40 h-10" />}
-                        >
-                            <CommitteeCardDescription />
-                        </SuspenseErrorBoundary>
-                    </CardDescription>
-
-                    <SuspenseErrorBoundary
-                        id="committee-card-action"
-                        fallback={<Skeleton className="w-20 h-10" />}
-                    >
-                        <CommitteeCardAction />
-                    </SuspenseErrorBoundary>
-                </CardHeader>
-                <CardContent>
-                    <div className="py-4 flex flex-col gap-9 justify-between md:max-w-3/4">
-                        <div className="grid gap-2 text-sm">
-                            <SuspenseErrorBoundary
-                                id="committee-card-title"
-                                fallback={<Skeleton className="w-40 h-10" />}
-                            >
-                                <CommitteeCardTitle />
-                            </SuspenseErrorBoundary>
-                            <SuspenseErrorBoundary
-                                id="other-year-totals"
-                                fallback={
-                                    <div className="flex flex-col gap-2 w-full">
-                                        <Skeleton className="w-50 h-8" />
-                                        <Skeleton className="w-50 h-8" />
-                                    </div>
-                                }
-                            >
-                                <OtherYearTotals />
-                            </SuspenseErrorBoundary>
-                            <SuspenseErrorBoundary
-                                id="current-year-totals"
-                                fallback={
-                                    <div className="flex flex-col gap-2 w-full">
-                                        <Skeleton className="w-50 h-8" />
-                                        <Skeleton className="w-50 h-8" />
-                                        <Skeleton className="w-50 h-8" />
-                                    </div>
-                                }
-                            >
-                                <CurrentYearTotals />
-                            </SuspenseErrorBoundary>
-                            <Separator />
-                            <div className="flex items-center w-full justify-between text-muted-foreground">
-                                <span className="capitalize font-heading text-lg">
-                                    Total
-                                </span>
-                                <SuspenseErrorBoundary
-                                    id="total-balance"
-                                    fallback={
-                                        <Skeleton className="w-30 h-10" />
+        <div className={cn("flex items-center justify-center", className)}>
+            <div className="container py-10 w-full">
+                <Card className="ring-0 border rounded-2xl relative h-full w-full ">
+                    <CardHeader>
+                        <CardTitle className="title text-2xl md:text-4xl capitalize">
+                            {committee} balance details
+                        </CardTitle>
+                        {memberStatus === MEMBER_STATUS.ACTIVE && (
+                            <TxnButton
+                                committee={committee.toUpperCase() as Committee}
+                                year={year}
+                            />
+                        )}
+                    </CardHeader>
+                    <CardContent>
+                        <div className="py-4 flex flex-col gap-9 justify-between">
+                            <div className="grid md:divide-x divide-y md:divide-y-0 sm:w-3/4">
+                                <CommitteeStat
+                                    committee={
+                                        committee.toUpperCase() as Committee
                                     }
-                                >
-                                    <TotalBalance />
-                                </SuspenseErrorBoundary>
+                                    balance={balance}
+                                    memberStatus={memberStatus}
+                                />
                             </div>
                         </div>
-                    </div>
-                    {/* image */}
-                    <Image
-                        src="https://images.shadcnspace.com/assets/backgrounds/stats-01.webp"
-                        alt="user-img"
-                        width={211}
-                        height={168}
-                        className="absolute bottom-0 right-0 hidden sm:block"
-                    />
-                </CardContent>
 
-                <SuspenseErrorBoundary
-                    id="committee-card-footer"
-                    fallback={<Skeleton className="w-20 h-10" />}
-                >
-                    <CommitteeCardFooter />
-                </SuspenseErrorBoundary>
-            </Card>
-        </div>
-    );
-}
-
-function CommitteeCardDescription() {
-    const navigate = useNavigate();
-    const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const memberStatus = getMemberStatus(
-        user as User,
-        committee.toUpperCase() as Committee,
-    );
-
-    const handleSelect = (selectedYear: string) => {
-        navigate({
-            to: ".",
-            params: (old) => ({
-                ...old,
-                year: Number(selectedYear),
-            }),
-        });
-    };
-    if (memberStatus === MEMBER_STATUS.ACTIVE)
-        return <SelectYear year={year} handleSelect={handleSelect} />;
-    return `Committee Balance - ${year}`;
-}
-
-function CommitteeCardAction() {
-    const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const memberStatus = getMemberStatus(
-        user as User,
-        committee.toUpperCase() as Committee,
-    );
-    if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
-    return (
-        <CardAction>
-            <TxnButton
-                committee={committee.toUpperCase() as Committee}
-                year={year}
-            />
-        </CardAction>
-    );
-}
-function CommitteeCardFooter() {
-    const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const memberStatus = getMemberStatus(
-        user as User,
-        committee.toUpperCase() as Committee,
-    );
-    if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
-    return (
-        <CardFooter>
-            <Link
-                to="/transactions/$committee/$type/$year"
-                params={{
-                    committee: committee.toLowerCase() as RouteCommittee,
-                    year: year,
-                    type: ROUTE_TXN_TYPE.DONATION,
-                }}
-                className={cn(buttonVariants({ size: "sm" }))}
-            >
-                View Transactions <ArrowRightIcon className="size-3" />
-            </Link>
-        </CardFooter>
-    );
-}
-
-function CommitteeCardTitle() {
-    const { committee, year } = Route.useParams();
-    const { data: user } = useSuspenseQuery(currDBUserQueryOptions);
-    const memberStatus = getMemberStatus(
-        user as User,
-        committee.toUpperCase() as Committee,
-    );
-    if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
-    return (
-        <>
-            <span className="text-base">Committee Balance - {year}</span>
-            <Separator />
-        </>
-    );
-}
-
-function OtherYearTotals() {
-    const { committee, year } = Route.useParams();
-    const { data: balances } = useSuspenseQuery({
-        ...committeeBalancesOptions({
-            committee: committee.toUpperCase() as Committee,
-        }),
-    });
-    const otherYearTotals: Record<number, number> =
-        balances
-            ?.filter(
-                (b) =>
-                    b.year !== year &&
-                    (year < new Date().getFullYear() ? b.year < year : true),
-            )
-            ?.reduce(
-                (acc, item) => {
-                    const key = item.year;
-                    acc[key] = (acc[key] || 0) + item.balance;
-                    return acc;
-                },
-                {} as Record<number, number>,
-            ) ?? {};
-
-    return (
-        <>
-            {Object.entries(otherYearTotals)?.map(([year, tot]) => (
-                <div
-                    key={year}
-                    className="flex items-center w-full justify-between text-muted-foreground"
-                >
-                    <span className="capitalize font-heading font-normal">
-                        {year} Balance
-                    </span>
-                    <Amount
-                        amount={tot}
-                        className={cn(
-                            "text-sm font-normal",
-                            tot < 0 ? "text-destructive" : "text-success",
-                        )}
-                        iconClass="size-3"
-                    />
-                </div>
-            ))}
-        </>
-    );
-}
-
-function CurrentYearTotals() {
-    const { committee, year } = Route.useParams();
-    const { data: balances } = useSuspenseQuery({
-        ...committeeBalancesOptions({
-            committee: committee.toUpperCase() as Committee,
-        }),
-    });
-    const yearItems = balances?.filter((b) => b.year === year);
-
-    const typedBalances = Object.groupBy(
-        yearItems ?? [],
-        (bal) => `${bal.txnType}-${bal.donationType ?? "null"}`,
-    );
-
-    return (
-        <>
-            {Object.entries(typedBalances)?.map(([key, bal]) => {
-                const tot = bal.reduce((acc, b) => acc + b.balance, 0);
-                if (tot === 0) return null;
-
-                const [type, dtype] = key.split("-");
-                const title =
-                    type === "DONATION"
-                        ? `${dtype.toLowerCase()} donations`
-                        : type === "EXPENSE"
-                          ? "Expenses Paid"
-                          : "Internal Transfers";
-                return (
-                    <div
-                        key={key}
-                        className="flex items-center w-full justify-between text-muted-foreground"
-                    >
-                        <span className="capitalize font-heading font-normal">
-                            {title}
-                        </span>
-                        <Amount
-                            amount={tot}
-                            className={cn(
-                                "text-sm font-normal",
-                                tot < 0 ? "text-destructive" : "text-success",
-                            )}
-                            iconClass="size-3"
+                        {/* image */}
+                        <Image
+                            src="https://images.shadcnspace.com/assets/backgrounds/stats-01.webp"
+                            alt="user-img"
+                            width={211}
+                            height={168}
+                            className="absolute bottom-0 right-0 hidden sm:block"
                         />
-                    </div>
-                );
-            })}
-        </>
-    );
-}
-
-function TotalBalance() {
-    const { committee, year } = Route.useParams();
-    const { data: balances } = useSuspenseQuery({
-        ...committeeBalancesOptions({
-            committee: committee.toUpperCase() as Committee,
-        }),
-    });
-    const balanceForYear =
-        balances
-            ?.filter((b) => b.year <= year)
-            ?.reduce((acc, item) => acc + item.balance, 0) ?? 0;
-
-    return (
-        <Amount
-            amount={balanceForYear}
-            className={cn(
-                "",
-                balanceForYear < 0 ? "text-destructive" : "text-success",
-            )}
-            iconClass="size-3"
-        />
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
     );
 }
