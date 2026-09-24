@@ -64,7 +64,7 @@ export function TxnActions({ txn, isMobile, isBooking }: Props) {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size={"icon-sm"}>
+                <Button variant="ghost" size={"icon-sm"} type="button">
                     <EllipsisIcon />
                 </Button>
             </PopoverTrigger>

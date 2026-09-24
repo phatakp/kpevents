@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useTypedAppFormContext } from "@/components/shared/form-inputs/hooks";
 import { TXN_MODE_OPTIONS } from "@/zod/common.schema";
 import { useTxnFormContext } from "./txn-form";
@@ -9,6 +10,12 @@ type Props = {
 export function ExpenseForm({ isDelete }: Props) {
     const { defaultValues, memberOptions } = useTxnFormContext();
     const form = useTypedAppFormContext({ defaultValues });
+    useEffect(() => {
+        form.setFieldValue("donationType", undefined);
+        form.setFieldValue("donorName", undefined);
+        form.setFieldValue("flatNumber.building", undefined);
+        form.setFieldValue("flatNumber.flat", undefined);
+    }, []);
 
     return (
         <div className="flex flex-col gap-6">

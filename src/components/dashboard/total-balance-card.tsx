@@ -28,7 +28,7 @@ export function TotalBalanceCard({
     const { config } = Route.useRouteContext();
     return (
         <Card className="p-0 feature-card">
-            <CardHeader className="bg-primary text-primary-foreground py-2">
+            <CardHeader className="bg-linear-to-br from-primary via-primary/60 to-primary/30 text-primary-foreground py-2">
                 <CardTitle className="dark-title capitalize text-xl md:text-2xl">
                     Current {committee.toLowerCase()} Balance
                 </CardTitle>
