@@ -1,19 +1,16 @@
-"use client";
-
-import * as React from "react";
 import {
-    motion,
     type HTMLMotionProps,
     type LegacyAnimationControls,
+    motion,
     type TargetAndTransition,
     type Transition,
 } from "motion/react";
-
-import { useAutoHeight } from "@/hooks/use-auto-height";
+import type * as React from "react";
 import {
     Slot,
     type WithAsChild,
 } from "@/components/animate-ui/primitives/animate/slot";
+import { useAutoHeight } from "@/hooks/use-auto-height";
 
 type AutoHeightProps = WithAsChild<
     {

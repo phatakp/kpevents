@@ -28,10 +28,15 @@ export const apiQueries = {
                 queryKey: [...apiQueries.admin.all(), "config"] as const,
                 queryFn: getConfig,
             }),
-        annadaanItems: () =>
+        annadaanItems: (page?: number, size?: number) =>
             queryOptions({
-                queryKey: [...apiQueries.txn.all(), "items"] as const,
-                queryFn: getAnnadaanItems,
+                queryKey: [
+                    ...apiQueries.txn.all(),
+                    "items",
+                    page,
+                    size,
+                ] as const,
+                queryFn: () => getAnnadaanItems({ data: { page, size } }),
             }),
     },
     user: {
@@ -70,6 +75,14 @@ export const apiQueries = {
                     data.year,
                     data.building,
                     data.donationType,
+                    data.txnMode,
+                    data.txnUserId,
+                    data.userName,
+                    data.searchTerm,
+                    data.page,
+                    data.size,
+                    data.isBooking,
+                    data.isConfirmed,
                 ] as const,
                 queryFn: () => getTransactions({ data }),
             }),
@@ -101,15 +114,22 @@ export const apiQueries = {
                 ] as const,
                 queryFn: () => getDonationStats({ data: { committee, year } }),
             }),
-        availableItems: (type: ItemType, year: number) =>
+        availableItems: (
+            type: ItemType,
+            year: number,
+            page: number,
+            size: number,
+        ) =>
             queryOptions({
                 queryKey: [
                     ...apiQueries.txn.all(),
                     "items",
                     type,
                     year,
+                    page,
+                    size,
                 ] as const,
-                queryFn: () => getItems({ data: { type, year } }),
+                queryFn: () => getItems({ data: { type, year, page, size } }),
             }),
         linkedTransfer: (txn: Transaction | undefined) => {
             const txnId = txn?.id ?? "";

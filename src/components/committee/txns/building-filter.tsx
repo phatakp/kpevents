@@ -44,7 +44,7 @@ export function BuildingFilter() {
                             search={{
                                 page: 0,
                                 building: b,
-                                query: undefined,
+                                searchTerm: undefined,
                             }}
                             className={cn(
                                 "text-sm",

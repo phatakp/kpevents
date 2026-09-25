@@ -18,7 +18,17 @@ export function TxnSearchInput() {
         if (searchTerm)
             navigate({
                 to: ".",
-                search: (old) => ({ ...old, query: searchTerm }),
+                search: (old) => ({
+                    ...old,
+                    searchTerm,
+                    page: 0,
+                    building: undefined,
+                }),
+            });
+        else
+            navigate({
+                to: ".",
+                search: (old) => ({ ...old, searchTerm: undefined, page: 0 }),
             });
     }, [searchTerm, navigate]);
 

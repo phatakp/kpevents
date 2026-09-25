@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import z4 from "zod/v4";
 import { assertAdminMiddleware } from "@/api/middlewares/auth.middleware";
 import { adminService } from "@/api/services/admin.service";
-import { ControlRecordSchema } from "@/zod/common.schema";
+import { ControlRecordSchema, SearchSchema } from "@/zod/common.schema";
 import { ItemRequestSchema, ItemSchema } from "@/zod/txn.schema";
 
 export const getConfig = createServerFn({
@@ -22,9 +22,11 @@ export const updateConfig = createServerFn({
 
 export const getAnnadaanItems = createServerFn({
     method: "GET",
-}).handler(async () => {
-    return adminService.getAnnadaanItems();
-});
+})
+    .validator(SearchSchema)
+    .handler(async ({ data }) => {
+        return adminService.getAnnadaanItems(data);
+    });
 
 export const createItem = createServerFn({
     method: "POST",

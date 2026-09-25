@@ -6,8 +6,10 @@ export const getLoggedInUser = createServerFn({ method: "GET" }).handler(
     async () => {
         // let user: User | undefined;
         try {
-            const { userId, sessionClaims } = await auth();
+            const { userId, sessionClaims, getToken } = await auth();
             if (!userId) throw Error("Not authenticated");
+
+            // console.log(await getToken());
 
             return {
                 userId,

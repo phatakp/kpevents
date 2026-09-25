@@ -23,24 +23,24 @@ export const Route = createFileRoute("/$committee/$year")({
     },
     loader: async ({ context, params }) => {
         // get user profile from db
-        context.queryClient.prefetchQuery(apiQueries.user.currDBUser());
+        context.queryClient.query(apiQueries.user.currDBUser());
 
         // get committee members
-        context.queryClient.prefetchQuery(
+        context.queryClient.query(
             apiQueries.user.membership(
                 params.committee.toUpperCase() as Committee,
             ),
         );
 
         // get committee balances
-        context.queryClient.prefetchQuery(
+        context.queryClient.query(
             apiQueries.txn.committeeBalances(
                 params.committee.toUpperCase() as Committee,
             ),
         );
 
         // get stats for each building
-        context.queryClient.prefetchQuery(
+        context.queryClient.query(
             apiQueries.txn.donationStats(
                 params.committee.toUpperCase() as Committee,
                 params.year ?? context.config.activeYear,

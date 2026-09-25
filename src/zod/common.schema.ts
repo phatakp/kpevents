@@ -160,20 +160,33 @@ export const CommitteeUserQuerySchema = CommitteeQuerySchema.extend({
     userId: z4.string(),
 });
 
-export const TxnQuerySchema = CommitteeYearQuerySchema.extend({
-    txnType: TxnTypeSchema,
-    building: BuildingSchema.optional(),
-    donationType: DonationTypeSchema.optional(),
-});
-
 export const SearchSchema = z4.object({
+    building: BuildingSchema.optional(), // Allow empty string for "no filter"
+    donationType: DonationTypeSchema.optional(),
+    txnMode: TxnModeSchema.optional(),
+    txnUserId: z4.string().optional(),
+    userName: z4.string().optional(),
+    searchTerm: z4.string().optional(),
     page: z4.coerce.number<number>().optional(),
-    building: SafeOptionalEnum(BuildingSchema), // Allow empty string for "no filter"
-    query: z4.string().optional(),
-    user: z4.string().optional(),
-    user2: z4.string().optional(),
+    size: z4.coerce.number<number>().optional(),
     isConfirmed: z4.coerce.boolean<boolean>().optional(),
     isBooking: z4.coerce.boolean<boolean>().optional(),
-    donationType: SafeOptionalEnum(DonationTypeSchema),
-    mode: SafeOptionalEnum(TxnModeSchema),
+});
+
+export const TxnQuerySchema = z4
+    .object({
+        ...CommitteeYearQuerySchema.shape,
+        ...SearchSchema.shape,
+    })
+    .extend({
+        txnType: TxnTypeSchema,
+    });
+
+export const PageMetaSchema = z4.object({
+    currentPage: z4.coerce.number<number>(),
+    pageSize: z4.coerce.number<number>(),
+    totalElements: z4.coerce.number<number>(),
+    totalPages: z4.coerce.number<number>(),
+    isFirst: z4.coerce.boolean<boolean>(),
+    isLast: z4.coerce.boolean<boolean>(),
 });

@@ -13,13 +13,13 @@ type Props = {
 };
 export function OtherTxnList({ txns }: Props) {
     const { type, year } = Route.useParams();
-    const { query } = Route.useSearch();
+    const { searchTerm } = Route.useSearch();
 
     if (txns.length === 0)
         return (
             <span className="title text-lg">
                 No {type}s found{" "}
-                {query ? `for ${query} in ${year}` : `in ${year}`}
+                {searchTerm ? `for ${searchTerm} in ${year}` : `in ${year}`}
             </span>
         );
 

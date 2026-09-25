@@ -15,10 +15,10 @@ export const Route = createFileRoute("/dashboard")({
     }),
     loader: async ({ context }) => {
         // get user profile
-        context.queryClient.prefetchQuery(apiQueries.user.currDBUser());
+        context.queryClient.query(apiQueries.user.currDBUser());
 
         // get balances for all members
-        context.queryClient.prefetchQuery(apiQueries.txn.allUserBalances());
+        context.queryClient.query(apiQueries.txn.allUserBalances());
     },
 });
 

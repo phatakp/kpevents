@@ -6,6 +6,8 @@ import {
     CommitteeSchema,
     DonationTypeSchema,
     ItemTypeSchema,
+    PageMetaSchema,
+    SearchSchema,
     TxnModeSchema,
     TxnTypeSchema,
 } from "./common.schema";
@@ -54,14 +56,9 @@ export const TransactionSchema = z4.object({
     donation: DonationSchema.optional().nullable(),
 });
 
-export const PageSchema = z4.object({
-    totalElements: z4.coerce.number<number>(),
-    totalPages: z4.coerce.number<number>(),
-    totalAmount: z4.coerce.number<number>(),
-});
-
-export const TransactionResponseSchema = PageSchema.extend({
+export const TransactionResponseSchema = z4.object({
     data: z4.array(TransactionSchema),
+    meta: PageMetaSchema,
 });
 
 export const TransactionFormSchema = TransactionSchema.omit({
@@ -320,4 +317,10 @@ export const ItemRequestSchema = ItemSchema.omit({
 
 export const ItemQuerySchema = ItemSchema.pick({ type: true }).extend({
     year: z4.coerce.number<number>(),
+    ...SearchSchema.shape,
+});
+
+export const ItemResponseSchema = z4.object({
+    data: z4.array(ItemSchema),
+    meta: PageMetaSchema,
 });

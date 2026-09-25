@@ -22,11 +22,25 @@ export class TransactionRepository {
 
     async getTransactions(request: z4.infer<typeof TxnQuerySchema>) {
         try {
-            const search = request.donationType
-                ? `?donationType=${request.donationType}`
-                : request.building
-                  ? `?building=${request.building}`
-                  : "";
+            let search = "";
+            let params = 0;
+            if (request.building)
+                search += `${params++ > 0 ? "&" : "?"}building=${request.building}`;
+            if (request.donationType)
+                search += `${params++ > 0 ? "&" : "?"}donationType=${request.donationType}`;
+            if (request.txnMode)
+                search += `${params++ > 0 ? "&" : "?"}txnMode=${request.txnMode}`;
+            if (request.txnUserId)
+                search += `${params++ > 0 ? "&" : "?"}txnUserId=${request.txnUserId}`;
+            if (request.userName)
+                search += `${params++ > 0 ? "&" : "?"}userName=${request.userName}`;
+            if (request.searchTerm)
+                search += `${params++ > 0 ? "&" : "?"}searchTerm=${request.searchTerm}`;
+            if (request.page)
+                search += `${params++ > 0 ? "&" : "?"}page=${request.page}`;
+            if (request.size)
+                search += `${params++ > 0 ? "&" : "?"}size=${request.size}`;
+
             const res = await api.get(
                 `${this.url}/committee/${request.committee}/${request.txnType}/${request.year}${search}`,
             );

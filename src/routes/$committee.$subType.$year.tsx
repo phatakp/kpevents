@@ -17,9 +17,10 @@ export const Route = createFileRoute("/$committee/$subType/$year")({
     component: RouteComponent,
     validateSearch: (search) => SearchSchema.parse(search),
     loaderDeps: ({ search }) => ({
-        page: search.page,
-        user: search.user,
-        mode: search.mode,
+        page: search.page ?? 0,
+        size: search.size ?? 10,
+        txnUserId: search.txnUserId,
+        txnMode: search.txnMode,
         isConfirmed: search.isConfirmed,
         isBooking: search.isBooking,
     }),
@@ -33,14 +34,16 @@ export const Route = createFileRoute("/$committee/$subType/$year")({
     },
     loader: async ({ context, params, deps }) => {
         // get items from db
-        context.queryClient.prefetchQuery(
+        context.queryClient.query(
             apiQueries.txn.availableItems(
                 params.subType.toUpperCase() as ItemType,
                 params.year,
+                deps.page,
+                deps.size,
             ),
         );
         if (deps.isBooking)
-            context.queryClient.prefetchQuery(
+            context.queryClient.query(
                 apiQueries.txn.filtered({
                     committee: params.committee.toUpperCase() as Committee,
                     txnType: TXN_TYPE.DONATION,
@@ -50,6 +53,10 @@ export const Route = createFileRoute("/$committee/$subType/$year")({
                         params.subType === ROUTE_SUB_TYPE.ANNADAAN
                             ? DONATION_TYPE.ANNADAAN
                             : DONATION_TYPE.TEMPLE_ITEM,
+                    txnUserId: deps.txnUserId,
+                    txnMode: deps.txnMode,
+                    page: deps.page,
+                    size: deps.size,
                 }),
             );
     },

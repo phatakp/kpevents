@@ -1,6 +1,6 @@
 import type z4 from "zod/v4";
 import { AdminRepository } from "@/api/repositories/admin.repository";
-import type { ControlRecordSchema } from "@/zod/common.schema";
+import type { ControlRecordSchema, SearchSchema } from "@/zod/common.schema";
 import type { ItemRequestSchema } from "@/zod/txn.schema";
 
 class AdminService {
@@ -14,8 +14,8 @@ class AdminService {
         return this.repo.updateConfig(request);
     }
 
-    async getAnnadaanItems() {
-        return this.repo.getAnnadaanItems();
+    async getAnnadaanItems(request: z4.infer<typeof SearchSchema>) {
+        return this.repo.getAnnadaanItems(request);
     }
 
     async createItem(request: z4.infer<typeof ItemRequestSchema>) {

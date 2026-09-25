@@ -20,7 +20,7 @@ type Props = {
     className?: string;
 };
 export function ModeFilterColumn({ className }: Props) {
-    const { mode } = Route.useSearch();
+    const { txnMode } = Route.useSearch();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -41,7 +41,10 @@ export function ModeFilterColumn({ className }: Props) {
                     >
                         Mode{" "}
                         <FilterIcon
-                            className={cn("size-3.5", mode && "text-success")}
+                            className={cn(
+                                "size-3.5",
+                                txnMode && "text-success",
+                            )}
                         />
                     </Button>
                 </DropdownMenuTrigger>
@@ -56,8 +59,8 @@ export function ModeFilterColumn({ className }: Props) {
                                 key={o}
                                 className={cn(
                                     "justify-start capitalize text-sm",
-                                    mode &&
-                                        mode !== o &&
+                                    txnMode &&
+                                        txnMode !== o &&
                                         "text-muted-foreground",
                                 )}
                                 onClick={() => {
@@ -65,7 +68,7 @@ export function ModeFilterColumn({ className }: Props) {
                                     setOpen(false);
                                 }}
                             >
-                                {mode === o ? (
+                                {txnMode === o ? (
                                     <Check className="size-3.5" />
                                 ) : (
                                     <DotIcon />
@@ -75,7 +78,7 @@ export function ModeFilterColumn({ className }: Props) {
                         ))}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    {mode && (
+                    {txnMode && (
                         <DropdownMenuGroup>
                             <DropdownMenuItem
                                 className=""

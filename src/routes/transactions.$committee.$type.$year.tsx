@@ -18,12 +18,13 @@ export const Route = createFileRoute("/transactions/$committee/$type/$year")({
     validateSearch: (search) => SearchSchema.parse(search),
     loaderDeps: ({ search }) => ({
         page: search.page,
-        building: search.building ?? "A",
-        query: search.query,
-        user: search.user,
-        user2: search.user2,
+        size: search.size,
+        building: search.building,
+        searchTerm: search.searchTerm,
+        txnUserId: search.txnUserId,
+        userName: search.userName,
         donationType: search.donationType,
-        mode: search.mode,
+        txnMode: search.txnMode,
     }),
 
     params: {
@@ -36,26 +37,25 @@ export const Route = createFileRoute("/transactions/$committee/$type/$year")({
     },
     loader: async ({ context, params, deps }) => {
         // get user profile from db
-        context.queryClient.prefetchQuery(apiQueries.user.currDBUser());
+        context.queryClient.query(apiQueries.user.currDBUser());
 
         // get committee members
-        context.queryClient.prefetchQuery(
+        context.queryClient.query(
             apiQueries.user.membership(
                 params.committee.toUpperCase() as Committee,
             ),
         );
 
         // get balances for all members
-        context.queryClient.prefetchQuery(apiQueries.txn.allUserBalances());
+        context.queryClient.query(apiQueries.txn.allUserBalances());
 
         // get transactions
-        context.queryClient.prefetchQuery(
+        context.queryClient.query(
             apiQueries.txn.filtered({
                 committee: params.committee.toUpperCase() as Committee,
                 year: params.year,
                 txnType: params.type.toUpperCase() as TxnType,
-                building: deps.building as Building,
-                donationType: deps.donationType,
+                ...deps,
             }),
         );
     },

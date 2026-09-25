@@ -72,7 +72,7 @@ export function Navbar() {
                       href: `/temple/${config.activeYear}`,
                   },
                   {
-                      title: "Item Bookings",
+                      title: "Temple Items",
                       href: `/temple/temple/${config.activeYear}`,
                   },
               ];

@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { apiQueries } from "@/api/queries";
+import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
 import { Amount } from "@/components/shared/amount";
 import { AnimatedList, AnimatedListItem } from "@/components/ui/animated-list";
 import {
@@ -16,13 +17,13 @@ import { TxnActions } from "../txns/txn-actions";
 export function ItemBookingContent() {
     const { committee, subType, year } = Route.useParams();
     const { auth } = Route.useRouteContext();
-    const { page = 0 } = Route.useSearch();
+    const search = Route.useSearch();
     const { data: pageResp } = useSuspenseQuery(
         apiQueries.txn.filtered({
             committee: committee.toUpperCase() as Committee,
             txnType: TXN_TYPE.DONATION,
             year: year,
-            building: undefined,
+            ...search,
             donationType:
                 subType === ROUTE_SUB_TYPE.ANNADAAN
                     ? DONATION_TYPE.ANNADAAN
@@ -32,15 +33,12 @@ export function ItemBookingContent() {
 
     if (auth.role !== USER_ROLE.ADMIN) return null;
 
-    if (pageResp?.totalElements === 0)
+    if (pageResp?.meta.totalElements === 0)
         return (
             <span className="title text-sm md:text-xl">
                 No bookings found {`in ${year}`}
             </span>
         );
-
-    const start = page === 0 ? 0 : page * 10;
-    const end = start + 10;
 
     return (
         <div className="flex flex-col gap-6">
@@ -56,7 +54,7 @@ export function ItemBookingContent() {
                 </span>
             </div>
             <AnimatedList>
-                {pageResp?.data.slice(start, end).map((txn) => (
+                {pageResp?.data.map((txn) => (
                     <AnimatedListItem key={txn.id}>
                         <div className="grid grid-cols-12 w-full border-b pb-2 items-center text-sm">
                             <TxnActions txn={txn} isBooking />
@@ -108,6 +106,7 @@ export function ItemBookingContent() {
                     </AnimatedListItem>
                 ))}
             </AnimatedList>
+            {pageResp?.meta && <PaginationComponent meta={pageResp.meta} />}
         </div>
     );
 }

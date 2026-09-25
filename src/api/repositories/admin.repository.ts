@@ -4,6 +4,7 @@ import type { Control, ItemResponse, User } from "@/types";
 import type {
     CommitteeUserQuerySchema,
     ControlRecordSchema,
+    SearchSchema,
 } from "@/zod/common.schema";
 import type { ItemRequestSchema, TransactionIDSchema } from "@/zod/txn.schema";
 
@@ -73,10 +74,16 @@ export class AdminRepository {
         }
     }
 
-    async getAnnadaanItems() {
+    async getAnnadaanItems(request: z4.infer<typeof SearchSchema>) {
         try {
-            const res = await api.get(`${this.url}/items`);
-            return res.data as ItemResponse[];
+            let search = "";
+            let params = 0;
+            if (request.page)
+                search += `${params++ > 0 ? "&" : "?"}page=${request.page}`;
+            if (request.size)
+                search += `${params++ > 0 ? "&" : "?"}size=${request.size}`;
+            const res = await api.get(`${this.url}/items${search}`);
+            return res.data as ItemResponse;
         } catch (error) {
             handleAPIError(error);
         }

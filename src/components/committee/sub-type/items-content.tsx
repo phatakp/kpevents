@@ -12,20 +12,20 @@ import { AddtoCartButton } from "./add-to-cart-btn";
 
 export function ItemListContent() {
     const { subType, year } = Route.useParams();
-    const { page = 0 } = Route.useSearch();
+    const search = Route.useSearch();
     const cartItems = useCart((state) => state.items);
 
-    const { data: items } = useSuspenseQuery(
-        apiQueries.txn.availableItems(subType.toUpperCase() as ItemType, year),
+    const { data: itemsPage } = useSuspenseQuery(
+        apiQueries.txn.availableItems(
+            subType.toUpperCase() as ItemType,
+            year,
+            search.page ?? 0,
+            search.size ?? 10,
+        ),
     );
 
-    if (items?.length === 0)
+    if (!itemsPage?.meta?.totalElements)
         return <span className="title text-sm md:text-xl">No items found</span>;
-
-    const start = page === 0 ? 0 : page * 10;
-    const end = start + 10;
-    const totalElements = items?.length ?? 0;
-    const totalPages = Math.ceil(totalElements / 10);
 
     return (
         <div className="flex flex-col gap-6">
@@ -56,7 +56,7 @@ export function ItemListContent() {
             )}
 
             <AnimatedList>
-                {items?.slice(start, end).map((item) => {
+                {itemsPage.data.map((item) => {
                     const cartItem = cartItems.find(
                         (i) => i.itemId === item.id,
                     );
@@ -140,7 +140,7 @@ export function ItemListContent() {
                     );
                 })}
             </AnimatedList>
-            <PaginationComponent totalPages={totalPages} page={page} />
+            {itemsPage?.meta && <PaginationComponent meta={itemsPage.meta} />}
         </div>
     );
 }

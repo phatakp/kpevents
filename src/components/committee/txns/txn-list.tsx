@@ -31,15 +31,7 @@ import { UserFilterColumn } from "./user-filter";
 
 export function TransactionList() {
     const { committee, year, type } = Route.useParams();
-    const {
-        building = "A",
-        page = 0,
-        query = undefined,
-        user,
-        user2,
-        donationType,
-        mode,
-    } = Route.useSearch();
+    const search = Route.useSearch();
     const { data: profile } = useSuspenseQuery(apiQueries.user.currDBUser());
     const { data } = useSuspenseQuery(apiQueries.txn.allUserBalances());
     const totalBalance =
@@ -56,28 +48,14 @@ export function TransactionList() {
             committee: committee.toUpperCase() as Committee,
             txnType: type.toUpperCase() as TxnType,
             year: year,
-            building: building as Building,
-            donationType:
-                donationType === DONATION_TYPE.OTHER ? donationType : undefined,
+            ...search,
         }),
     );
 
     if (memberStatus !== MEMBER_STATUS.ACTIVE) return null;
 
-    const start = page === 0 ? 0 : page * 10;
-    const end = start + 10;
-
-    const filteredTxns = getFilteredTxns(pageResp?.data ?? [], {
-        mode,
-        query,
-        user,
-        user2,
-    });
-
-    const userOptions = getUserOptions(filteredTxns ?? []);
-    const paidByOptions = getPaidByOptions(filteredTxns ?? []);
-    const totalElements = filteredTxns?.length ?? 0;
-    const totalPages = Math.ceil(totalElements / 10);
+    const userOptions = getUserOptions(pageResp?.data ?? []);
+    const paidByOptions = getPaidByOptions(pageResp?.data ?? []);
 
     return (
         <div className="flex flex-col gap-6">
@@ -90,29 +68,32 @@ export function TransactionList() {
                     memberStatus === MEMBER_STATUS.ACTIVE
                 }
                 txnType={type.toUpperCase() as TxnType}
-                donationType={donationType}
+                donationType={search.donationType}
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 w-full">
                 {type === ROUTE_TXN_TYPE.DONATION && (
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full">
-                        {totalElements > 0 && <OtherTxnFilter />}
-                        {!donationType && <BuildingFilter />}
+                        {pageResp?.meta.totalElements && <OtherTxnFilter />}
+                        {!search.donationType && <BuildingFilter />}
                     </div>
                 )}
             </div>
 
             <div className="flex flex-col gap-3 flex-1">
-                {(query || totalElements > 0) && <TxnSearchInput />}
-                {(query || user) && totalElements > 0 && (
-                    <FilterStatBadge filtered={filteredTxns ?? []} />
+                {(search.searchTerm || pageResp?.meta.totalElements) && (
+                    <TxnSearchInput />
                 )}
+                {(search.searchTerm || search.txnUserId) &&
+                    pageResp?.meta.totalElements && (
+                        <FilterStatBadge filtered={pageResp.data ?? []} />
+                    )}
             </div>
 
             <HeaderDesktop
                 userOptions={userOptions}
                 paidByOptions={paidByOptions}
                 type={type}
-                donationType={donationType}
+                donationType={search.donationType}
             />
             <HeaderMobile
                 userOptions={userOptions}
@@ -121,13 +102,13 @@ export function TransactionList() {
             />
 
             {type === ROUTE_TXN_TYPE.DONATION && (
-                <DonationList txns={filteredTxns?.slice(start, end) ?? []} />
+                <DonationList txns={pageResp?.data ?? []} />
             )}
             {type !== ROUTE_TXN_TYPE.DONATION && (
-                <OtherTxnList txns={filteredTxns?.slice(start, end) ?? []} />
+                <OtherTxnList txns={pageResp?.data ?? []} />
             )}
 
-            <PaginationComponent totalPages={totalPages} page={page} />
+            {pageResp?.meta && <PaginationComponent meta={pageResp.meta} />}
         </div>
     );
 }

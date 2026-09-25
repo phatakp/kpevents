@@ -13,14 +13,14 @@ type Props = {
 };
 export function DonationList({ txns }: Props) {
     const { type, year } = Route.useParams();
-    const { query, donationType, building = "A" } = Route.useSearch();
+    const { searchTerm, donationType, building = "A" } = Route.useSearch();
 
     if (txns.length === 0)
         return (
             <span className="title text-sm md:text-xl">
                 No {type}s found{" "}
-                {query
-                    ? `for ${query}`
+                {searchTerm
+                    ? `for ${searchTerm}`
                     : building
                       ? `for ${building} building in ${year}`
                       : `in ${year}`}

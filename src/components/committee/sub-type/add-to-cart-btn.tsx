@@ -3,10 +3,10 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { ITEM_TYPE } from "@/lib/constants";
 import { useCart } from "@/stores/cart.store";
-import type { ItemResponse } from "@/types";
+import type { Item } from "@/types";
 
 type Props = {
-    item: ItemResponse;
+    item: Item;
     isAvailable: boolean;
 };
 export function AddtoCartButton({ item, isAvailable }: Props) {

@@ -16,8 +16,8 @@ import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-bounda
 export const Route = createFileRoute("/admin")({
     component: RouteComponent,
     loader: async ({ context }) => {
-        context.queryClient.prefetchQuery(apiQueries.user.allMembers());
-        context.queryClient.prefetchQuery(apiQueries.admin.annadaanItems());
+        context.queryClient.query(apiQueries.user.allMembers());
+        context.queryClient.query(apiQueries.admin.annadaanItems());
     },
 });
 

@@ -27,7 +27,7 @@ export function UserFilterColumn({
     isTransfer,
 }: Props) {
     const navigate = useNavigate();
-    const { user, user2 } = Route.useSearch();
+    const { txnUserId, userName } = Route.useSearch();
     const { type } = Route.useParams();
     const [open, setOpen] = useState(false);
 
@@ -36,8 +36,8 @@ export function UserFilterColumn({
             to: ".",
             search: (old) => ({
                 ...old,
-                user: isTransfer ? old.user : userId,
-                user2: isTransfer ? userId : old.user2,
+                txnUserId: isTransfer ? old.txnUserId : userId,
+                userName: isTransfer ? userId : old.userName,
             }),
         });
     };
@@ -52,8 +52,8 @@ export function UserFilterColumn({
                         <FilterIcon
                             className={cn(
                                 "size-3.5",
-                                !isTransfer && user && "text-success",
-                                isTransfer && user2 && "text-success",
+                                !isTransfer && txnUserId && "text-success",
+                                isTransfer && userName && "text-success",
                             )}
                         />
                     </div>
@@ -72,11 +72,11 @@ export function UserFilterColumn({
                                 key={o.value}
                                 className={cn(
                                     "justify-start capitalize text-sm",
-                                    user &&
-                                        user !== o.value &&
+                                    txnUserId &&
+                                        txnUserId !== o.value &&
                                         "text-muted-foreground",
-                                    user2 &&
-                                        user2 !== o.value &&
+                                    userName &&
+                                        userName !== o.value &&
                                         "text-muted-foreground",
                                 )}
                                 onClick={() => {
@@ -84,7 +84,7 @@ export function UserFilterColumn({
                                     setOpen(false);
                                 }}
                             >
-                                {user === o.value ? (
+                                {txnUserId === o.value ? (
                                     <Check className="size-3.5" />
                                 ) : (
                                     <DotIcon />
@@ -94,7 +94,8 @@ export function UserFilterColumn({
                         ))}
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    {((!isTransfer && user) || (isTransfer && user2)) && (
+                    {((!isTransfer && txnUserId) ||
+                        (isTransfer && userName)) && (
                         <DropdownMenuGroup>
                             <DropdownMenuItem
                                 className=""

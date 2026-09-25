@@ -24,9 +24,9 @@ import type {
     DonationSchema,
     ItemQuerySchema,
     ItemRequestSchema,
+    ItemResponseSchema,
     ItemSchema,
     LinkedTransferSchema,
-    PageSchema,
     TransactionResponseSchema,
     TransactionSchema,
     TransactionSchemaWithValidation,
@@ -79,7 +79,6 @@ export type Donation = z4.infer<typeof DonationSchema>;
 
 export type LinkedTransfer = z4.infer<typeof LinkedTransferSchema>;
 export type Transaction = z4.infer<typeof TransactionSchema>;
-export type PageInfo = z4.infer<typeof PageSchema>;
 export type TransactionResponse = z4.infer<typeof TransactionResponseSchema>;
 
 export type CommitteeQueryOptions = z4.infer<typeof CommitteeQuerySchema>;
@@ -90,8 +89,9 @@ export type TxnQueryOptions = z4.infer<typeof TxnQuerySchema>;
 
 export type TxnFormValues = z4.infer<typeof TransactionSchemaWithValidation>;
 
+export type Item = z4.infer<typeof ItemSchema>;
 export type ItemRequest = z4.infer<typeof ItemRequestSchema>;
-export type ItemResponse = z4.infer<typeof ItemSchema>;
+export type ItemResponse = z4.infer<typeof ItemResponseSchema>;
 export type ItemQueryOptions = z4.infer<typeof ItemQuerySchema>;
 
 export type BookingRequest = z4.infer<typeof BookingSchema>;

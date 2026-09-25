@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { CardLoader } from "@/components/shared/loaders/card-loader";
+import { ListLoader } from "@/components/shared/loaders/list-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 import {
     Card,
@@ -68,7 +69,7 @@ export function ItemsList() {
             <CardContent className="px-0">
                 <SuspenseErrorBoundary
                     id={`${subType}-list`}
-                    fallback={<CardLoader className="h-[50vh]" />}
+                    fallback={<ListLoader className="" />}
                 >
                     {isBooking ? <ItemBookingContent /> : <ItemListContent />}
                 </SuspenseErrorBoundary>

@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useState } from "react";
+import type z4 from "zod/v4";
 import {
     Pagination,
     PaginationContent,
@@ -11,19 +12,19 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
+import type { PageMetaSchema } from "@/zod/common.schema";
 
 type Props = {
-    totalPages: number;
-    page: number;
+    meta: z4.infer<typeof PageMetaSchema>;
 };
 
-export function PaginationComponent({ totalPages, page = 0 }: Props) {
+export function PaginationComponent({ meta }: Props) {
     const navigate = useNavigate();
-    const [activePage, setActivePage] = useState(page + 1);
-    if (totalPages <= 1) return;
+    const [activePage, setActivePage] = useState(meta.currentPage + 1);
+    if (!meta || meta.totalPages <= 1) return;
 
     const handlePageChange = (page: number) => {
-        const newPage = Math.max(1, Math.min(totalPages, page));
+        const newPage = Math.max(1, Math.min(meta.totalPages, page));
         setActivePage(newPage);
         navigate({
             to: ".",
@@ -39,7 +40,7 @@ export function PaginationComponent({ totalPages, page = 0 }: Props) {
         const maxVisible = 5;
 
         let start = Math.max(1, activePage - Math.floor(maxVisible / 2));
-        const end = Math.min(totalPages, start + maxVisible - 1);
+        const end = Math.min(meta.totalPages, start + maxVisible - 1);
 
         if (end - start + 1 < maxVisible) {
             start = Math.max(1, end - maxVisible + 1);
@@ -104,8 +105,8 @@ export function PaginationComponent({ totalPages, page = 0 }: Props) {
             );
         }
 
-        if (end < totalPages) {
-            if (end < totalPages - 1) {
+        if (end < meta.totalPages) {
+            if (end < meta.totalPages - 1) {
                 buttons.push(
                     <PaginationItem key="ellipsis-end">
                         <PaginationEllipsis />
@@ -113,16 +114,16 @@ export function PaginationComponent({ totalPages, page = 0 }: Props) {
                 );
             }
             buttons.push(
-                <PaginationItem key={totalPages}>
+                <PaginationItem>
                     <PaginationLink
                         href="#"
                         onClick={(e) => {
                             e.preventDefault();
-                            handlePageChange(totalPages);
+                            handlePageChange(meta.totalPages);
                         }}
                         className="w-10 h-10 rounded-xl"
                     >
-                        {totalPages}
+                        {meta.totalPages}
                     </PaginationLink>
                 </PaginationItem>,
             );
@@ -142,7 +143,10 @@ export function PaginationComponent({ totalPages, page = 0 }: Props) {
                                 e.preventDefault();
                                 handlePageChange(activePage - 1);
                             }}
-                            className="rounded-xl w-10 h-10 hover:bg-muted group p-0 flex justify-center"
+                            aria-disabled={meta.isFirst}
+                            disabled={meta.isFirst}
+                            isActive={!meta.isFirst}
+                            className="rounded-xl w-10 h-10 hover:bg-muted group p-0 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:text-muted-foreground"
                         />
                     </PaginationItem>
 
@@ -157,7 +161,10 @@ export function PaginationComponent({ totalPages, page = 0 }: Props) {
                                 e.preventDefault();
                                 handlePageChange(activePage + 1);
                             }}
-                            className="rounded-xl w-10 h-10 hover:bg-muted group p-0 flex justify-center"
+                            aria-disabled={meta.isLast}
+                            disabled={meta.isLast}
+                            isActive={!meta.isLast}
+                            className="rounded-xl w-10 h-10 hover:bg-muted group p-0 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:text-muted-foreground"
                         />
                     </PaginationItem>
                 </PaginationContent>
@@ -176,7 +183,7 @@ export function PaginationComponent({ totalPages, page = 0 }: Props) {
                 <div className="w-1 h-1 rounded-full bg-border" />
                 <span
                     className={
-                        activePage === totalPages
+                        activePage === meta.totalPages
                             ? "text-primary transition-colors"
                             : ""
                     }
