@@ -3,7 +3,13 @@ import { ChevronRight } from "lucide-react";
 import { TxnButton } from "@/components/committee/txns/txn-button";
 import { Amount } from "@/components/shared/amount";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { COMMITTEE, ROUTE_SUB_TYPE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Route } from "@/routes/__root";
@@ -27,18 +33,32 @@ export function TotalBalanceCard({
 }: Props) {
     const { config } = Route.useRouteContext();
     return (
-        <Card className="p-0 feature-card">
-            <CardHeader className="bg-linear-to-br from-primary via-primary/60 to-primary/30 text-primary-foreground py-2">
-                <CardTitle className="dark-title capitalize text-xl md:text-2xl">
+        <Card className="p-0">
+            <CardHeader className="gradient py-2">
+                <CardTitle className="capitalize text-xl md:text-2xl font-heading">
                     Current {committee.toLowerCase()} Balance
                 </CardTitle>
                 {addTxn && (
-                    <TxnButton
-                        committee={committee}
-                        year={config.activeYear}
-                        txnType={txnType}
-                        donationType={donationType}
-                    />
+                    <div className="sm:hidden invert">
+                        <TxnButton
+                            committee={committee}
+                            year={config.activeYear}
+                            txnType={txnType}
+                            donationType={donationType}
+                        />
+                    </div>
+                )}
+                {addTxn && (
+                    <CardAction>
+                        <div className="hidden sm:block invert">
+                            <TxnButton
+                                committee={committee}
+                                year={config.activeYear}
+                                txnType={txnType}
+                                donationType={donationType}
+                            />
+                        </div>
+                    </CardAction>
                 )}
             </CardHeader>
             <CardContent className="pb-4">

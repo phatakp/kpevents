@@ -13,65 +13,17 @@ import {
     USER_ROLE,
 } from "@/lib/constants";
 
-export const BUILDING_OPTIONS = [
-    BUILDING.A,
-    BUILDING.B,
-    BUILDING.C,
-    BUILDING.D,
-    BUILDING.E,
-    BUILDING.F,
-    BUILDING.G,
-] as const;
-
-export const USER_ROLE_OPTIONS = [USER_ROLE.ADMIN, USER_ROLE.USER] as const;
-
-export const COMMITTEE_OPTIONS = [
-    COMMITTEE.CULTURAL,
-    COMMITTEE.TEMPLE,
-] as const;
-
-export const ROUTE_COMMITTEE_OPTIONS = [
-    ROUTE_COMMITTEE.CULTURAL,
-    ROUTE_COMMITTEE.TEMPLE,
-] as const;
-
-export const ROUTE_TYPE_OPTIONS = [
-    ROUTE_TXN_TYPE.DONATION,
-    ROUTE_TXN_TYPE.EXPENSE,
-    ROUTE_TXN_TYPE.TRANSFER,
-] as const;
-
-export const ROUTE_SUBTYPE_OPTIONS = [
-    ROUTE_SUB_TYPE.ANNADAAN,
-    ROUTE_SUB_TYPE.TEMPLE,
-] as const;
-
-export const TXN_TYPE_OPTIONS = [
-    TXN_TYPE.DONATION,
-    TXN_TYPE.EXPENSE,
-    TXN_TYPE.TRANSFER,
-] as const;
-
-export const MEMBER_STATUS_OPTIONS = [
-    MEMBER_STATUS.ACTIVE,
-    MEMBER_STATUS.INACTIVE,
-    MEMBER_STATUS.NON,
-] as const;
-
-export const DONATION_TYPE_OPTIONS = [
-    DONATION_TYPE.ANNADAAN,
-    DONATION_TYPE.CULTURAL,
-    DONATION_TYPE.OTHER,
-    DONATION_TYPE.TEMPLE,
-    DONATION_TYPE.TEMPLE_ITEM,
-] as const;
-
-export const TXN_MODE_OPTIONS = [TXN_MODE.CASH, TXN_MODE.ONLINE] as const;
-
-export const ITEM_TYPE_OPTIONS = [
-    ITEM_TYPE.ANNADAAN,
-    ITEM_TYPE.TEMPLE,
-] as const;
+export const BUILDING_OPTIONS = Object.values(BUILDING);
+export const USER_ROLE_OPTIONS = Object.values(USER_ROLE);
+export const COMMITTEE_OPTIONS = Object.values(COMMITTEE);
+export const ROUTE_COMMITTEE_OPTIONS = Object.values(ROUTE_COMMITTEE);
+export const ROUTE_TYPE_OPTIONS = Object.values(ROUTE_TXN_TYPE);
+export const ROUTE_SUBTYPE_OPTIONS = Object.values(ROUTE_SUB_TYPE);
+export const TXN_TYPE_OPTIONS = Object.values(TXN_TYPE);
+export const MEMBER_STATUS_OPTIONS = Object.values(MEMBER_STATUS);
+export const DONATION_TYPE_OPTIONS = Object.values(DONATION_TYPE);
+export const TXN_MODE_OPTIONS = Object.values(TXN_MODE);
+export const ITEM_TYPE_OPTIONS = Object.values(ITEM_TYPE);
 
 export const SafeOptionalEnum = <
     T extends z4.ZodEnum<Readonly<Record<string, string>>>,
@@ -106,13 +58,6 @@ export const RouteSubTypeSchema = z4.enum(ROUTE_SUBTYPE_OPTIONS);
 export const ControlRecordSchema = z4.object({
     activeYear: z4.coerce.number<number>().min(2025).max(2100),
     isAnnadaanActive: z4.coerce.boolean<boolean>(),
-});
-
-export const BalanceStatSchema = z4.object({
-    year: z4.coerce.number<number>(),
-    txnType: TxnTypeSchema,
-    donationType: DonationTypeSchema.optional().nullable(),
-    balance: z4.coerce.number<number>(),
 });
 
 export const CommitteeTotalSchema = z4.object({

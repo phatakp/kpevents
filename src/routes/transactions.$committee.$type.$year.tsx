@@ -4,13 +4,7 @@ import { TxnTypeTabs } from "@/components/committee/txns/txn-type-tabs";
 import { Background } from "@/components/shared/background";
 import { TabsLoader } from "@/components/shared/loaders/tabs-loader";
 import { cn } from "@/lib/utils";
-import type {
-    Building,
-    Committee,
-    RouteCommittee,
-    RouteType,
-    TxnType,
-} from "@/types";
+import type { Committee, RouteCommittee, RouteType, TxnType } from "@/types";
 import { SearchSchema } from "@/zod/common.schema";
 
 export const Route = createFileRoute("/transactions/$committee/$type/$year")({

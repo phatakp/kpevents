@@ -1,6 +1,5 @@
 import type z4 from "zod/v4";
 import type {
-    BalanceStatSchema,
     BuildingSchema,
     CommitteeBalanceSchema,
     CommitteeQuerySchema,
@@ -69,7 +68,6 @@ export type UserMembership = z4.infer<typeof UserMembershipSchema>;
 export type User = z4.infer<typeof UserSchema>;
 export type UserShort = z4.infer<typeof UserShortSchema>;
 
-export type BalanceStat = z4.infer<typeof BalanceStatSchema>;
 export type CommitteeBalance = z4.infer<typeof CommitteeBalanceSchema>;
 export type UserBalance = z4.infer<typeof UserBalanceSchema>;
 export type DonationStat = z4.infer<typeof DonationStatSchema>;

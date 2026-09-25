@@ -15,7 +15,7 @@ export const Route = createFileRoute("/dashboard")({
     }),
     loader: async ({ context }) => {
         // get user profile
-        context.queryClient.query(apiQueries.user.currDBUser());
+        context.queryClient.query(apiQueries.user.currDBUser()); 
 
         // get balances for all members
         context.queryClient.query(apiQueries.txn.allUserBalances());

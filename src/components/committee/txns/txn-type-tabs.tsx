@@ -6,7 +6,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
-import { CardLoader } from "@/components/shared/loaders/card-loader";
+import { ListLoader } from "@/components/shared/loaders/list-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 import {
     Card,
@@ -90,9 +90,7 @@ export function TxnTypeTabs({ className }: Props) {
                                 <CardContent className="px-0">
                                     <SuspenseErrorBoundary
                                         id={`${typ}-list`}
-                                        fallback={
-                                            <CardLoader className="h-[50vh]" />
-                                        }
+                                        fallback={<ListLoader className="" />}
                                     >
                                         <TransactionList />
                                     </SuspenseErrorBoundary>

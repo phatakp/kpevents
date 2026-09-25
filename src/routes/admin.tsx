@@ -11,6 +11,7 @@ import {
     TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
 import { Background } from "@/components/shared/background";
+import { CardLoader } from "@/components/shared/loaders/card-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 
 export const Route = createFileRoute("/admin")({
@@ -31,7 +32,7 @@ function RouteComponent() {
 
                 <SuspenseErrorBoundary
                     id={`admin-tabs`}
-                    fallback={<div>Loading...</div>}
+                    fallback={<CardLoader />}
                 >
                     <Tabs defaultValue={"members"}>
                         <TabsList>

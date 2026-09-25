@@ -260,8 +260,7 @@
     }
 
     .gradient {
-        background: linear-gradient(to right, #ef629f, #eecda3);
-        color: #111;
+        @apply from-[#ef629f] via-[#a3acee] to-[#eecda3] bg-linear-to-br text-background
     }
 }
 

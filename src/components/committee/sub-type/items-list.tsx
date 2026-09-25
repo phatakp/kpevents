@@ -1,5 +1,4 @@
 import { useNavigate } from "@tanstack/react-router";
-import { CardLoader } from "@/components/shared/loaders/card-loader";
 import { ListLoader } from "@/components/shared/loaders/list-loader";
 import { SuspenseErrorBoundary } from "@/components/shared/suspense-error-boundary";
 import {
@@ -52,7 +51,7 @@ export function ItemsList() {
                         </CardDescription>
                     )}
                 {!isBooking && cartItems.length > 0 && (
-                    <CardAction>
+                    <div className="sm:hidden">
                         <TxnButton
                             committee={committee.toUpperCase() as Committee}
                             year={config.activeYear}
@@ -63,6 +62,23 @@ export function ItemsList() {
                             }
                             isBooking
                         />
+                    </div>
+                )}
+
+                {!isBooking && cartItems.length > 0 && (
+                    <CardAction>
+                        <div className="hidden sm:block">
+                            <TxnButton
+                                committee={committee.toUpperCase() as Committee}
+                                year={config.activeYear}
+                                donationType={
+                                    subType === ROUTE_SUB_TYPE.ANNADAAN
+                                        ? DONATION_TYPE.ANNADAAN
+                                        : DONATION_TYPE.TEMPLE_ITEM
+                                }
+                                isBooking
+                            />
+                        </div>
                     </CardAction>
                 )}
             </CardHeader>

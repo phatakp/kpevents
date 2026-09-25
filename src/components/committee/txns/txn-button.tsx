@@ -37,9 +37,9 @@ export function TxnButton({
             closeBtnClass="text-primary-foreground hover:text-accent"
             btnClass={cn(
                 buttonVariants({
-                    size: "sm",
+                    size: !txn ? "sm" : "icon",
                     variant: !txn
-                        ? "success"
+                        ? "default"
                         : isDelete
                           ? "destructive"
                           : "default",
@@ -77,31 +77,21 @@ export function TxnButton({
 
             {!txn && isBooking && (
                 <>
-                    <ShoppingCart className="size-3" />
-                    {items.length}
+                    Your Cart
+                    <ShoppingCart className="size-4" />
+                    <span className="bg-accent text-accent-foreground rounded-full size-6 flex items-center justify-center">
+                        {items.length}
+                    </span>
                 </>
             )}
 
-            {!!txn?.id && isDelete && (
-                <>
-                    <Trash className="size-3" />
-                    Delete
-                </>
-            )}
+            {!!txn?.id && isDelete && <Trash className="size-4" />}
 
             {!!txn?.id && !isDelete && !isViewOnly && (
-                <>
-                    <Pen className="size-3" />
-                    Edit
-                </>
+                <Pen className="size-4" />
             )}
 
-            {!!txn?.id && !isDelete && isViewOnly && (
-                <>
-                    <EyeIcon className="size-3" />
-                    View
-                </>
-            )}
+            {!!txn?.id && isViewOnly && <EyeIcon className="size-4" />}
         </Modal>
     );
 }

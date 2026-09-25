@@ -9,6 +9,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/stores/cart.store";
 
 export function NavLink({
     href,
@@ -29,6 +30,7 @@ export function NavLink({
     }[];
 }) {
     const location = useLocation();
+    const clearCart = useCart((state) => state.clearCart);
     const btn = (
         <>
             <span className="hidden md:flex title font-semibold text-base font-sans">
@@ -60,7 +62,9 @@ export function NavLink({
                         {dropdownLinks?.map((d) => {
                             return (
                                 <DropdownMenuItem key={d.title} asChild>
-                                    <Link to={d.href}>{d.title}</Link>
+                                    <Link to={d.href} onClick={clearCart}>
+                                        {d.title}
+                                    </Link>
                                 </DropdownMenuItem>
                             );
                         })}
@@ -76,6 +80,7 @@ export function NavLink({
                 buttonVariants({ variant: "ghost", size: "sm" }),
                 "relative",
             )}
+            onClick={clearCart}
         >
             {btn}
         </Link>

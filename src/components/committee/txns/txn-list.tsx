@@ -2,18 +2,15 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { apiQueries } from "@/api/queries";
 import { TotalBalanceCard } from "@/components/dashboard/total-balance-card";
 import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
-import { Card } from "@/components/ui/card";
 import { DONATION_TYPE, MEMBER_STATUS, ROUTE_TXN_TYPE } from "@/lib/constants";
 import {
     cn,
-    getFilteredTxns,
     getMemberStatus,
     getPaidByOptions,
     getUserOptions,
 } from "@/lib/utils";
 import { Route } from "@/routes/transactions.$committee.$type.$year";
 import type {
-    Building,
     Committee,
     DonationType,
     RouteType,
@@ -73,18 +70,19 @@ export function TransactionList() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 w-full">
                 {type === ROUTE_TXN_TYPE.DONATION && (
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full">
-                        {pageResp?.meta.totalElements && <OtherTxnFilter />}
+                        {!!pageResp?.meta.totalElements && <OtherTxnFilter />}
                         {!search.donationType && <BuildingFilter />}
                     </div>
                 )}
             </div>
 
             <div className="flex flex-col gap-3 flex-1">
-                {(search.searchTerm || pageResp?.meta.totalElements) && (
+                {(!!search.searchTerm || !!pageResp?.meta.totalElements) && (
                     <TxnSearchInput />
                 )}
-                {(search.searchTerm || search.txnUserId) &&
-                    pageResp?.meta.totalElements && (
+
+                {(!!search.searchTerm || !!search.txnUserId) &&
+                    !!pageResp?.meta.totalElements && (
                         <FilterStatBadge filtered={pageResp.data ?? []} />
                     )}
             </div>
