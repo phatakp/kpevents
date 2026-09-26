@@ -32,13 +32,20 @@ export function OtherTxnList({ txns }: Props) {
                     <Badge className="rounded-sm" variant={"secondary"}>
                         {format(new Date(date), "PP")}
                     </Badge>
-                    {txns?.map((txn) => {
+                    {txns?.map((txn, i) => {
                         const description = txn.description
                             ?.toLowerCase()
                             .replace("received from", "");
                         return (
                             <AnimatedListItem key={txn.id}>
-                                <div className="grid grid-cols-12 w-full border-b pb-2 items-center">
+                                <div
+                                    className={cn(
+                                        "grid grid-cols-12 w-full pb-2 items-center",
+                                        i % 2 === 1
+                                            ? "bg-background"
+                                            : "bg-background/50",
+                                    )}
+                                >
                                     <TxnActions txn={txn} />
 
                                     <div className="flex flex-col gap-2 col-span-7 md:col-span-5 truncate">

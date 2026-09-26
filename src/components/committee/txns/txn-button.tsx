@@ -37,7 +37,7 @@ export function TxnButton({
             closeBtnClass="text-primary-foreground hover:text-accent"
             btnClass={cn(
                 buttonVariants({
-                    size: !txn ? "sm" : "icon",
+                    size: !txn ? "sm" : "icon-sm",
                     variant: !txn
                         ? "default"
                         : isDelete

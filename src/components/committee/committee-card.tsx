@@ -1,7 +1,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Image } from "@unpic/react";
 import { apiQueries } from "@/api/queries";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { MEMBER_STATUS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Route } from "@/routes/$committee.$year";
@@ -24,15 +30,31 @@ export function CommitteeCard({ memberStatus, className }: Props) {
             <div className="container py-10 w-full">
                 <Card className="relative feature-card">
                     <CardHeader>
-                        <CardTitle className="title text-2xl md:text-4xl capitalize">
+                        <CardTitle className="title text-2xl md:text-4xl capitalize text-nowrap">
                             {committee} balance details
                         </CardTitle>
                         {memberStatus === MEMBER_STATUS.ACTIVE && (
-                            <TxnButton
-                                committee={committee.toUpperCase() as Committee}
-                                year={year}
-                            />
+                            <div className="md:hidden">
+                                <TxnButton
+                                    committee={
+                                        committee.toUpperCase() as Committee
+                                    }
+                                    year={year}
+                                />
+                            </div>
                         )}
+                        <CardAction>
+                            {memberStatus === MEMBER_STATUS.ACTIVE && (
+                                <div className="hidden md:block">
+                                    <TxnButton
+                                        committee={
+                                            committee.toUpperCase() as Committee
+                                        }
+                                        year={year}
+                                    />
+                                </div>
+                            )}
+                        </CardAction>
                     </CardHeader>
                     <CardContent>
                         <div className="py-4 flex flex-col gap-9 justify-between">

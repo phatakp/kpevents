@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { apiQueries } from "@/api/queries";
 import { TotalBalanceCard } from "@/components/dashboard/total-balance-card";
 import { PaginationComponent } from "@/components/shadcn-space/pagination/pagination";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DONATION_TYPE, MEMBER_STATUS, ROUTE_TXN_TYPE } from "@/lib/constants";
 import {
     cn,
@@ -67,45 +68,59 @@ export function TransactionList() {
                 txnType={type.toUpperCase() as TxnType}
                 donationType={search.donationType}
             />
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 w-full">
-                {type === ROUTE_TXN_TYPE.DONATION && (
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full">
-                        {!!pageResp?.meta.totalElements && <OtherTxnFilter />}
-                        {!search.donationType && <BuildingFilter />}
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="capitalize text-xl md:text-2xl title">
+                        {type} list
+                    </CardTitle>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 w-full">
+                        {type === ROUTE_TXN_TYPE.DONATION && (
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full">
+                                {!!pageResp?.meta.totalElements && (
+                                    <OtherTxnFilter />
+                                )}
+                                {!search.donationType && <BuildingFilter />}
+                            </div>
+                        )}
                     </div>
-                )}
-            </div>
 
-            <div className="flex flex-col gap-3 flex-1">
-                {(!!search.searchTerm || !!pageResp?.meta.totalElements) && (
-                    <TxnSearchInput />
-                )}
+                    <div className="flex flex-col gap-3 flex-1">
+                        {(!!search.searchTerm ||
+                            !!pageResp?.meta.totalElements) && (
+                            <TxnSearchInput />
+                        )}
 
-                {(!!search.searchTerm || !!search.txnUserId) &&
-                    !!pageResp?.meta.totalElements && (
-                        <FilterStatBadge filtered={pageResp.data ?? []} />
+                        {(!!search.searchTerm || !!search.txnUserId) &&
+                            !!pageResp?.meta.totalElements && (
+                                <FilterStatBadge
+                                    filtered={pageResp.data ?? []}
+                                />
+                            )}
+                    </div>
+                </CardHeader>
+
+                <CardContent>
+                    <HeaderDesktop
+                        userOptions={userOptions}
+                        paidByOptions={paidByOptions}
+                        type={type}
+                        donationType={search.donationType}
+                    />
+                    <HeaderMobile
+                        userOptions={userOptions}
+                        paidByOptions={paidByOptions}
+                        type={type}
+                    />
+
+                    {type === ROUTE_TXN_TYPE.DONATION && (
+                        <DonationList txns={pageResp?.data ?? []} />
                     )}
-            </div>
-
-            <HeaderDesktop
-                userOptions={userOptions}
-                paidByOptions={paidByOptions}
-                type={type}
-                donationType={search.donationType}
-            />
-            <HeaderMobile
-                userOptions={userOptions}
-                paidByOptions={paidByOptions}
-                type={type}
-            />
-
-            {type === ROUTE_TXN_TYPE.DONATION && (
-                <DonationList txns={pageResp?.data ?? []} />
-            )}
-            {type !== ROUTE_TXN_TYPE.DONATION && (
-                <OtherTxnList txns={pageResp?.data ?? []} />
-            )}
-
+                    {type !== ROUTE_TXN_TYPE.DONATION && (
+                        <OtherTxnList txns={pageResp?.data ?? []} />
+                    )}
+                </CardContent>
+            </Card>
             {pageResp?.meta && <PaginationComponent meta={pageResp.meta} />}
         </div>
     );

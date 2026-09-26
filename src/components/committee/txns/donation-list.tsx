@@ -34,7 +34,10 @@ export function DonationList({ txns }: Props) {
                     <AnimatedListItem key={txn.id}>
                         <div
                             className={cn(
-                                "grid grid-cols-12 w-full border-b py-1 items-center",
+                                "grid grid-cols-12 w-full py-1 items-center",
+                                i % 2 === 1
+                                    ? "bg-background"
+                                    : "bg-background/50",
                             )}
                         >
                             <TxnActions txn={txn} />
