@@ -16,7 +16,7 @@ export function BuildingFilter() {
     return (
         <InputGroup
             className={cn(
-                "border-none h-9 md:w-fit p-0 m-0",
+                "border-none h-9 w-fit p-0 m-0",
                 "has-[[data-slot=input-group-control]:focus-visible]:border-none has-[[data-slot=input-group-control]:focus-visible]:ring-0 has-[[data-slot=input-group-control]:focus-visible]:ring-none",
             )}
         >
